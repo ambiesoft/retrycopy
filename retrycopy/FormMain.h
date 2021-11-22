@@ -1,5 +1,6 @@
 #pragma once
 
+#include "threadData.h"
 
 namespace retrycopy {
 
@@ -183,6 +184,12 @@ namespace retrycopy {
 		HANDLE hDestination_;
 		void ClearThread();
 		void StartOfThread(Object^ obj);
+		void StartOfThread2(ThreadData^ thData);
+		void ThreadStarted();
+		Object^ ReadFileFailed(LONGLONG pos);
+		void ProcessProgressed(LONGLONG pos);
+		void ProgressFailed(LONGLONG pos);
+		void ThreadFinished(Object^ obj);
 	private:
 		System::Void btnNavSource_Click(System::Object^ sender, System::EventArgs^ e);
 		System::Void btnNavDestination_Click(System::Object^ sender, System::EventArgs^ e);
