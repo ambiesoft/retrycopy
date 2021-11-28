@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "helper.h"
 #include "FormMain.h"
 
 #pragma comment(lib, "User32.lib")
@@ -11,249 +12,197 @@ using namespace System::IO;
 using namespace Ambiesoft;
 namespace retrycopy {
 
-	ref class ReadFailData
+	void FormMain::StartOfThreadMaster(Object^ obj)
 	{
-	public:
-		enum class ACTION {
-			NONE,
-			RETRY,
-			CANCEL,
-			IGNOREALL,
-		};
-	private:
-		ACTION action_;
-	public:
-		ReadFailData(ACTION action) : action_(action){}
-		property bool IsRetry
-		{
-			bool get() { return action_ == ACTION::RETRY; }
-		}
-		property bool IsCancel
-		{
-			bool get() { return action_ == ACTION::CANCEL; }
-		}
-		property bool IsIgnoreAll
-		{
-			bool get() { return action_ == ACTION::IGNOREALL; }
-		}
-	};
-	void FormMain::StartOfThread(Object^ obj)
-	{
-		ThreadData^ thData = (ThreadData^)obj;
+		ThreadDataMaster^ thDataMaster = (ThreadDataMaster^)obj;
 		EndInvoke(BeginInvoke(gcnew VVDelegate(this, &FormMain::ThreadStarted)));
-		StartOfThread2(thData);
-		BeginInvoke(gcnew VDataDelegate(this, &FormMain::ThreadFinished), thData);
-	}
-	void FormMain::StartOfThread2(ThreadData^ thData)
-	{
-		thData->allProcessed_ = 0;
-		BYTE b;
-		bool ignoreAllFail = false;
-		do {
-			LARGE_INTEGER li;
-			li.QuadPart = thData->allProcessed_;
-			if (0 == SetFilePointerEx(thData->HSrc, li, NULL, FILE_BEGIN))
-			{
-				CppUtils::Alert("fp");
-				return;
-			}
 
+		try
+		{
+			// calc total input size
+			LONGLONG totalInputSize = 0;
+			for each (KV kv in thDataMaster->SDS)
+			{
+				FileInfo fi(kv.Key);
+				totalInputSize += fi.Length;
+			}
+			
+			thDataMaster->SetTotalInputSize(totalInputSize);
+			ThreadTransitory::TotalCount = thDataMaster->SDS->Count;
+			for (int i = 0; i < thDataMaster->SDS->Count; ++i)
+			{
+				ThreadTransitory::ProcessedTotalCount = i+1;
+				ThreadDataFile^ tdf = gcnew ThreadDataFile(
+					thDataMaster->SDS[i].Key, thDataMaster->SDS[i].Value);
+
+				StartOfThreadFile(tdf);
+				thDataMaster->TotalProcessedSize += tdf->ProcessedSize;
+
+				tdf->CloseFiles();
+				if (tdf->IsOK)
+				{
+					AmbLib::CopyFileTime(tdf->SrcFile, tdf->DstFile,
+						AmbLib::CFT::Creation);
+				}
+				EndInvoke(BeginInvoke(gcnew VTfDelegate(this, &FormMain::ThreadFileEnded),
+					tdf));
+				thDataMaster->AppendEnded(tdf);
+			}
+			thDataMaster->SetOK();
+		}
+		catch(Exception^){}
+		BeginInvoke(gcnew VTmDelegate(this, &FormMain::ThreadFinished), thDataMaster);
+	}
+	void FormMain::StartOfThreadFile(ThreadDataFile^ thFileData)
+	{
+		EndInvoke(BeginInvoke(gcnew VTfDelegate(this, &FormMain::ThreadFileStarted),
+			thFileData));
+		thFileData->ProcessedSize = 0;
+		
+		bool initSrc = true;
+		bool ignoreAllFail = false;
+		int retried = 0;
+		int bufferSize = 0;
+		std::unique_ptr<BYTE[]> bb;
+		unsigned consecutiveErrorCount = 0;
+		unsigned sameErrorCount = 0;
+		DWORD lastError = 0;
+		do 
+		{
+			if (bufferSize != ThreadTransitory::UserBuffer)
+			{
+				bufferSize = ThreadTransitory::UserBuffer;
+				DASSERT(bufferSize > 0);
+				bb.reset(new BYTE[bufferSize]);
+			}
+			if (initSrc)
+			{
+				initSrc = false;
+				switch (thFileData->InitSrc())
+				{
+				case ThreadDataFile::INITSRCRET::INITSRC_CANNOTOPEN:
+					// ask user
+					if ((bool)EndInvoke(BeginInvoke(
+						gcnew BDwDelegate(this, &FormMain::OpenFileFailedGetUserAction),
+						thFileData->SrcLE)))
+					{
+						// retry
+						initSrc = true;
+						continue;
+					}
+					return;
+				case ThreadDataFile::INITSRCRET::INITSRC_SIZECHANGED:
+					// first time or size changed
+					thFileData->ProcessedSize = 0;
+					thFileData->InitDst();
+					break;
+				case ThreadDataFile::INITSRCRET::INITSRC_OK:
+					// size not zero and not changed
+					break;
+				}
+			}
+			LARGE_INTEGER li;
+			li.QuadPart = thFileData->ProcessedSize;
+			bool sfpFailed = (0 == SetFilePointerEx(thFileData->HSrc, li, NULL, FILE_BEGIN));
+			
 			DWORD dwRead;
-			if (!ReadFile(thData->HSrc,
-				&b,
-				1,
+			if (sfpFailed || !ReadFile(thFileData->HSrc,
+				bb.get(),
+				bufferSize,
 				&dwRead,
 				NULL))
 			{
-				DWORD le = GetLastError();
+				const DWORD le = GetLastError();
+				if (le == lastError)
+				{
+					if (++sameErrorCount > 100)
+					{
+						initSrc = true;
+					}
+				}
+				lastError = le;
+				if (++consecutiveErrorCount > 100)
+					initSrc = true;
+				Thread::Sleep(Math::Min(consecutiveErrorCount, 100u));
 				if (!ignoreAllFail)
 				{
+					if (ThreadTransitory::UserRetry < 0 ||
+						retried++ < ThreadTransitory::UserRetry)
+					{
+						//EndInvoke(BeginInvoke(gcnew VLLLLDwIDelegate(this, &FormMain::ReadFileFailed),
+						//	thFileData->ProcessedSize,
+						//	thFileData->SrcSize,
+						//	le,
+						//	retried)); 
+						ThreadTransitory::SetFileLastError(
+							thFileData->ProcessedSize,
+							thFileData->SrcSize,
+							le,
+							retried);
+						if (le == ERROR_NOT_READY || le == ERROR_NO_SUCH_DEVICE)
+						{
+							initSrc = true;
+						}
+						continue;
+					}
 					// fail
 					ReadFailData^ rfd = (ReadFailData^)
-						EndInvoke(BeginInvoke(gcnew RDLLDelegate(this, &FormMain::ReadFileFailed), 
-							thData->allProcessed_));
+						EndInvoke(BeginInvoke(gcnew RDLLLLDwIDelegate(this, &FormMain::ReadFileFailedGetUserAction), 
+							thFileData->ProcessedSize,
+							thFileData->SrcSize,
+							le,
+							retried));
 					if (rfd->IsCancel)
 						return;
 					if (rfd->IsRetry)
+					{
+						retried = 0;
+						if (le == ERROR_NOT_READY || le == ERROR_NO_SUCH_DEVICE)
+						{
+							initSrc = true;
+						}
 						continue;
+					}
 					if (rfd->IsIgnoreAll)
 						ignoreAllFail = true;
 				}
-				EndInvoke(BeginInvoke(gcnew VLLDelegate(this, &FormMain::ProgressFailed),
-					thData->allProcessed_));
-				b = 0;
-				dwRead = 1;
+				EndInvoke(BeginInvoke(gcnew VLLIDelegate(this, &FormMain::ProgressWriteWithZero),
+					thFileData->ProcessedSize, bufferSize));
+				ZeroMemory(bb.get(), bufferSize);
+				dwRead = bufferSize;
 			}
+
+			consecutiveErrorCount = 0;
+			lastError = 0;
+			ThreadTransitory::ClearFileLastError();
+
 			if (dwRead == 0)
 			{
-				thData->SetOK();
-				// finished
+				thFileData->SetDone();
 				return;
 			}
 
 			DWORD dwWritten;
-			if (!(WriteFile(thData->HDst,
-				&b,
-				1,
+			if (!(WriteFile(thFileData->HDst,
+				bb.get(),
+				dwRead,
 				&dwWritten,
-				NULL) && dwWritten == 1))
+				NULL) && dwWritten == dwRead))
 			{
-				CppUtils::Alert("w");
-				continue;
+				return;
 			}
-			++thData->allProcessed_;
-
-			if ((thData->allProcessed_ % 10000) == 0)
-			{
-				BeginInvoke(gcnew VLLDelegate(this, &FormMain::ProcessProgressed), 
-					thData->allProcessed_);
-			}
+			thFileData->ProcessedSize += dwRead;
+			retried = 0;
+			// if ((thData->allProcessed_ % 10000) == 0)
+			//{
+			//	BeginInvoke(gcnew VLLDelegate(this, &FormMain::ProcessProgressed), 
+			//		thFileData->ProcessedSize);
+			//}
 		} while (true);
 	}
-	void FormMain::ClearThread()
-	{
-		if (hSource_ != NULL && hSource_ != INVALID_HANDLE_VALUE)
-			CloseHandle(hSource_);
-		if (hDestination_ != NULL && hDestination_ != INVALID_HANDLE_VALUE)
-			CloseHandle(hDestination_);
+	//void FormMain::OnUpdateSize()
+	//{
+	//}
 
-		if (theThread_)
-		{
-			theThread_->Abort();
-			theThread_->Join();
-		}
 
-	}
-#define TO_LPCWSTR(s) (getStdWstring(s).c_str())
-	std::wstring getStdWstring(String^ s)
-	{
-		std::wstring ret;
-		if (s == nullptr)
-			return ret;
-
-		pin_ptr<const wchar_t> p = PtrToStringChars(s);
-		ret = p;
-		return ret;
-	}
-	System::Void FormMain::btnCopy_Click(System::Object^ sender, System::EventArgs^ e)
-	{
-		ClearThread();
-		if (String::IsNullOrEmpty(txtSource->Text))
-		{
-			CppUtils::Alert(I18N(L"Source file is empty."));
-			return;
-		}
-		if (!File::Exists(txtSource->Text))
-		{
-			CppUtils::Alert(I18N(L"Source file does not exist."));
-			return;
-		}
-
-		hSource_ = CreateFile(
-			TO_LPCWSTR(txtSource->Text),
-			GENERIC_READ,
-			FILE_SHARE_READ,
-			NULL,
-			OPEN_EXISTING,
-			FILE_ATTRIBUTE_NORMAL | 
-			// FILE_FLAG_NO_BUFFERING|
-			FILE_FLAG_RANDOM_ACCESS |
-			0,
-			NULL);
-		if (hSource_ == INVALID_HANDLE_VALUE)
-		{
-			CppUtils::Alert(I18N(L"Failed to open source file."));
-			return;
-		}
-		hDestination_ = CreateFile(
-			TO_LPCWSTR(txtDestination->Text),
-			GENERIC_WRITE,
-			0,
-			NULL,
-			CREATE_ALWAYS,
-			FILE_ATTRIBUTE_NORMAL,
-			NULL);
-		if (hDestination_ == INVALID_HANDLE_VALUE)
-		{
-			CppUtils::Alert(I18N(L"Failed to open destination file."));
-			return;
-		}
-		LARGE_INTEGER li;
-		if (!GetFileSizeEx(hSource_, &li))
-		{
-			CppUtils::Alert(I18N(L"Failed get file size of source file."));
-			return;
-		}
-		ThreadData^ thData = gcnew ThreadData(hSource_, hDestination_, li.QuadPart);
-		theThread_ = gcnew Thread(
-			gcnew ParameterizedThreadStart(this, &FormMain::StartOfThread));
-		theThread_->Start(thData);
-	}
-	void FormMain::ThreadStarted()
-	{
-		//processSuspeded_ = false;
-		//processTerminatedDuetoAppClose_ = false;
-
-		//CurrentTaskState = TaskState::Encoding;
-
-		//dwBackPriority_ = GetPriorityClass(GetCurrentProcess());
-		//if (tsmiPriorityBackground->Checked)
-		//	SetPriorityClass(GetCurrentProcess(), PROCESS_MODE_BACKGROUND_BEGIN);
-	}
-	void FormMain::ThreadFinished(Object^ obj)
-	{
-		ThreadData^ thData = (ThreadData^)obj;
-		ClearThread();
-		if (thData->IsOK)
-		{
-			CppUtils::Info(this, String::Format(
-				I18N(L"success srcSize={0}, Written size={1}"),
-				thData->SrcSize, thData->WrittenSize));
-		}
-		else
-		{
-			CppUtils::Fatal("failed");
-		}
-	}
-
-	void FormMain::ProcessProgressed(LONGLONG pos)
-	{
-		txtLog->AppendText(String::Format(I18N(L"{0} bytes done."), pos));
-		txtLog->AppendText(Environment::NewLine);
-	}
-	void FormMain::ProgressFailed(LONGLONG pos)
-	{
-		txtLog->AppendText(String::Format(I18N(L"Write 0 at {0}."), pos));
-		txtLog->AppendText(Environment::NewLine);
-	}
-	Object^ FormMain::ReadFileFailed(LONGLONG pos)
-	{
-		txtLog->AppendText(String::Format(I18N(L"Failed to ReadFile at {0}"), pos));
-		txtLog->AppendText(Environment::NewLine);
-
-		ReadFailData^ rfd;
-		switch (CppUtils::CenteredMessageBox(
-			this,
-			String::Format(I18N(L"Failed to ReadFile at {0}"), pos),
-			Application::ProductName,
-			MessageBoxButtons::AbortRetryIgnore,
-			MessageBoxIcon::Warning,
-			MessageBoxDefaultButton::Button2))
-		{
-		case System::Windows::Forms::DialogResult::Abort:
-			rfd = gcnew ReadFailData(ReadFailData::ACTION::CANCEL);
-			break;
-		case System::Windows::Forms::DialogResult::Retry:
-			rfd = gcnew ReadFailData(ReadFailData::ACTION::RETRY);
-			break;
-		case System::Windows::Forms::DialogResult::Ignore:
-			if (GetAsyncKeyState(VK_SHIFT) < 0)
-				rfd = gcnew ReadFailData(ReadFailData::ACTION::IGNOREALL);
-			break;
-		default:
-			CppUtils::Fatal(L"Illegal");
-			Environment::Exit(-1);
-		}
-		return rfd;
-	}
 }
