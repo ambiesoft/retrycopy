@@ -3,18 +3,30 @@
 #include "stdafx.h"
 
 #include "FormMain.h"
+#include "helper.h"
 #include "threadData.h"
 
 using namespace System::IO;
 using namespace Ambiesoft;
 namespace retrycopy {
 
+	void ThreadDataMaster::PrepareDstDirs()
+	{
+		for each (String ^ dir in dstdirs_)
+		{
+			try
+			{
+				Directory::CreateDirectory(dir);
+			}
+			catch(Exception^){}
+		}
+	}
 	bool ThreadDataFile::FirstCheck()
 	{
 		DASSERT(hSrc_ == nullptr);
 		HANDLE hTmp = HSrc;
 		if (hTmp == nullptr || hTmp == INVALID_HANDLE_VALUE ||
-			SrcSize == 0)
+			SrcSize == -1)
 		{
 			setReadError(srcLE_);
 			return false;
@@ -22,7 +34,7 @@ namespace retrycopy {
 		CloseHandle(hTmp);
 		srcLE_ = 0;
 		hSrc_ = nullptr;
-		srcSize_ = 0;
+		srcSize_ = -1;
 
 		if (!File::Exists(dstFile_))
 		{
@@ -85,20 +97,31 @@ namespace retrycopy {
 
 		return hSrc_;
 	}
+
 	HANDLE ThreadDataFile::HDst::get()
 	{
 		if (hDst_ != nullptr && hDst_ != INVALID_HANDLE_VALUE)
 			return hDst_;
 
 		DASSERT(dwCDForWrite_ != 0);
-		hDst_ = CreateFile(
-			TO_LPCWSTR(dstFile_),
-			GENERIC_WRITE,
-			0,
-			NULL,
-			dwCDForWrite_,
-			FILE_ATTRIBUTE_NORMAL,
-			NULL);
+		for (int i = 0; i < 2; ++i)
+		{
+			hDst_ = CreateFile(
+				TO_LPCWSTR(dstFile_),
+				GENERIC_WRITE,
+				0,
+				NULL,
+				dwCDForWrite_,
+				FILE_ATTRIBUTE_NORMAL,
+				NULL);
+			if (hDst_ == INVALID_HANDLE_VALUE && GetLastError() == ERROR_PATH_NOT_FOUND)
+			{
+				EnsureDirectory(dstFile_);
+				continue;
+			}
+			else
+				break;
+		}
 		return hDst_;
 	}
 	String^ ThreadDataFile::GetNGReason() {
@@ -111,8 +134,8 @@ namespace retrycopy {
 			lst.Add(gcnew String(GetLastErrorString(leRead_).c_str()));
 		if (leWrite_ != 0)
 			lst.Add(gcnew String(GetLastErrorString(leWrite_).c_str()));
-		if (SrcSize == 0)
-			lst.Add(L"Source size is zero");
+		if (SrcSize == -1)
+			lst.Add(L"Source size is not obtained");
 		if (SrcSize != allProcessed_)
 		{
 			lst.Add(String::Format(I18N(L"Source size not equal to written size {0} != {1}"),

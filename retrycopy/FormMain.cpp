@@ -4,6 +4,7 @@
 #include "helper.h"
 #include "FormLog.h"
 #include "FormMain.h"
+using namespace System::Collections::Generic;
 using namespace System::Text;
 
 using namespace System::IO;
@@ -160,8 +161,12 @@ namespace retrycopy {
 		//	}
 		//}
 
-		KVS^ sds = Ambiesoft::AmbLib::GetSourceAndDestFiles(txtSource->Text, txtDestination->Text);
-		ThreadDataMaster^ thData = gcnew ThreadDataMaster(sds);
+		List<String^>^ dstDirs;
+		KVS^ sds = AmbLib::GetSourceAndDestFiles(txtSource->Text, txtDestination->Text, dstDirs);
+		
+		ThreadDataMaster^ thData = gcnew ThreadDataMaster(
+			Directory::Exists(txtSource->Text) ? txtSource->Text : nullptr,
+			sds, dstDirs);
 		theThread_ = gcnew Thread(
 			gcnew ParameterizedThreadStart(this, &FormMain::StartOfThreadMaster));
 		theThread_->Start(thData);

@@ -19,6 +19,9 @@ namespace retrycopy {
 
 		try
 		{
+			// prepare target dirs
+			thDataMaster->PrepareDstDirs();
+
 			// calc total input size
 			LONGLONG totalInputSize = 0;
 			for each (KV kv in thDataMaster->SDS)
@@ -37,7 +40,6 @@ namespace retrycopy {
 
 				StartOfThreadFile(tdf);
 				thDataMaster->TotalProcessedSize += tdf->ProcessedSize;
-
 				tdf->CloseFiles();
 				if (tdf->IsOK)
 				{
@@ -177,12 +179,6 @@ namespace retrycopy {
 			lastError = 0;
 			ThreadTransitory::ClearFileLastError();
 
-			if (dwRead == 0)
-			{
-				thFileData->SetDone();
-				return;
-			}
-
 			DWORD dwWritten;
 			if (!(WriteFile(thFileData->HDst,
 				bb.get(),
@@ -196,6 +192,13 @@ namespace retrycopy {
 			DASSERT(dwRead == dwWritten);
 			thFileData->ProcessedSize += dwWritten;
 			retried = 0;
+
+			if (dwRead == 0)
+			{
+				thFileData->SetDone();
+				return;
+			}
+
 			// if ((thData->allProcessed_ % 10000) == 0)
 			//{
 			//	BeginInvoke(gcnew VLLDelegate(this, &FormMain::ProcessProgressed), 

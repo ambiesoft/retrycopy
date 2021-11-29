@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "helper.h"
 #include "FormMain.h"
 
 #pragma comment(lib, "User32.lib")
@@ -47,7 +48,7 @@ namespace retrycopy {
 				{
 					File::Delete(thData->SrcFile);
 				}
-				catch(Exception^){}
+				catch (Exception^) {}
 			}
 
 			if (File::Exists(thData->SrcFile))
@@ -64,6 +65,37 @@ namespace retrycopy {
 		else
 		{
 			sbResult->Append(I18N(L"Source file already gone."));
+		}
+	}
+	void RemoveDirCommon(String^ dir, StringBuilder^ sbResult, bool bRecycle)
+	{
+		if (Directory::Exists(dir))
+		{
+			String^ recyleORdelete = bRecycle ? I18N(L"recycle") : I18N(L"delete");
+			String^ recyleORdeleted = bRecycle ? I18N(L"recycled") : I18N(L"deleted");
+			if (bRecycle)
+			{
+				CppUtils::DeleteFile(dir);
+			}
+			else
+			{
+				DeleteAllDirectory(dir);
+			}
+
+			if (Directory::Exists(dir))
+			{
+				sbResult->AppendFormat(I18N(L"Failed to {0} some directories"),
+					recyleORdelete);
+			}
+			else
+			{
+				sbResult->AppendFormat(I18N(L"Source directory {0}"),
+					recyleORdeleted);
+			}
+		}
+		else
+		{
+			sbResult->Append(I18N(L"Source directory already gone."));
 		}
 	}
 	void FormMain::ThreadFileEnded(ThreadDataFile^ thData)
@@ -119,11 +151,38 @@ namespace retrycopy {
 	{
 		AppendLog(I18N(L"Thread Started"));
 	}
+
 	void FormMain::ThreadFinished(ThreadDataMaster^ thData)
 	{
 		ThreadState = ThreadStateType::NONE;
 		if (thData->IsOK)
 		{
+			StringBuilder sbResult;
+			sbResult.Append(I18N(L"All copy successfully finished"));
+			sbResult.Append(L"\t");
+			if (!ThreadTransitory::HasUserRemoveChanged && thData->HasSrcDir)
+			{
+				switch (ThreadTransitory::UserRemove)
+				{
+				case REMOVE_TYPE::REMOVE_ASK:
+					if (System::Windows::Forms::DialogResult::Yes != CppUtils::YesOrNo(
+						this,
+						String::Format(I18N(L"All Copy finished. Do you want to remove source directories \"{0}\"?"),
+							thData->SrcDir),
+						MessageBoxDefaultButton::Button2))
+					{
+						break;
+					}
+					// fall
+				case REMOVE_TYPE::REMOVE_YES_RECYCLE:
+					RemoveDirCommon(thData->SrcDir, % sbResult, true);
+					break;
+				case REMOVE_TYPE::REMOVE_YES_DELETE:
+					RemoveDirCommon(thData->SrcDir, % sbResult, false);
+					break;
+				}
+			}
+			AppendLog(sbResult.ToString());
 			CppUtils::Info(this, String::Format(
 				I18N(L"success Total Input size={0}, Total Written size={1}"),
 				thData->TotalInputSize, thData->TotalWrittenSize));

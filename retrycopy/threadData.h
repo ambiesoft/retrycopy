@@ -39,7 +39,7 @@ namespace retrycopy {
 		static int userRetry_ = 10;
 
 		static String^ fileLastError_ = String::Empty;
-
+		static bool userRemoveDirty_;
 		ref struct RLocker
 		{
 			System::Threading::ReaderWriterLock^ rwl_;
@@ -74,7 +74,13 @@ namespace retrycopy {
 			curProcessedSize_ = 0;
 
 			fileLastError_ = String::Empty;
+			userRemoveDirty_ = false;
 		}
+		static property bool HasUserRemoveChanged
+		{
+			bool get() { return userRemoveDirty_; }
+		}
+
 		static property LONGLONG TotalSize
 		{
 			LONGLONG get() {
@@ -198,6 +204,8 @@ namespace retrycopy {
 			}
 			void set(REMOVE_TYPE v) {
 				WLocker w(rwl_);
+				if (userRemove_ != v)
+					userRemoveDirty_ = true;
 				userRemove_ = v;
 			}
 		}
@@ -213,16 +221,27 @@ namespace retrycopy {
 
 	ref class ThreadDataMaster
 	{
+		initonly String^ srcDir_;
 		initonly KVS^ sds_;
-
+		initonly System::Collections::Generic::List<String^>^ dstdirs_;
 		LONGLONG totalInputSize_;
 		LONGLONG totalProcessed_;
 		int totalOK_;
 
 	public:
-		ThreadDataMaster(KVS^ sds) : sds_(sds)
+		ThreadDataMaster(String^ srcDir, KVS^ sds, System::Collections::Generic::List<String^>^ dstDirs) :
+			srcDir_(srcDir), sds_(sds), dstdirs_(dstDirs)
 		{}
 
+		void PrepareDstDirs();
+		property bool HasSrcDir
+		{
+			bool get() { return !String::IsNullOrEmpty(SrcDir); }
+		}
+		property String^ SrcDir
+		{
+			String^ get() { return srcDir_; }
+		}
 		property KVS^ SDS
 		{
 			KVS^ get() { return sds_; }
@@ -277,7 +296,7 @@ namespace retrycopy {
 		String^ dstFile_;
 		HANDLE hDst_;
 
-		LONGLONG srcSize_;
+		LONGLONG srcSize_ = -1;
 		LONGLONG allProcessed_;
 
 		DWORD leRead_ = 0;
@@ -297,7 +316,8 @@ namespace retrycopy {
 			leRead_ = le;
 		}
 		void setWriteError(DWORD le) {
-			leWrite_ = le;
+			if (leWrite_ == 0)
+				leWrite_ = le;
 		}
 		property String^ SrcFile
 		{
@@ -323,7 +343,7 @@ namespace retrycopy {
 			bool get() { 
 				return done_ &&
 					leRead_ == 0 && leWrite_ == 0 &&
-					SrcSize != 0 && SrcSize == allProcessed_;
+					SrcSize != -1 && SrcSize == allProcessed_;
 			}
 		}
 		String^ GetNGReason();
@@ -359,7 +379,7 @@ namespace retrycopy {
 			LONGLONG prevSize = SrcSize;
 			HANDLE hTmp = HSrc;
 			if (hTmp == nullptr || hTmp == INVALID_HANDLE_VALUE ||
-				SrcSize == 0)
+				SrcSize == -1)
 			{
 				return INITSRCRET::INITSRC_CANNOTOPEN;
 			}
