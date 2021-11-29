@@ -31,8 +31,8 @@ namespace retrycopy {
 			ThreadTransitory::TotalCount = thDataMaster->SDS->Count;
 			for (int i = 0; i < thDataMaster->SDS->Count; ++i)
 			{
-				ThreadTransitory::ProcessedTotalCount = i+1;
-				ThreadDataFile^ tdf = gcnew ThreadDataFile(
+				ThreadTransitory::ProcessedTotalCount = i + 1;
+				ThreadDataFile^ tdf = gcnew ThreadDataFile(i + 1,
 					thDataMaster->SDS[i].Key, thDataMaster->SDS[i].Value);
 
 				StartOfThreadFile(tdf);
@@ -41,6 +41,7 @@ namespace retrycopy {
 				tdf->CloseFiles();
 				if (tdf->IsOK)
 				{
+					thDataMaster->IncrementOK();
 					AmbLib::CopyFileTime(tdf->SrcFile, tdf->DstFile,
 						AmbLib::CFT::Creation);
 				}
@@ -48,7 +49,6 @@ namespace retrycopy {
 					tdf));
 				thDataMaster->AppendEnded(tdf);
 			}
-			thDataMaster->SetOK();
 		}
 		catch(Exception^){}
 		BeginInvoke(gcnew VTmDelegate(this, &FormMain::ThreadFinished), thDataMaster);
@@ -59,6 +59,9 @@ namespace retrycopy {
 			thFileData));
 		thFileData->ProcessedSize = 0;
 		
+		// first check
+		if (!thFileData->FirstCheck())
+			return;
 		bool initSrc = true;
 		bool ignoreAllFail = false;
 		int retried = 0;
@@ -122,18 +125,16 @@ namespace retrycopy {
 				}
 				lastError = le;
 				if (++consecutiveErrorCount > 100)
-					initSrc = true;
+				{
+					thFileData->setReadError(le);
+					return;
+				}
 				Thread::Sleep(Math::Min(consecutiveErrorCount, 100u));
 				if (!ignoreAllFail)
 				{
 					if (ThreadTransitory::UserRetry < 0 ||
 						retried++ < ThreadTransitory::UserRetry)
 					{
-						//EndInvoke(BeginInvoke(gcnew VLLLLDwIDelegate(this, &FormMain::ReadFileFailed),
-						//	thFileData->ProcessedSize,
-						//	thFileData->SrcSize,
-						//	le,
-						//	retried)); 
 						ThreadTransitory::SetFileLastError(
 							thFileData->ProcessedSize,
 							thFileData->SrcSize,
@@ -189,9 +190,11 @@ namespace retrycopy {
 				&dwWritten,
 				NULL) && dwWritten == dwRead))
 			{
+				thFileData->setWriteError(GetLastError());
 				return;
 			}
-			thFileData->ProcessedSize += dwRead;
+			DASSERT(dwRead == dwWritten);
+			thFileData->ProcessedSize += dwWritten;
 			retried = 0;
 			// if ((thData->allProcessed_ % 10000) == 0)
 			//{

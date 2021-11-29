@@ -112,6 +112,14 @@ namespace retrycopy {
 				OnUpdate();
 			}
 		}
+		static property int TotalPercent
+		{
+			int get() {
+				if (TotalSize == 0)
+					return 0;
+				return (int)((double)ProcessedTotalSize*100 / (double)TotalSize);
+			}
+		}
 		static property int ProcessedTotalCount
 		{
 			int get() {
@@ -209,7 +217,7 @@ namespace retrycopy {
 
 		LONGLONG totalInputSize_;
 		LONGLONG totalProcessed_;
-		bool ok_;
+		int totalOK_;
 
 	public:
 		ThreadDataMaster(KVS^ sds) : sds_(sds)
@@ -219,13 +227,17 @@ namespace retrycopy {
 		{
 			KVS^ get() { return sds_; }
 		}
-		void SetOK() {
-			ok_ = true;
+		void IncrementOK() {
+			++totalOK_;
 		}
 
 		property bool IsOK
 		{
-			bool get() { return ok_; }
+			bool get() { return totalOK_==sds_->Count; }
+		}
+		property int TotalOKCount
+		{
+			int get() { return totalOK_; }
 		}
 		property LONGLONG TotalWrittenSize
 		{
@@ -268,12 +280,25 @@ namespace retrycopy {
 		LONGLONG srcSize_;
 		LONGLONG allProcessed_;
 
-		bool done_;
-
+		DWORD leRead_ = 0;
+		DWORD leWrite_ = 0;
+		bool done_ = false;
+		int taskNo_ = -1;
+		DWORD dwCDForWrite_ = 0;
 	public:
-		ThreadDataFile(String^ srcFile, String^ dstFile):
-			srcFile_(srcFile), dstFile_(dstFile){}
+		ThreadDataFile(int taskNo, String^ srcFile, String^ dstFile):
+			taskNo_(taskNo), srcFile_(srcFile), dstFile_(dstFile){}
 
+		property int TaskNo
+		{
+			int get() { return taskNo_; }
+		}
+		void setReadError(DWORD le) {
+			leRead_ = le;
+		}
+		void setWriteError(DWORD le) {
+			leWrite_ = le;
+		}
 		property String^ SrcFile
 		{
 			String^ get() { return srcFile_; }
@@ -296,24 +321,12 @@ namespace retrycopy {
 		property bool IsOK
 		{
 			bool get() { 
-				return done_ && SrcSize != 0 && SrcSize == allProcessed_;
+				return done_ &&
+					leRead_ == 0 && leWrite_ == 0 &&
+					SrcSize != 0 && SrcSize == allProcessed_;
 			}
 		}
-		String^ GetNGReason() {
-			if (IsOK)
-				return String::Empty;
-			System::Collections::Generic::List<String^> lst;
-			if (!done_)
-				lst.Add(L"Not Done");
-			if (SrcSize == 0)
-				lst.Add(L"Source size is zero");
-			if (SrcSize != allProcessed_)
-			{
-				lst.Add(String::Format(I18N(L"Source size not equal to written size {0} != {1}"),
-					SrcSize, allProcessed_));
-			}
-			return String::Join(L",", %lst);
-		}
+		String^ GetNGReason();
 		property LONGLONG SrcSize
 		{
 			LONGLONG get() { return srcSize_; }
@@ -335,6 +348,7 @@ namespace retrycopy {
 			INITSRC_OK,
 			INITSRC_SIZECHANGED,
 		};
+		bool FirstCheck();
 		INITSRCRET InitSrc()
 		{
 			if (hSrc_ != nullptr && hSrc_ != INVALID_HANDLE_VALUE)

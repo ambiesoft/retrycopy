@@ -15,56 +15,104 @@ namespace retrycopy {
 		txtCurSrc->Text = thData->SrcFile;
 		txtCurDst->Text = thData->DstFile;
 
-		AppendLog(String::Format(I18N(L"File started:'{0}' -> '{1}'"),
-			thData->SrcFile, thData->DstFile));
+		AppendLog(String::Format(I18N(L"{0}:File copy started:\"{1}\" -> \"{2}\""),
+			thData->TaskNo, thData->SrcFile, thData->DstFile));
+	}
+	bool ThreeEqual(LONGLONG l1, LONGLONG l2, LONGLONG l3)
+	{
+		return l1 == l2 && l2 == l3;
+	}
+	void RemoveFileCommon(ThreadDataFile^ thData, StringBuilder^ sbResult, bool bRecycle)
+	{
+		if (File::Exists(thData->SrcFile))
+		{
+			String^ recyleORdelete = bRecycle ? I18N(L"recycle") : I18N(L"delete");
+			String^ recyleORdeleted = bRecycle ? I18N(L"recycled") : I18N(L"deleted");
+			if (!ThreeEqual(
+				FileInfo(thData->SrcFile).Length,
+				FileInfo(thData->DstFile).Length,
+				thData->ProcessedSize))
+			{
+				sbResult->AppendFormat(I18N(L"{0} cancelled because size is not same"),
+					recyleORdelete);
+				return;
+			}
+			if (bRecycle)
+			{
+				CppUtils::DeleteFile(thData->SrcFile);
+			}
+			else
+			{
+				try
+				{
+					File::Delete(thData->SrcFile);
+				}
+				catch(Exception^){}
+			}
+
+			if (File::Exists(thData->SrcFile))
+			{
+				sbResult->AppendFormat(I18N(L"Failed to {0} source file"),
+					recyleORdelete);
+			}
+			else
+			{
+				sbResult->AppendFormat(I18N(L"Source file {0}"),
+					recyleORdeleted);
+			}
+		}
+		else
+		{
+			sbResult->Append(I18N(L"Source file already gone."));
+		}
 	}
 	void FormMain::ThreadFileEnded(ThreadDataFile^ thData)
 	{
-		String^ logMessage = String::Format(I18N(L"File eneded:'{0}' -> '{1}'"),
-			thData->SrcFile,thData->DstFile);
-		AppendLog(logMessage);
-		logMessage = String::Format(I18N(L"Result:{0}"),
-			thData->IsOK ? L"OK" : L"NG");
-		if (!thData->IsOK)
 		{
-			logMessage = I18N(L"NG Reason:");
-			logMessage += thData->GetNGReason();
+			String^ logMessage = String::Format(I18N(L"{0}:File copy ended:\"{1}\" -> \"{2}\""),
+				thData->TaskNo, thData->SrcFile, thData->DstFile);
 			AppendLog(logMessage);
 		}
+
+		StringBuilder sbResult;
+		sbResult.Append(String::Format(I18N(L"{0}:Result:{1}"),
+			thData->TaskNo, thData->IsOK ? L"OK" : L"NG"));
 		if (!thData->IsOK)
 		{
-			CppUtils::Alert(L"NOT OK");
+			sbResult.Append(L"\t");
+			sbResult.Append(I18N(L"NG Reason:"));
+			sbResult.Append(thData->GetNGReason());
+			AppendLog(sbResult.ToString());
 			return;
 		}
 		switch ((REMOVE_TYPE)cmbRemove->SelectedIndex)
 		{
-		case REMOVE_TYPE::REMOVE_YES_RECYCLE:
-			CppUtils::DeleteFile(this, thData->SrcFile);
-			break;
-		case REMOVE_TYPE::REMOVE_YES_DELETE:
-			try
-			{
-				File::Delete(thData->SrcFile);
-			}
-			catch (Exception^ ex)
-			{
-				CppUtils::Alert(ex);
-			}
-			break;
-		case REMOVE_TYPE::REMOVE_NO:
-			break;
 		case REMOVE_TYPE::REMOVE_ASK:
-			if (System::Windows::Forms::DialogResult::Yes == CppUtils::YesOrNo(
+			if (System::Windows::Forms::DialogResult::Yes != CppUtils::YesOrNo(
 				this,
-				String::Format(I18N(L"Do you want to remove '{0}'?"),
+				String::Format(I18N(L"Copy finished. Do you want to remove source file \"{0}\"?"),
 					thData->SrcFile),
 				MessageBoxDefaultButton::Button2))
 			{
-				CppUtils::DeleteFile(this, thData->SrcFile);
+				break;
 			}
+			// fall through
+		case REMOVE_TYPE::REMOVE_YES_RECYCLE:
+			sbResult.Append(L"\t");
+			RemoveFileCommon(thData, % sbResult, true);
 			break;
+		case REMOVE_TYPE::REMOVE_YES_DELETE:
+			sbResult.Append(L"\t");
+			RemoveFileCommon(thData, % sbResult, false);
+			break;
+		case REMOVE_TYPE::REMOVE_NO:
+			sbResult.Append(L"\t");
+			sbResult.Append(I18N(L"No file remove"));
+			break;
+		default:
+			DASSERT(false);
 		}
-
+		AppendLog(sbResult.ToString());
 	}
 
 	void FormMain::ThreadStarted()
@@ -82,7 +130,11 @@ namespace retrycopy {
 		}
 		else
 		{
-			CppUtils::Fatal("failed");
+			CppUtils::Alert(this, String::Format(
+				I18N(L"Failed: Total Input size={0}, Success Count={1}, Total Written size={2}"),
+				thData->TotalInputSize, 
+				thData->TotalOKCount,
+				thData->TotalWrittenSize));
 		}
 	}
 	bool FormMain::AskOverwrite(String^ fileTobeOverwritten)

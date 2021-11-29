@@ -16,4 +16,29 @@ namespace retrycopy {
 			AmbLib::FormatSize(size));
 	}
 
+	bool IsGiveUpError(DWORD le, bool bFirstTry)
+	{
+		if (bFirstTry)
+		{
+			if (le == ERROR_ACCESS_DENIED ||
+				le == ERROR_FILE_NOT_FOUND)
+			{
+				return true;
+			}
+
+			if (le == ERROR_NOT_READY ||
+				le == ERROR_NO_SUCH_DEVICE)
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if (le == ERROR_ACCESS_DENIED ||
+				le == ERROR_FILE_NOT_FOUND)
+			{
+				return true;
+			}
+		}
+	}
 } // namespace

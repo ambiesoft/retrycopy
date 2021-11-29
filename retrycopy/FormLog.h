@@ -21,6 +21,7 @@ namespace retrycopy {
 			//
 			//TODO: Add the constructor code here
 			//
+			Text = String::Format(L"{0} - {1}", I18N(L"Log"), Application::ProductName);
 		}
 
 	protected:
@@ -60,8 +61,10 @@ namespace retrycopy {
 			this->txtLog->Multiline = true;
 			this->txtLog->Name = L"txtLog";
 			this->txtLog->ReadOnly = true;
+			this->txtLog->ScrollBars = System::Windows::Forms::ScrollBars::Both;
 			this->txtLog->Size = System::Drawing::Size(532, 219);
 			this->txtLog->TabIndex = 0;
+			this->txtLog->WordWrap = false;
 			// 
 			// FormLog
 			// 
@@ -69,6 +72,7 @@ namespace retrycopy {
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(532, 219);
 			this->Controls->Add(this->txtLog);
+			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::SizableToolWindow;
 			this->Name = L"FormLog";
 			this->Text = L"FormLog";
 			this->ResumeLayout(false);

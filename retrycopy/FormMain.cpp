@@ -4,6 +4,7 @@
 #include "helper.h"
 #include "FormLog.h"
 #include "FormMain.h"
+using namespace System::Text;
 
 using namespace System::IO;
 using namespace System::Threading;
@@ -29,14 +30,14 @@ namespace retrycopy {
 			ThreadTransitory::UserRetry, intval, ini);
 		txtRetryCount->Text = intval.ToString();
 
-		Profile::GetInt(SECTION_OPTION, KEY_BUFFER_SIZE, 
+		Profile::GetInt(SECTION_OPTION, KEY_BUFFER_SIZE,
 			ThreadTransitory::UserBuffer, intval, ini);
 		txtBuffer->Text = intval.ToString();
 
 		cmbOverwrite->Items->Add(I18N(L"Yes"));
 		cmbOverwrite->Items->Add(I18N(L"No"));
 		cmbOverwrite->Items->Add(I18N(L"Ask"));
-		Profile::GetInt(SECTION_OPTION, KEY_OVERWRITE, 
+		Profile::GetInt(SECTION_OPTION, KEY_OVERWRITE,
 			0, intval, ini);
 		if (0 <= intval && intval < cmbOverwrite->Items->Count)
 			cmbOverwrite->SelectedIndex = intval;
@@ -47,7 +48,7 @@ namespace retrycopy {
 		cmbRemove->Items->Add(I18N(L"Yes Recycle"));
 		cmbRemove->Items->Add(I18N(L"Yes Delete"));
 		cmbRemove->Items->Add(I18N(L"Ask"));
-		Profile::GetInt(SECTION_OPTION, KEY_REMOVE, 
+		Profile::GetInt(SECTION_OPTION, KEY_REMOVE,
 			1, intval, ini);
 		if (0 <= intval && intval < cmbRemove->Items->Count)
 			cmbRemove->SelectedIndex = intval;
@@ -111,13 +112,38 @@ namespace retrycopy {
 			return;
 		}
 
-
 		if (String::IsNullOrEmpty(txtDestination->Text))
 		{
 			CppUtils::Alert(I18N(L"Destination is empty."));
 			return;
 		}
 
+		if (Directory::Exists(txtSource->Text))
+		{
+			if (File::Exists(txtDestination->Text))
+			{
+				CppUtils::Alert(I18N(L"Source is directory but destination is a file."));
+				return;
+			}
+			if (!Directory::Exists(txtDestination->Text))
+			{
+				if (System::Windows::Forms::DialogResult::Yes != CppUtils::YesOrNo(this, 
+					String::Format(
+						I18N(L"'{0}' does not exist. Do you want to create directory?"),
+						txtDestination->Text),
+					MessageBoxDefaultButton::Button2))
+				{
+					return;
+				}
+
+				Directory::CreateDirectory(txtDestination->Text);
+				if (!Directory::Exists(txtDestination->Text))
+				{
+					CppUtils::Alert(I18N(L"Failed to create a directory."));
+					return;
+				}
+			}
+		}
 		//String^ fileToWrite = txtDestination->Text;
 		//if (Directory::Exists(fileToWrite))
 		//{
@@ -140,7 +166,7 @@ namespace retrycopy {
 			gcnew ParameterizedThreadStart(this, &FormMain::StartOfThreadMaster));
 		theThread_->Start(thData);
 		ThreadState = ThreadStateType::RUNNING;
-		timerUpdate->Enabled = true;
+
 	}
 	System::Void FormMain::timerUpdate_Tick(System::Object^ sender, System::EventArgs^ e)
 	{
@@ -154,6 +180,8 @@ namespace retrycopy {
 		txtCurrentProcessed->Text = SizeToUser(ThreadTransitory::ProcessedCurSize);
 
 		txtLog->Text = ThreadTransitory::FileLastError;
+
+		UpdateTitle();
 	}
 	System::Void FormMain::txtRetryCount_TextChanged(System::Object^ sender, System::EventArgs^ e)
 	{
@@ -213,12 +241,12 @@ namespace retrycopy {
 		Profile::WriteInt(SECTION_OPTION, KEY_OVERWRITE, cmbOverwrite->SelectedIndex, ini);
 		Profile::WriteInt(SECTION_OPTION, KEY_REMOVE, cmbRemove->SelectedIndex, ini);
 
-		if (!Profile::WriteAll(ini,IniPath))
+		if (!Profile::WriteAll(ini, IniPath))
 		{
 			CppUtils::Alert(this, I18N(L"Failed to save ini."));
 		}
 
-		//CWaitCursor wc;
+		// CWaitCursor wc;
 		ThreadState = ThreadStateType::NONE;
 	}
 	System::Void FormMain::btnSuspend_Click(System::Object^ sender, System::EventArgs^ e)
@@ -240,7 +268,6 @@ namespace retrycopy {
 		switch (ts)
 		{
 		case ThreadStateType::NONE:
-			timerUpdate->Enabled = false;
 			if (threadState_ == ThreadStateType::PAUSED)
 				ThreadState = ThreadStateType::RUNNING;
 			if (theThread_)
@@ -250,21 +277,22 @@ namespace retrycopy {
 				delete theThread_;
 				theThread_ = nullptr;
 			}
-			txtSource->Enabled = true;
+			txtSource->ReadOnly = false;
 			btnNavSource->Enabled = true;
-			txtDestination->Enabled = true;
+			txtDestination->ReadOnly = false;
 			btnNavDestination->Enabled = true;
 			btnCopy->Enabled = true;
 			btnSuspend->Enabled = false;
+			timerUpdate->Enabled = false;
 			break;
 		case ThreadStateType::RUNNING:
 			DASSERT(theThread_);
 			if (threadState_ == ThreadStateType::NONE)
 			{
 				ThreadTransitory::init();
-				txtSource->Enabled = false;
+				txtSource->ReadOnly = true;
 				btnNavSource->Enabled = false;
-				txtDestination->Enabled = false;
+				txtDestination->ReadOnly = true;
 				btnNavDestination->Enabled = false;
 				btnCopy->Enabled = false;
 				btnSuspend->Enabled = true;
@@ -273,16 +301,43 @@ namespace retrycopy {
 			{
 				theThread_->Resume();
 			}
+			timerUpdate->Enabled = true;
 			btnSuspend->Text = I18N(L"Pause");
 			break;
 		case ThreadStateType::PAUSED:
 			DASSERT(theThread_);
 			DASSERT(threadState_ != ThreadStateType::NONE);
 			theThread_->Suspend();
+			timerUpdate->Enabled = false;
 			btnSuspend->Text = I18N(L"Resume");
 			break;
 		}
-		
+
 		threadState_ = ts;
+		UpdateTitle();
+	}
+	void FormMain::UpdateTitle()
+	{
+		StringBuilder title;
+		switch (ThreadState)
+		{
+		case ThreadStateType::NONE:
+			title.Append(Application::ProductName);
+			break;
+		case ThreadStateType::RUNNING:
+		case ThreadStateType::PAUSED:
+			if (ThreadState == ThreadStateType::RUNNING)
+				title.Append(I18N(L"Copying"));
+			else
+				title.Append(I18N(L"Paused"));
+			title.Append(L" ");
+			title.Append(ThreadTransitory::TotalPercent);
+			title.Append(L"%");
+
+			title.Append(L" - ");
+			title.Append(Application::ProductName);
+			break;
+		}
+		Text = title.ToString();
 	}
 }

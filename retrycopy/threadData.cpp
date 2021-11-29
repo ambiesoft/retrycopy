@@ -9,6 +9,56 @@ using namespace System::IO;
 using namespace Ambiesoft;
 namespace retrycopy {
 
+	bool ThreadDataFile::FirstCheck()
+	{
+		DASSERT(hSrc_ == nullptr);
+		HANDLE hTmp = HSrc;
+		if (hTmp == nullptr || hTmp == INVALID_HANDLE_VALUE ||
+			SrcSize == 0)
+		{
+			setReadError(srcLE_);
+			return false;
+		}
+		CloseHandle(hTmp);
+		srcLE_ = 0;
+		hSrc_ = nullptr;
+		srcSize_ = 0;
+
+		if (!File::Exists(dstFile_))
+		{
+			dwCDForWrite_ = CREATE_ALWAYS;
+		}
+		else
+		{
+			// Exist
+			switch (ThreadTransitory::UserOverWrite)
+			{
+			case OVERWRITE_TYPE::OVERWRITE_YES:
+				dwCDForWrite_ = OPEN_ALWAYS;
+				break;
+			case OVERWRITE_TYPE::OVERWRITE_NO:
+				setWriteError(ERROR_FILE_EXISTS);
+				return false;
+			case OVERWRITE_TYPE::OVERWRITE_ASK:
+				if ((bool)FormMain::theForm_->EndInvoke(FormMain::theForm_->BeginInvoke(
+					gcnew BSDelegate(FormMain::theForm_, &FormMain::AskOverwrite), dstFile_)))
+				{
+					dwCDForWrite_ = OPEN_ALWAYS;
+				}
+				else
+				{
+					setWriteError(ERROR_FILE_EXISTS);
+					return false;
+				}
+				break;
+			default:
+				DASSERT(false);
+				return false;
+			}
+		}
+		return true;
+	}
+
 	HANDLE ThreadDataFile::HSrc::get()
 	{
 		if (hSrc_ != nullptr && hSrc_ != INVALID_HANDLE_VALUE)
@@ -39,43 +89,37 @@ namespace retrycopy {
 	{
 		if (hDst_ != nullptr && hDst_ != INVALID_HANDLE_VALUE)
 			return hDst_;
-		DWORD dwCD = 0;
-		switch (ThreadTransitory::UserOverWrite)
-		{
-		case OVERWRITE_TYPE::OVERWRITE_YES:
-			dwCD = OPEN_ALWAYS;
-			break;
-		case OVERWRITE_TYPE::OVERWRITE_NO:
-			dwCD = CREATE_ALWAYS;
-			break;
-		case OVERWRITE_TYPE::OVERWRITE_ASK:
-			if (!File::Exists(dstFile_))
-			{
-				dwCD = CREATE_ALWAYS;
-				break;
-			}
-			if ((bool)FormMain::theForm_->EndInvoke(FormMain::theForm_->BeginInvoke(
-				gcnew BSDelegate(FormMain::theForm_, &FormMain::AskOverwrite), dstFile_)))
-			{
-				dwCD = OPEN_ALWAYS;
-			}
-			else
-			{
-				return nullptr;
-			}
-			break;
-		}
+
+		DASSERT(dwCDForWrite_ != 0);
 		hDst_ = CreateFile(
 			TO_LPCWSTR(dstFile_),
 			GENERIC_WRITE,
 			0,
 			NULL,
-			dwCD,
+			dwCDForWrite_,
 			FILE_ATTRIBUTE_NORMAL,
 			NULL);
 		return hDst_;
 	}
-
+	String^ ThreadDataFile::GetNGReason() {
+		if (IsOK)
+			return String::Empty;
+		System::Collections::Generic::List<String^> lst;
+		if (!done_)
+			lst.Add(L"Not Done");
+		if (leRead_ != 0)
+			lst.Add(gcnew String(GetLastErrorString(leRead_).c_str()));
+		if (leWrite_ != 0)
+			lst.Add(gcnew String(GetLastErrorString(leWrite_).c_str()));
+		if (SrcSize == 0)
+			lst.Add(L"Source size is zero");
+		if (SrcSize != allProcessed_)
+		{
+			lst.Add(String::Format(I18N(L"Source size not equal to written size {0} != {1}"),
+				SrcSize, allProcessed_));
+		}
+		return String::Join(L",", % lst);
+	}
 	//// static
 	//void ThreadTransitory::OnUpdate()
 	//{
