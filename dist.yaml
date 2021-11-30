@@ -1,0 +1,40 @@
+name: retrycopy
+solution: retrycopy.sln
+targetproject: zzzDist
+configuration: Release
+targets:
+- setoutdirforbuild: false
+  outdir: Release\v143\retrycopy\x86
+  platform: x86
+- setoutdirforbuild: false
+  outdir: Release\v143\retrycopy\x64
+  platform: x64
+archivingdir: Release\v143\retrycopy
+ShouldBeFiles:
+- Acknowledgements.txt
+- Ambiesoft.AmbLib.dll
+- Ambiesoft.AmbLib.pdb
+- Ambiesoft.AmbLibcpp.dll
+- Ambiesoft.AmbLibcpp.pdb
+- Ambiesoft.Profile.dll
+- Ambiesoft.Profile.pdb
+- history.txt
+- LICENSE
+- Microsoft.WindowsAPICodePack.dll
+- Microsoft.WindowsAPICodePack.Shell.dll
+- Microsoft.WindowsAPICodePack.Shell.xml
+- Microsoft.WindowsAPICodePack.xml
+- README.md
+- retrycopy.exe
+- retrycopy.pdb
+- retrycopymisc.dll
+- retrycopymisc.pdb
+TotalFileCount: exact
+archivedir: C:\Linkout
+remotedir: https://ambiesoft.com/ffdav/uploads/retrycopy/
+remotesha1: https://ambiesoft.com/ffdav/uploads/getSha1.php?file=retrycopy/{}
+ShouldNotBeFiles: []
+ShouldBeOneOfThem: []
+obtainverfrom: history.txt
+obtainverregex: \d+\.\d+\.\d+
+
