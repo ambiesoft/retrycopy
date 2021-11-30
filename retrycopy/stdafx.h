@@ -11,6 +11,7 @@
 #include "../../lsMisc/DebugMacro.h"
 #include "../../lsMisc/GetLastErrorString.h"
 #include "../../lsMisc/WaitCursor.h"
+#include "../../lsMisc/SHMoveFile.h"
 
 delegate void VVDelegate();
 delegate bool BSDelegate(System::String^);

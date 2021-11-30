@@ -38,23 +38,37 @@ namespace retrycopy {
 					recyleORdelete);
 				return;
 			}
-			if (bRecycle)
+			
+			// for (int i = 0; i < 10; ++i)
+			String^ error;
 			{
-				CppUtils::DeleteFile(thData->SrcFile);
-			}
-			else
-			{
-				try
+				if (bRecycle)
 				{
-					File::Delete(thData->SrcFile);
+					//CppUtils::DeleteFile(thData->SrcFile);
+					int err = SHDeleteFileEx(TO_LPCWSTR(thData->SrcFile), FOF_SILENT | FOF_NOCONFIRMATION | FOF_ALLOWUNDO);
+					if (err != 0)
+					{
+						error = gcnew String(GetSHFileOpErrorString(err).c_str());
+					}
 				}
-				catch (Exception^) {}
+				else
+				{
+					try
+					{
+						File::Delete(thData->SrcFile);
+					}
+					catch (Exception^ ex) 
+					{
+						error = ex->Message;
+					}
+				}
+				//if (!File::Exists(thData->SrcFile))
+				//	break;
 			}
-
 			if (File::Exists(thData->SrcFile))
 			{
-				sbResult->AppendFormat(I18N(L"Failed to {0} source file"),
-					recyleORdelete);
+				sbResult->AppendFormat(I18N(L"Failed to {0} source file ({1})"),
+					recyleORdelete, error);
 			}
 			else
 			{
@@ -149,7 +163,7 @@ namespace retrycopy {
 
 	void FormMain::ThreadStarted()
 	{
-		AppendLog(I18N(L"Thread Started"));
+		AppendLogNow(I18N(L"Thread Started"));
 	}
 
 	void FormMain::ThreadFinished(ThreadDataMaster^ thData)
@@ -182,7 +196,7 @@ namespace retrycopy {
 					break;
 				}
 			}
-			AppendLog(sbResult.ToString());
+			AppendLogNow(sbResult.ToString());
 			CppUtils::Info(this, String::Format(
 				I18N(L"success Total Input size={0}, Total Written size={1}"),
 				thData->TotalInputSize, thData->TotalWrittenSize));

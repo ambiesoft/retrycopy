@@ -59,10 +59,15 @@ namespace retrycopy {
 	void FormMain::AppendLog(String^ message)
 	{
 		DASSERT(logForm_);
-		String^ line = String::Format(L"{0}\t{1}" + Environment::NewLine,
+		String^ line = String::Format(L"{0}\t{1}", // + Environment::NewLine,
 			DateTime::Now.ToString("yyyy-MM-dd HH.mm.ss"),
 			message);
-		logForm_->txtLog->AppendText(line);
+		sbLogBuffer_.AppendLine(line);
+	}
+	void FormMain::AppendLogNow(String^ message)
+	{
+		AppendLog(message);
+		timerUpdate_Tick(nullptr, nullptr);
 	}
 	System::Void FormMain::btnNavSource_Click(System::Object^ sender, System::EventArgs^ e)
 	{
@@ -90,7 +95,7 @@ namespace retrycopy {
 
 	System::Void FormMain::btnCopy_Click(System::Object^ sender, System::EventArgs^ e)
 	{
-		if (HasThread)
+		if (ThreadState != ThreadStateType::NONE)
 		{
 			if (System::Windows::Forms::DialogResult::Yes != CppUtils::YesOrNo(this,
 				I18N(L"Copying is still active. Do you want to cancel it?"),
@@ -100,7 +105,7 @@ namespace retrycopy {
 			}
 			ThreadState = ThreadStateType::NONE;
 		}
-		DASSERT(!HasThread);
+		DASSERT(ThreadState == ThreadStateType::NONE);
 
 		if (String::IsNullOrEmpty(txtSource->Text))
 		{
@@ -145,25 +150,19 @@ namespace retrycopy {
 				}
 			}
 		}
-		//String^ fileToWrite = txtDestination->Text;
-		//if (Directory::Exists(fileToWrite))
-		//{
-		//	fileToWrite = Path::Combine(fileToWrite,
-		//		Path::GetFileName(txtSource->Text));
-		//	if (File::Exists(fileToWrite))
-		//	{
-		//		if (System::Windows::Forms::DialogResult::Yes != CppUtils::YesOrNo(this,
-		//			String::Format(I18N(L"'{0}' is already exists. Do you want to overwrite?"),fileToWrite),
-		//			MessageBoxDefaultButton::Button2))
-		//		{
-		//			return;
-		//		}
-		//	}
-		//}
 
 		List<String^>^ dstDirs;
-		KVS^ sds = AmbLib::GetSourceAndDestFiles(txtSource->Text, txtDestination->Text, dstDirs);
-		
+		KVS^ sds;
+		try
+		{
+			sds = AmbLib::GetSourceAndDestFiles(txtSource->Text, txtDestination->Text, dstDirs);
+		}
+		catch (Exception^ ex)
+		{
+			CppUtils::Alert(this, ex);
+			return;
+		}
+
 		ThreadDataMaster^ thData = gcnew ThreadDataMaster(
 			Directory::Exists(txtSource->Text) ? txtSource->Text : nullptr,
 			sds, dstDirs);
@@ -171,7 +170,6 @@ namespace retrycopy {
 			gcnew ParameterizedThreadStart(this, &FormMain::StartOfThreadMaster));
 		theThread_->Start(thData);
 		ThreadState = ThreadStateType::RUNNING;
-
 	}
 	System::Void FormMain::timerUpdate_Tick(System::Object^ sender, System::EventArgs^ e)
 	{
@@ -186,6 +184,18 @@ namespace retrycopy {
 
 		txtLog->Text = ThreadTransitory::FileLastError;
 
+		progressMain->Value = ThreadTransitory::TotalPercent;
+
+		logForm_->txtLog->AppendText(sbLogBuffer_.ToString());
+		sbLogBuffer_.Clear();
+
+		//tbiigcnew->ProgressState = System::Windows::Shell::TaskbarItemProgressState::Normal;
+		//tbiigcnew->ProgressValue = ThreadTransitory::TotalPercentAsDouble;
+
+		//Microsoft::WindowsAPICodePack::Taskbar::TaskbarManager::Instance.SetProgressState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.NoProgress);
+		//Microsoft.WindowsAPICodePack.Taskbar.TaskbarManager.Instance.SetProgressValue(ActualValue, MaxValue));
+
+		Ambiesoft::RetrycopyMisc::SetTaskProgress(ThreadTransitory::TotalPercent);
 		UpdateTitle();
 	}
 	System::Void FormMain::txtRetryCount_TextChanged(System::Object^ sender, System::EventArgs^ e)
@@ -222,7 +232,7 @@ namespace retrycopy {
 	}
 	System::Void FormMain::FormMain_FormClosing(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e)
 	{
-		if (HasThread)
+		if (ThreadState != ThreadStateType::NONE)
 		{
 			if (System::Windows::Forms::DialogResult::Yes != CppUtils::YesOrNo(this,
 				I18N(L"Operation is in progress. Are you sure to quit?"),
@@ -265,11 +275,34 @@ namespace retrycopy {
 			ThreadState = ThreadStateType::RUNNING;
 		}
 	}
+
+	ref class EnableBacker
+	{
+		Form^ f_;
+		static int count_ = 0;
+	public:
+		EnableBacker(Form^ f) {
+			++count_;
+			if (count_ == 1) {
+				f_ = f;
+				f_->Enabled = false;
+			}
+		}
+		~EnableBacker() {
+			--count_;
+			if (f_)
+				f_->Enabled = true;
+			GC::SuppressFinalize(this);
+		}
+		!EnableBacker() {
+			DASSERT(false);
+		}
+	};
 	void FormMain::ThreadState::set(ThreadStateType ts)
 	{
 		if (threadState_ == ts)
 			return;
-
+		EnableBacker enableBacker(this);
 		switch (ts)
 		{
 		case ThreadStateType::NONE:
@@ -289,6 +322,7 @@ namespace retrycopy {
 			btnCopy->Enabled = true;
 			btnSuspend->Enabled = false;
 			timerUpdate->Enabled = false;
+			RetrycopyMisc::SetTaskbarStateNone();
 			break;
 		case ThreadStateType::RUNNING:
 			DASSERT(theThread_);
@@ -308,6 +342,7 @@ namespace retrycopy {
 			}
 			timerUpdate->Enabled = true;
 			btnSuspend->Text = I18N(L"Pause");
+			RetrycopyMisc::SetTaskbarStateRunning();
 			break;
 		case ThreadStateType::PAUSED:
 			DASSERT(theThread_);
@@ -315,6 +350,7 @@ namespace retrycopy {
 			theThread_->Suspend();
 			timerUpdate->Enabled = false;
 			btnSuspend->Text = I18N(L"Resume");
+			RetrycopyMisc::SetTaskbarStatePaused();
 			break;
 		}
 

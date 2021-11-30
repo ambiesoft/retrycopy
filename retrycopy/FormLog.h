@@ -74,11 +74,17 @@ namespace retrycopy {
 			this->Controls->Add(this->txtLog);
 			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::SizableToolWindow;
 			this->Name = L"FormLog";
+			this->ShowInTaskbar = false;
 			this->Text = L"FormLog";
+			this->FormClosing += gcnew System::Windows::Forms::FormClosingEventHandler(this, &FormLog::FormLog_FormClosing);
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
 		}
 #pragma endregion
+	private: System::Void FormLog_FormClosing(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e) {
+		e->Cancel = true;
+		Visible = false;
+	}
 	};
 }

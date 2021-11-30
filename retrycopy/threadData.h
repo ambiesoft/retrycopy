@@ -40,6 +40,7 @@ namespace retrycopy {
 
 		static String^ fileLastError_ = String::Empty;
 		static bool userRemoveDirty_;
+
 		ref struct RLocker
 		{
 			System::Threading::ReaderWriterLock^ rwl_;
@@ -60,7 +61,9 @@ namespace retrycopy {
 				rwl_->ReleaseWriterLock();
 			}
 		};
-		static void OnUpdate() {}
+		static void OnUpdate() 
+		{
+		}
 
 	public:
 		static void init() {
@@ -123,7 +126,13 @@ namespace retrycopy {
 			int get() {
 				if (TotalSize == 0)
 					return 0;
-				return (int)((double)ProcessedTotalSize*100 / (double)TotalSize);
+				return (int)TotalPercentAsDouble;
+			}
+		}
+		static property double TotalPercentAsDouble
+		{
+			double get() {
+				return ((double)ProcessedTotalSize * 100 / (double)TotalSize);
 			}
 		}
 		static property int ProcessedTotalCount
