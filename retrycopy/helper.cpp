@@ -66,28 +66,5 @@ namespace retrycopy {
 		}
 		return ret;
 	}
-	bool DeleteAllDirectory(String^ dir)
-	{
-		bool ok = true;
-		for each (String ^ d in Directory::GetDirectories(dir, L"*.*", SearchOption::AllDirectories))
-		{
-			try
-			{
-				Directory::Delete(d);
-			}
-			catch (Exception^)
-			{
-				ok = false;
-			}
-		}
-		try
-		{
-			Directory::Delete(dir);
-		}
-		catch (Exception^)
-		{
-			ok = false;
-		}
-		return ok;
-	}
+	
 } // namespace

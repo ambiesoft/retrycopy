@@ -2,6 +2,7 @@
 
 #include "threadData.h"
 #include "FormLog.h"
+#include "FormAbout.h"
 namespace retrycopy {
 
 	using namespace System;
@@ -35,6 +36,7 @@ namespace retrycopy {
 	private:
 		initonly String^ source_;
 		initonly FormLog^ logForm_;
+		FormAbout^ aboutForm_;
 		System::Text::StringBuilder sbLogBuffer_;
 	private: System::Windows::Forms::TextBox^ txtRetryCount;
 	private: System::Windows::Forms::Label^ label1;
@@ -63,10 +65,21 @@ namespace retrycopy {
 	private: System::Windows::Forms::TextBox^ txtProcessedCount;
 	private: System::Windows::Forms::Timer^ timerUpdate;
 	private: System::Windows::Forms::Label^ label12;
-	private: System::Windows::Forms::Button^ btnShowLog;
+
 	private: System::Windows::Forms::Button^ btnSuspend;
 	private: System::Windows::Forms::SplitContainer^ spTransitory;
 	private: System::Windows::Forms::ProgressBar^ progressMain;
+	private: System::Windows::Forms::Button^ btnAbout;
+	private: System::Windows::Forms::ContextMenuStrip^ ctxAbout;
+	private: System::Windows::Forms::ToolStripMenuItem^ tsmiShowLog;
+	private: System::Windows::Forms::ToolStripMenuItem^ tsmiAboutThisApplication;
+	private: System::Windows::Forms::ToolStripMenuItem^ tsmiHelp;
+
+
+
+
+
+	private: System::Windows::Forms::Button^ btnClose;
 	private: System::Windows::Forms::ComboBox^ cmbOverwrite;
 
 
@@ -146,31 +159,37 @@ namespace retrycopy {
 			this->txtProcessedCount = (gcnew System::Windows::Forms::TextBox());
 			this->timerUpdate = (gcnew System::Windows::Forms::Timer(this->components));
 			this->label12 = (gcnew System::Windows::Forms::Label());
-			this->btnShowLog = (gcnew System::Windows::Forms::Button());
 			this->btnSuspend = (gcnew System::Windows::Forms::Button());
 			this->spTransitory = (gcnew System::Windows::Forms::SplitContainer());
 			this->progressMain = (gcnew System::Windows::Forms::ProgressBar());
+			this->btnAbout = (gcnew System::Windows::Forms::Button());
+			this->ctxAbout = (gcnew System::Windows::Forms::ContextMenuStrip(this->components));
+			this->tsmiShowLog = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->tsmiAboutThisApplication = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->tsmiHelp = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->btnClose = (gcnew System::Windows::Forms::Button());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->spTransitory))->BeginInit();
 			this->spTransitory->Panel1->SuspendLayout();
 			this->spTransitory->Panel2->SuspendLayout();
 			this->spTransitory->SuspendLayout();
+			this->ctxAbout->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// lblSource
 			// 
 			this->lblSource->AutoSize = true;
-			this->lblSource->Location = System::Drawing::Point(12, 9);
+			this->lblSource->Location = System::Drawing::Point(12, 8);
 			this->lblSource->Name = L"lblSource";
-			this->lblSource->Size = System::Drawing::Size(44, 13);
+			this->lblSource->Size = System::Drawing::Size(42, 12);
 			this->lblSource->TabIndex = 100;
 			this->lblSource->Text = L"&Source:";
 			// 
 			// lblDest
 			// 
 			this->lblDest->AutoSize = true;
-			this->lblDest->Location = System::Drawing::Point(12, 48);
+			this->lblDest->Location = System::Drawing::Point(12, 44);
 			this->lblDest->Name = L"lblDest";
-			this->lblDest->Size = System::Drawing::Size(63, 13);
+			this->lblDest->Size = System::Drawing::Size(65, 12);
 			this->lblDest->TabIndex = 400;
 			this->lblDest->Text = L"&Destination:";
 			// 
@@ -178,26 +197,26 @@ namespace retrycopy {
 			// 
 			this->txtSource->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
-			this->txtSource->Location = System::Drawing::Point(12, 25);
+			this->txtSource->Location = System::Drawing::Point(12, 23);
 			this->txtSource->Name = L"txtSource";
-			this->txtSource->Size = System::Drawing::Size(468, 20);
+			this->txtSource->Size = System::Drawing::Size(468, 19);
 			this->txtSource->TabIndex = 200;
 			// 
 			// txtDestination
 			// 
 			this->txtDestination->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
-			this->txtDestination->Location = System::Drawing::Point(12, 64);
+			this->txtDestination->Location = System::Drawing::Point(12, 59);
 			this->txtDestination->Name = L"txtDestination";
-			this->txtDestination->Size = System::Drawing::Size(468, 20);
+			this->txtDestination->Size = System::Drawing::Size(468, 19);
 			this->txtDestination->TabIndex = 500;
 			// 
 			// btnNavSource
 			// 
 			this->btnNavSource->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
-			this->btnNavSource->Location = System::Drawing::Point(486, 23);
+			this->btnNavSource->Location = System::Drawing::Point(486, 21);
 			this->btnNavSource->Name = L"btnNavSource";
-			this->btnNavSource->Size = System::Drawing::Size(29, 23);
+			this->btnNavSource->Size = System::Drawing::Size(29, 21);
 			this->btnNavSource->TabIndex = 300;
 			this->btnNavSource->Text = L"...";
 			this->btnNavSource->UseVisualStyleBackColor = true;
@@ -206,9 +225,9 @@ namespace retrycopy {
 			// btnNavDestination
 			// 
 			this->btnNavDestination->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
-			this->btnNavDestination->Location = System::Drawing::Point(486, 62);
+			this->btnNavDestination->Location = System::Drawing::Point(486, 57);
 			this->btnNavDestination->Name = L"btnNavDestination";
-			this->btnNavDestination->Size = System::Drawing::Size(29, 23);
+			this->btnNavDestination->Size = System::Drawing::Size(29, 21);
 			this->btnNavDestination->TabIndex = 600;
 			this->btnNavDestination->Text = L"...";
 			this->btnNavDestination->UseVisualStyleBackColor = true;
@@ -218,9 +237,9 @@ namespace retrycopy {
 			// 
 			this->btnCopy->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
-			this->btnCopy->Location = System::Drawing::Point(12, 90);
+			this->btnCopy->Location = System::Drawing::Point(12, 83);
 			this->btnCopy->Name = L"btnCopy";
-			this->btnCopy->Size = System::Drawing::Size(503, 23);
+			this->btnCopy->Size = System::Drawing::Size(503, 21);
 			this->btnCopy->TabIndex = 700;
 			this->btnCopy->Text = L"&Copy";
 			this->btnCopy->UseVisualStyleBackColor = true;
@@ -231,18 +250,18 @@ namespace retrycopy {
 			this->txtLog->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
 				| System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
-			this->txtLog->Location = System::Drawing::Point(81, 301);
+			this->txtLog->Location = System::Drawing::Point(81, 278);
 			this->txtLog->Name = L"txtLog";
 			this->txtLog->ReadOnly = true;
-			this->txtLog->Size = System::Drawing::Size(431, 20);
+			this->txtLog->Size = System::Drawing::Size(431, 19);
 			this->txtLog->TabIndex = 2500;
 			// 
 			// txtRetryCount
 			// 
 			this->txtRetryCount->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-			this->txtRetryCount->Location = System::Drawing::Point(15, 385);
+			this->txtRetryCount->Location = System::Drawing::Point(45, 355);
 			this->txtRetryCount->Name = L"txtRetryCount";
-			this->txtRetryCount->Size = System::Drawing::Size(86, 20);
+			this->txtRetryCount->Size = System::Drawing::Size(86, 19);
 			this->txtRetryCount->TabIndex = 2800;
 			this->txtRetryCount->TextChanged += gcnew System::EventHandler(this, &FormMain::txtRetryCount_TextChanged);
 			// 
@@ -250,9 +269,9 @@ namespace retrycopy {
 			// 
 			this->label1->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
 			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(12, 369);
+			this->label1->Location = System::Drawing::Point(43, 340);
 			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(35, 13);
+			this->label1->Size = System::Drawing::Size(35, 12);
 			this->label1->TabIndex = 2700;
 			this->label1->Text = L"Retry:";
 			// 
@@ -260,27 +279,27 @@ namespace retrycopy {
 			// 
 			this->lblBuffer->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
 			this->lblBuffer->AutoSize = true;
-			this->lblBuffer->Location = System::Drawing::Point(118, 369);
+			this->lblBuffer->Location = System::Drawing::Point(135, 340);
 			this->lblBuffer->Name = L"lblBuffer";
-			this->lblBuffer->Size = System::Drawing::Size(38, 13);
+			this->lblBuffer->Size = System::Drawing::Size(39, 12);
 			this->lblBuffer->TabIndex = 2900;
 			this->lblBuffer->Text = L"Buffer:";
 			// 
 			// txtBuffer
 			// 
 			this->txtBuffer->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-			this->txtBuffer->Location = System::Drawing::Point(121, 385);
+			this->txtBuffer->Location = System::Drawing::Point(137, 355);
 			this->txtBuffer->Name = L"txtBuffer";
-			this->txtBuffer->Size = System::Drawing::Size(86, 20);
+			this->txtBuffer->Size = System::Drawing::Size(86, 19);
 			this->txtBuffer->TabIndex = 3000;
 			this->txtBuffer->TextChanged += gcnew System::EventHandler(this, &FormMain::txtBuffer_TextChanged);
 			// 
 			// label2
 			// 
 			this->label2->AutoSize = true;
-			this->label2->Location = System::Drawing::Point(12, 129);
+			this->label2->Location = System::Drawing::Point(12, 119);
 			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(81, 13);
+			this->label2->Size = System::Drawing::Size(84, 12);
 			this->label2->TabIndex = 800;
 			this->label2->Text = L"&Current Source:";
 			// 
@@ -288,18 +307,18 @@ namespace retrycopy {
 			// 
 			this->txtCurSrc->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
-			this->txtCurSrc->Location = System::Drawing::Point(12, 145);
+			this->txtCurSrc->Location = System::Drawing::Point(12, 134);
 			this->txtCurSrc->Name = L"txtCurSrc";
 			this->txtCurSrc->ReadOnly = true;
-			this->txtCurSrc->Size = System::Drawing::Size(503, 20);
+			this->txtCurSrc->Size = System::Drawing::Size(503, 19);
 			this->txtCurSrc->TabIndex = 900;
 			// 
 			// label3
 			// 
 			this->label3->AutoSize = true;
-			this->label3->Location = System::Drawing::Point(12, 168);
+			this->label3->Location = System::Drawing::Point(12, 155);
 			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(100, 13);
+			this->label3->Size = System::Drawing::Size(107, 12);
 			this->label3->TabIndex = 1000;
 			this->label3->Text = L"Current Destination:";
 			// 
@@ -307,19 +326,19 @@ namespace retrycopy {
 			// 
 			this->txtCurDst->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
-			this->txtCurDst->Location = System::Drawing::Point(12, 184);
+			this->txtCurDst->Location = System::Drawing::Point(12, 170);
 			this->txtCurDst->Name = L"txtCurDst";
 			this->txtCurDst->ReadOnly = true;
-			this->txtCurDst->Size = System::Drawing::Size(503, 20);
+			this->txtCurDst->Size = System::Drawing::Size(503, 19);
 			this->txtCurDst->TabIndex = 1100;
 			// 
 			// label4
 			// 
 			this->label4->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
 			this->label4->AutoSize = true;
-			this->label4->Location = System::Drawing::Point(226, 369);
+			this->label4->Location = System::Drawing::Point(226, 341);
 			this->label4->Name = L"label4";
-			this->label4->Size = System::Drawing::Size(55, 13);
+			this->label4->Size = System::Drawing::Size(56, 12);
 			this->label4->TabIndex = 3100;
 			this->label4->Text = L"&Overwrite:";
 			// 
@@ -328,9 +347,9 @@ namespace retrycopy {
 			this->cmbOverwrite->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
 			this->cmbOverwrite->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
 			this->cmbOverwrite->FormattingEnabled = true;
-			this->cmbOverwrite->Location = System::Drawing::Point(229, 385);
+			this->cmbOverwrite->Location = System::Drawing::Point(229, 355);
 			this->cmbOverwrite->Name = L"cmbOverwrite";
-			this->cmbOverwrite->Size = System::Drawing::Size(99, 21);
+			this->cmbOverwrite->Size = System::Drawing::Size(99, 20);
 			this->cmbOverwrite->TabIndex = 3200;
 			this->cmbOverwrite->SelectedIndexChanged += gcnew System::EventHandler(this, &FormMain::cmbOverwrite_SelectedIndexChanged);
 			// 
@@ -338,9 +357,9 @@ namespace retrycopy {
 			// 
 			this->label5->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
 			this->label5->AutoSize = true;
-			this->label5->Location = System::Drawing::Point(334, 369);
+			this->label5->Location = System::Drawing::Point(334, 341);
 			this->label5->Name = L"label5";
-			this->label5->Size = System::Drawing::Size(50, 13);
+			this->label5->Size = System::Drawing::Size(48, 12);
 			this->label5->TabIndex = 3300;
 			this->label5->Text = L"&Remove:";
 			// 
@@ -349,18 +368,18 @@ namespace retrycopy {
 			this->cmbRemove->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
 			this->cmbRemove->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
 			this->cmbRemove->FormattingEnabled = true;
-			this->cmbRemove->Location = System::Drawing::Point(334, 385);
+			this->cmbRemove->Location = System::Drawing::Point(334, 355);
 			this->cmbRemove->Name = L"cmbRemove";
-			this->cmbRemove->Size = System::Drawing::Size(99, 21);
+			this->cmbRemove->Size = System::Drawing::Size(99, 20);
 			this->cmbRemove->TabIndex = 3400;
 			this->cmbRemove->SelectedIndexChanged += gcnew System::EventHandler(this, &FormMain::cmbRemove_SelectedIndexChanged);
 			// 
 			// label6
 			// 
 			this->label6->AutoSize = true;
-			this->label6->Location = System::Drawing::Point(3, 33);
+			this->label6->Location = System::Drawing::Point(3, 30);
 			this->label6->Name = L"label6";
-			this->label6->Size = System::Drawing::Size(57, 13);
+			this->label6->Size = System::Drawing::Size(58, 12);
 			this->label6->TabIndex = 1600;
 			this->label6->Text = L"Total Size:";
 			// 
@@ -368,18 +387,18 @@ namespace retrycopy {
 			// 
 			this->txtTotalSize->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
-			this->txtTotalSize->Location = System::Drawing::Point(102, 29);
+			this->txtTotalSize->Location = System::Drawing::Point(102, 27);
 			this->txtTotalSize->Name = L"txtTotalSize";
 			this->txtTotalSize->ReadOnly = true;
-			this->txtTotalSize->Size = System::Drawing::Size(139, 20);
+			this->txtTotalSize->Size = System::Drawing::Size(139, 19);
 			this->txtTotalSize->TabIndex = 1700;
 			// 
 			// label7
 			// 
 			this->label7->AutoSize = true;
-			this->label7->Location = System::Drawing::Point(3, 33);
+			this->label7->Location = System::Drawing::Point(3, 30);
 			this->label7->Name = L"label7";
-			this->label7->Size = System::Drawing::Size(87, 13);
+			this->label7->Size = System::Drawing::Size(90, 12);
 			this->label7->TabIndex = 1800;
 			this->label7->Text = L"Total Processed:";
 			// 
@@ -387,27 +406,27 @@ namespace retrycopy {
 			// 
 			this->txtTotalProcessed->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
-			this->txtTotalProcessed->Location = System::Drawing::Point(102, 29);
+			this->txtTotalProcessed->Location = System::Drawing::Point(102, 27);
 			this->txtTotalProcessed->Name = L"txtTotalProcessed";
 			this->txtTotalProcessed->ReadOnly = true;
-			this->txtTotalProcessed->Size = System::Drawing::Size(140, 20);
+			this->txtTotalProcessed->Size = System::Drawing::Size(140, 19);
 			this->txtTotalProcessed->TabIndex = 1900;
 			// 
 			// label8
 			// 
 			this->label8->AutoSize = true;
-			this->label8->Location = System::Drawing::Point(3, 60);
+			this->label8->Location = System::Drawing::Point(3, 55);
 			this->label8->Name = L"label8";
-			this->label8->Size = System::Drawing::Size(44, 13);
+			this->label8->Size = System::Drawing::Size(45, 12);
 			this->label8->TabIndex = 2000;
 			this->label8->Text = L"Current:";
 			// 
 			// label9
 			// 
 			this->label9->AutoSize = true;
-			this->label9->Location = System::Drawing::Point(3, 58);
+			this->label9->Location = System::Drawing::Point(3, 54);
 			this->label9->Name = L"label9";
-			this->label9->Size = System::Drawing::Size(97, 13);
+			this->label9->Size = System::Drawing::Size(102, 12);
 			this->label9->TabIndex = 2200;
 			this->label9->Text = L"Current Processed:";
 			// 
@@ -415,20 +434,20 @@ namespace retrycopy {
 			// 
 			this->txtCurrentSize->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
-			this->txtCurrentSize->Location = System::Drawing::Point(102, 55);
+			this->txtCurrentSize->Location = System::Drawing::Point(102, 51);
 			this->txtCurrentSize->Name = L"txtCurrentSize";
 			this->txtCurrentSize->ReadOnly = true;
-			this->txtCurrentSize->Size = System::Drawing::Size(139, 20);
+			this->txtCurrentSize->Size = System::Drawing::Size(139, 19);
 			this->txtCurrentSize->TabIndex = 2100;
 			// 
 			// txtCurrentProcessed
 			// 
 			this->txtCurrentProcessed->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
-			this->txtCurrentProcessed->Location = System::Drawing::Point(102, 55);
+			this->txtCurrentProcessed->Location = System::Drawing::Point(102, 51);
 			this->txtCurrentProcessed->Name = L"txtCurrentProcessed";
 			this->txtCurrentProcessed->ReadOnly = true;
-			this->txtCurrentProcessed->Size = System::Drawing::Size(140, 20);
+			this->txtCurrentProcessed->Size = System::Drawing::Size(140, 19);
 			this->txtCurrentProcessed->TabIndex = 2300;
 			// 
 			// label10
@@ -436,7 +455,7 @@ namespace retrycopy {
 			this->label10->AutoSize = true;
 			this->label10->Location = System::Drawing::Point(3, 6);
 			this->label10->Name = L"label10";
-			this->label10->Size = System::Drawing::Size(65, 13);
+			this->label10->Size = System::Drawing::Size(67, 12);
 			this->label10->TabIndex = 1200;
 			this->label10->Text = L"Total Count:";
 			// 
@@ -445,7 +464,7 @@ namespace retrycopy {
 			this->label11->AutoSize = true;
 			this->label11->Location = System::Drawing::Point(3, 6);
 			this->label11->Name = L"label11";
-			this->label11->Size = System::Drawing::Size(91, 13);
+			this->label11->Size = System::Drawing::Size(94, 12);
 			this->label11->TabIndex = 1400;
 			this->label11->Text = L"Count Processed:";
 			// 
@@ -456,7 +475,7 @@ namespace retrycopy {
 			this->txtTotalCount->Location = System::Drawing::Point(102, 3);
 			this->txtTotalCount->Name = L"txtTotalCount";
 			this->txtTotalCount->ReadOnly = true;
-			this->txtTotalCount->Size = System::Drawing::Size(139, 20);
+			this->txtTotalCount->Size = System::Drawing::Size(139, 19);
 			this->txtTotalCount->TabIndex = 1300;
 			// 
 			// txtProcessedCount
@@ -466,7 +485,7 @@ namespace retrycopy {
 			this->txtProcessedCount->Location = System::Drawing::Point(102, 3);
 			this->txtProcessedCount->Name = L"txtProcessedCount";
 			this->txtProcessedCount->ReadOnly = true;
-			this->txtProcessedCount->Size = System::Drawing::Size(140, 20);
+			this->txtProcessedCount->Size = System::Drawing::Size(140, 19);
 			this->txtProcessedCount->TabIndex = 1500;
 			// 
 			// timerUpdate
@@ -477,31 +496,20 @@ namespace retrycopy {
 			// label12
 			// 
 			this->label12->AutoSize = true;
-			this->label12->Location = System::Drawing::Point(12, 304);
+			this->label12->Location = System::Drawing::Point(12, 281);
 			this->label12->Name = L"label12";
-			this->label12->Size = System::Drawing::Size(55, 13);
+			this->label12->Size = System::Drawing::Size(58, 12);
 			this->label12->TabIndex = 2400;
 			this->label12->Text = L"Last Error:";
-			// 
-			// btnShowLog
-			// 
-			this->btnShowLog->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-			this->btnShowLog->Location = System::Drawing::Point(439, 385);
-			this->btnShowLog->Name = L"btnShowLog";
-			this->btnShowLog->Size = System::Drawing::Size(75, 21);
-			this->btnShowLog->TabIndex = 3500;
-			this->btnShowLog->Text = L"Log";
-			this->btnShowLog->UseVisualStyleBackColor = true;
-			this->btnShowLog->Click += gcnew System::EventHandler(this, &FormMain::btnShowLog_Click);
 			// 
 			// btnSuspend
 			// 
 			this->btnSuspend->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->btnSuspend->Enabled = false;
-			this->btnSuspend->Location = System::Drawing::Point(12, 337);
+			this->btnSuspend->Location = System::Drawing::Point(12, 311);
 			this->btnSuspend->Name = L"btnSuspend";
-			this->btnSuspend->Size = System::Drawing::Size(503, 23);
+			this->btnSuspend->Size = System::Drawing::Size(503, 21);
 			this->btnSuspend->TabIndex = 2600;
 			this->btnSuspend->Text = L"&Suspend";
 			this->btnSuspend->UseVisualStyleBackColor = true;
@@ -512,7 +520,7 @@ namespace retrycopy {
 			this->spTransitory->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->spTransitory->IsSplitterFixed = true;
-			this->spTransitory->Location = System::Drawing::Point(12, 210);
+			this->spTransitory->Location = System::Drawing::Point(12, 194);
 			this->spTransitory->Name = L"spTransitory";
 			// 
 			// spTransitory.Panel1
@@ -532,7 +540,7 @@ namespace retrycopy {
 			this->spTransitory->Panel2->Controls->Add(this->txtCurrentProcessed);
 			this->spTransitory->Panel2->Controls->Add(this->txtTotalProcessed);
 			this->spTransitory->Panel2->Controls->Add(this->txtProcessedCount);
-			this->spTransitory->Size = System::Drawing::Size(503, 80);
+			this->spTransitory->Size = System::Drawing::Size(503, 74);
 			this->spTransitory->SplitterDistance = 251;
 			this->spTransitory->TabIndex = 3501;
 			// 
@@ -540,20 +548,73 @@ namespace retrycopy {
 			// 
 			this->progressMain->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
-			this->progressMain->Location = System::Drawing::Point(12, 116);
+			this->progressMain->Location = System::Drawing::Point(12, 107);
 			this->progressMain->Name = L"progressMain";
-			this->progressMain->Size = System::Drawing::Size(502, 10);
+			this->progressMain->Size = System::Drawing::Size(502, 9);
 			this->progressMain->TabIndex = 750;
+			// 
+			// btnAbout
+			// 
+			this->btnAbout->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
+			this->btnAbout->Location = System::Drawing::Point(12, 353);
+			this->btnAbout->Name = L"btnAbout";
+			this->btnAbout->Size = System::Drawing::Size(27, 23);
+			this->btnAbout->TabIndex = 2650;
+			this->btnAbout->Text = L"...";
+			this->btnAbout->UseVisualStyleBackColor = true;
+			this->btnAbout->Click += gcnew System::EventHandler(this, &FormMain::btnAbout_Click);
+			// 
+			// ctxAbout
+			// 
+			this->ctxAbout->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {
+				this->tsmiShowLog, this->tsmiAboutThisApplication,
+					this->tsmiHelp
+			});
+			this->ctxAbout->Name = L"ctxAbout";
+			this->ctxAbout->Size = System::Drawing::Size(212, 70);
+			this->ctxAbout->Opening += gcnew System::ComponentModel::CancelEventHandler(this, &FormMain::ctxAbout_Opening);
+			// 
+			// tsmiShowLog
+			// 
+			this->tsmiShowLog->Name = L"tsmiShowLog";
+			this->tsmiShowLog->Size = System::Drawing::Size(211, 22);
+			this->tsmiShowLog->Text = L"&Show Log";
+			this->tsmiShowLog->Click += gcnew System::EventHandler(this, &FormMain::showLogToolStripMenuItem_Click);
+			// 
+			// tsmiAboutThisApplication
+			// 
+			this->tsmiAboutThisApplication->Name = L"tsmiAboutThisApplication";
+			this->tsmiAboutThisApplication->Size = System::Drawing::Size(211, 22);
+			this->tsmiAboutThisApplication->Text = L"&About this application...";
+			this->tsmiAboutThisApplication->Click += gcnew System::EventHandler(this, &FormMain::tsmiAboutThisApplication_Click);
+			// 
+			// tsmiHelp
+			// 
+			this->tsmiHelp->Name = L"tsmiHelp";
+			this->tsmiHelp->Size = System::Drawing::Size(211, 22);
+			this->tsmiHelp->Text = L"&Help";
+			// 
+			// btnClose
+			// 
+			this->btnClose->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Right));
+			this->btnClose->Location = System::Drawing::Point(440, 353);
+			this->btnClose->Name = L"btnClose";
+			this->btnClose->Size = System::Drawing::Size(75, 23);
+			this->btnClose->TabIndex = 3502;
+			this->btnClose->Text = L"&Close";
+			this->btnClose->UseVisualStyleBackColor = true;
+			this->btnClose->Click += gcnew System::EventHandler(this, &FormMain::btnClose_Click);
 			// 
 			// FormMain
 			// 
-			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(527, 417);
+			this->ClientSize = System::Drawing::Size(527, 385);
+			this->Controls->Add(this->btnClose);
+			this->Controls->Add(this->btnAbout);
 			this->Controls->Add(this->progressMain);
 			this->Controls->Add(this->spTransitory);
 			this->Controls->Add(this->btnSuspend);
-			this->Controls->Add(this->btnShowLog);
 			this->Controls->Add(this->label12);
 			this->Controls->Add(this->cmbRemove);
 			this->Controls->Add(this->cmbOverwrite);
@@ -584,6 +645,7 @@ namespace retrycopy {
 			this->spTransitory->Panel2->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->spTransitory))->EndInit();
 			this->spTransitory->ResumeLayout(false);
+			this->ctxAbout->ResumeLayout(false);
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -621,7 +683,7 @@ namespace retrycopy {
 		void UpdateTitle();
 	internal:
 		bool AskOverwrite(String^ fileTobeOverwritten);
-		// void OnUpdateSize();
+		
 	private:
 		System::Void btnNavSource_Click(System::Object^ sender, System::EventArgs^ e);
 		System::Void btnNavDestination_Click(System::Object^ sender, System::EventArgs^ e);
@@ -635,7 +697,9 @@ namespace retrycopy {
 
 		System::Void FormMain_FormClosing(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e);
 
-		System::Void btnShowLog_Click(System::Object^ sender, System::EventArgs^ e) {
+		System::Void btnSuspend_Click(System::Object^ sender, System::EventArgs^ e);
+
+		System::Void showLogToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
 			if (!logForm_->Visible) {
 				logForm_->Show(this);
 			}
@@ -643,7 +707,24 @@ namespace retrycopy {
 				logForm_->Visible = false;
 			}
 		}
-		System::Void btnSuspend_Click(System::Object^ sender, System::EventArgs^ e);
+
+		System::Void btnClose_Click(System::Object^ sender, System::EventArgs^ e) {
+			Close();
+		}
+		System::Void btnAbout_Click(System::Object^ sender, System::EventArgs^ e);
+		System::Void ctxAbout_Opening(System::Object^ sender, System::ComponentModel::CancelEventArgs^ e);
+
+		System::Void tsmiAboutThisApplication_Click(System::Object^ sender, System::EventArgs^ e) {
+			if (!aboutForm_) {
+				aboutForm_ = gcnew FormAbout();
+			}
+			if (!aboutForm_->Visible) {
+				aboutForm_->Show(this);
+			}
+			else {
+				aboutForm_->Visible = false;
+			}
+		}
 
 }; // FormMain
 

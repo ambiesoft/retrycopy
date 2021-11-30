@@ -236,6 +236,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="FormAbout.cpp" />
     <ClCompile Include="FormLog.cpp" />
     <ClCompile Include="FormMainThread.cpp" />
     <ClCompile Include="FormMainThreadCallback.cpp" />
@@ -258,6 +259,9 @@
     <ClInclude Include="..\..\lsMisc\UrlEncode.h" />
     <ClInclude Include="..\..\lsMisc\UTF16toUTF8.h" />
     <ClInclude Include="..\..\lsMisc\WaitCursor.h" />
+    <ClInclude Include="FormAbout.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="FormLog.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -276,6 +280,9 @@
     <ResourceCompile Include="app.rc" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="FormAbout.resx">
+      <DependentUpon>FormAbout.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormLog.resx">
       <DependentUpon>FormLog.h</DependentUpon>
     </EmbeddedResource>
@@ -288,6 +295,9 @@
     <ProjectReference Include="..\retrycopymisc\retrycopymisc.csproj">
       <Project>{4353cae4-37b7-4e9c-bc20-49b87c0db772}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="history.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -381,4 +381,15 @@ namespace retrycopy {
 		}
 		Text = title.ToString();
 	}
+
+	System::Void FormMain::ctxAbout_Opening(System::Object^ sender, System::ComponentModel::CancelEventArgs^ e)
+	{
+		tsmiShowLog->Checked = logForm_ ? logForm_->Visible : false;
+		tsmiAboutThisApplication->Checked = aboutForm_ ? aboutForm_->Visible : false;
+	}
+	System::Void FormMain::btnAbout_Click(System::Object^ sender, System::EventArgs^ e)
+	{
+		System::Drawing::Point pos(btnAbout->Location.X, btnAbout->Location.Y + btnAbout->Size.Height);
+		ctxAbout->Show(this, pos.X, pos.Y);
+	}
 }

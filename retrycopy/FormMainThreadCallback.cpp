@@ -93,7 +93,7 @@ namespace retrycopy {
 			}
 			else
 			{
-				DeleteAllDirectory(dir);
+				AmbLib::DeleteAllEmptyDirectory(dir);
 			}
 
 			if (Directory::Exists(dir))
