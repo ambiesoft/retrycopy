@@ -1,0 +1,10 @@
+This application uses following libraries.
+
+'The Core code for the WindowsAPICodePack' by rpastric,contre,dahall
+URL:https://github.com/contre/Windows-API-Code-Pack-1.1
+LICENSE:https://github.com/contre/Windows-API-Code-Pack-1.1/blob/master/LICENSE
+
+'Core library for Windows API Code Pack' and 'Shell library for Windows API Code Pack' by Aybe
+URL:https://github.com/aybe/Windows-API-Code-Pack-1.1
+LICENSE:https://github.com/aybe/Windows-API-Code-Pack-1.1/blob/master/LICENCE
+

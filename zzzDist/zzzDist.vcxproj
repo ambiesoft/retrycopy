@@ -103,9 +103,11 @@
     </Link>
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)retrycopy\history.txt" "$(TargetDir)"
+copy "$(SolutionDir)README.md" "$(TargetDir)"
+copy "$(SolutionDir)Acknowledgements.txt" "$(TargetDir)"
 
 del "$(TargetDir)zzzDist.*"
-
+del "$(TargetDir)retrycopy.exe.metagen"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -126,9 +128,11 @@ del "$(TargetDir)zzzDist.*"
     </Link>
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)retrycopy\history.txt" "$(TargetDir)"
+copy "$(SolutionDir)README.md" "$(TargetDir)"
+copy "$(SolutionDir)Acknowledgements.txt" "$(TargetDir)"
 
 del "$(TargetDir)zzzDist.*"
-
+del "$(TargetDir)retrycopy.exe.metagen"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -145,9 +149,11 @@ del "$(TargetDir)zzzDist.*"
     </Link>
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)retrycopy\history.txt" "$(TargetDir)"
+copy "$(SolutionDir)README.md" "$(TargetDir)"
+copy "$(SolutionDir)Acknowledgements.txt" "$(TargetDir)"
 
 del "$(TargetDir)zzzDist.*"
-
+del "$(TargetDir)retrycopy.exe.metagen"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -168,9 +174,11 @@ del "$(TargetDir)zzzDist.*"
     </Link>
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)retrycopy\history.txt" "$(TargetDir)"
+copy "$(SolutionDir)README.md" "$(TargetDir)"
+copy "$(SolutionDir)Acknowledgements.txt" "$(TargetDir)"
 
 del "$(TargetDir)zzzDist.*"
-
+del "$(TargetDir)retrycopy.exe.metagen"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
