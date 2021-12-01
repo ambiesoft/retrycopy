@@ -4,10 +4,10 @@ targetproject: zzzDist
 configuration: Release
 targets:
 - setoutdirforbuild: false
-  outdir: Release\v143\retrycopy\x86
+  outdir: Release\v142\retrycopy\x86
   platform: x86
 - setoutdirforbuild: false
-  outdir: Release\v143\retrycopy\x64
+  outdir: Release\v142\retrycopy\x64
   platform: x64
 
 gitrev:
@@ -22,7 +22,7 @@ gitrev:
   outtxt: retrycopy/gitrev
   char: wchar
 
-archivingdir: Release\v143\retrycopy
+archivingdir: Release\v142\retrycopy
 ShouldBeFiles:
 - Acknowledgements.txt
 - Ambiesoft.AmbLib.dll
