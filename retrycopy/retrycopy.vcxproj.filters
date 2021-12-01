@@ -69,6 +69,15 @@
     <ClCompile Include="FormAbout.cpp">
       <Filter>02 Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RemoveInfo.cpp">
+      <Filter>02 Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OverwriteInfo.cpp">
+      <Filter>02 Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lsMisc\BrowseFolder.cpp">
+      <Filter>02 Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FormMain.h">
@@ -111,6 +120,15 @@
       <Filter>01 Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FormAbout.h">
+      <Filter>01 Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoveInfo.h">
+      <Filter>01 Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OverwriteInfo.h">
+      <Filter>01 Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lsMisc\BrowseFolder.h">
       <Filter>01 Header Files</Filter>
     </ClInclude>
   </ItemGroup>

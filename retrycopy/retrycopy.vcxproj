@@ -193,6 +193,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\lsMisc\BrowseFolder.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\..\lsMisc\CommandLineParser.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
@@ -241,6 +247,8 @@
     <ClCompile Include="FormMainThread.cpp" />
     <ClCompile Include="FormMainThreadCallback.cpp" />
     <ClCompile Include="helper.cpp" />
+    <ClCompile Include="OverwriteInfo.cpp" />
+    <ClCompile Include="RemoveInfo.cpp" />
     <ClCompile Include="retrycopy.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -252,6 +260,7 @@
     <ClCompile Include="threadData.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\lsMisc\BrowseFolder.h" />
     <ClInclude Include="..\..\lsMisc\CommandLineParser.h" />
     <ClInclude Include="..\..\lsMisc\DebugMacro.h" />
     <ClInclude Include="..\..\lsMisc\GetLastErrorString.h" />
@@ -269,6 +278,8 @@
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="helper.h" />
+    <ClInclude Include="OverwriteInfo.h" />
+    <ClInclude Include="RemoveInfo.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="threadData.h" />

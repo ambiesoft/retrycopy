@@ -1,8 +1,12 @@
 #include "stdafx.h"
 
+#include "../../lsMisc/BrowseFolder.h"
+
 #include "threadData.h"
 #include "helper.h"
 #include "FormLog.h"
+#include "OverwriteInfo.h"
+#include "RemoveInfo.h"
 #include "FormMain.h"
 using namespace System::Collections::Generic;
 using namespace System::Text;
@@ -35,22 +39,16 @@ namespace retrycopy {
 			ThreadTransitory::UserBuffer, intval, ini);
 		txtBuffer->Text = intval.ToString();
 
-		cmbOverwrite->Items->Add(I18N(L"Yes"));
-		cmbOverwrite->Items->Add(I18N(L"No"));
-		cmbOverwrite->Items->Add(I18N(L"Ask"));
+		OverwriteItem::AddComboItem(cmbOverwrite);
 		Profile::GetInt(SECTION_OPTION, KEY_OVERWRITE,
-			0, intval, ini);
+			(int)OverwriteItem::DefaultItem, intval, ini);
 		if (0 <= intval && intval < cmbOverwrite->Items->Count)
 			cmbOverwrite->SelectedIndex = intval;
 
 
-
-		cmbRemove->Items->Add(I18N(L"No"));
-		cmbRemove->Items->Add(I18N(L"Yes Recycle"));
-		cmbRemove->Items->Add(I18N(L"Yes Delete"));
-		cmbRemove->Items->Add(I18N(L"Ask"));
+		RemoveInfo::AddComboItem(cmbRemove);
 		Profile::GetInt(SECTION_OPTION, KEY_REMOVE,
-			1, intval, ini);
+			(int)RemoveInfo::DefaultItem, intval, ini);
 		if (0 <= intval && intval < cmbRemove->Items->Count)
 			cmbRemove->SelectedIndex = intval;
 
@@ -71,17 +69,63 @@ namespace retrycopy {
 	}
 	System::Void FormMain::btnNavSource_Click(System::Object^ sender, System::EventArgs^ e)
 	{
-		String^ source = AmbLib::GetOpenFileDialog(I18N(L"Select source file"));
-		if (String::IsNullOrEmpty(source))
-			return;
-		txtSource->Text = source;
+		System::Drawing::Point pos(
+			btnNavSource->Location.X + btnNavSource->Size.Width,
+			btnNavSource->Location.Y);
+		ctxNavigate->Tag = btnNavSource;
+		ctxNavigate->Show(this, pos.X, pos.Y);
 	}
+	System::Void FormMain::tsmiFile_Click(System::Object^ sender, System::EventArgs^ e)
+	{
+		if (ctxNavigate->Tag == btnNavSource)
+		{
+			String^ source = AmbLib::GetOpenFileDialog(I18N(L"Select source file"));
+			if (String::IsNullOrEmpty(source))
+				return;
+			txtSource->Text = source;
+		}
+		else if (ctxNavigate->Tag == btnNavDestination)
+		{
+			String^ destination = AmbLib::GetSaveFileDialog(I18N(L"Select destination file"));
+			if (String::IsNullOrEmpty(destination))
+				return;
+			txtDestination->Text = destination;
+		}
+		else
+			DASSERT(false);
+	}
+
+	System::Void FormMain::tsmiDirectory_Click(System::Object^ sender, System::EventArgs^ e)
+	{
+		if (ctxNavigate->Tag == btnNavSource)
+		{
+			String^ source;
+			if (!browseFolder(this, I18N(L"Select source directory"), source))
+				return;
+			if (String::IsNullOrEmpty(source))
+				return;
+			txtSource->Text = source;
+		}
+		else if (ctxNavigate->Tag == btnNavDestination)
+		{
+			String^ destination;
+			if (!browseFolder(this, I18N(L"Select destination file"), destination))
+				return;
+			if (String::IsNullOrEmpty(destination))
+				return;
+			txtDestination->Text = destination;
+		}
+		else
+			DASSERT(false);
+	}
+
 	System::Void FormMain::btnNavDestination_Click(System::Object^ sender, System::EventArgs^ e)
 	{
-		String^ destination = AmbLib::GetSaveFileDialog(I18N(L"Select destination file"));
-		if (String::IsNullOrEmpty(destination))
-			return;
-		txtDestination->Text = destination;
+		System::Drawing::Point pos(
+			btnNavDestination->Location.X + btnNavDestination->Size.Width,
+			btnNavDestination->Location.Y);
+		ctxNavigate->Tag = btnNavDestination;
+		ctxNavigate->Show(this, pos.X, pos.Y);
 	}
 
 	System::Void FormMain::cmbOverwrite_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e)

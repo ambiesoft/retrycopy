@@ -1,24 +1,14 @@
 #pragma once
 
 #include <Windows.h>
-
+#include "OverwriteInfo.h"
+#include "RemoveInfo.h"
 using namespace System;
 
 namespace retrycopy {
 	ref class ThreadDataFile;
-	enum class OVERWRITE_TYPE
-	{
-		OVERWRITE_YES,
-		OVERWRITE_NO,
-		OVERWRITE_ASK,
-	};
-	enum class REMOVE_TYPE
-	{
-		REMOVE_NO,
-		REMOVE_YES_RECYCLE,
-		REMOVE_YES_DELETE,
-		REMOVE_ASK,
-	};
+
+
 	public ref class ThreadTransitory abstract sealed
 	{
 		static System::Threading::ReaderWriterLock^ rwl_ = gcnew System::Threading::ReaderWriterLock();
