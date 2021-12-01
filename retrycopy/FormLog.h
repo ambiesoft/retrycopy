@@ -18,9 +18,6 @@ namespace retrycopy {
 		FormLog(void)
 		{
 			InitializeComponent();
-			//
-			//TODO: Add the constructor code here
-			//
 			Text = String::Format(L"{0} - {1}", I18N(L"Log"), Application::ProductName);
 		}
 

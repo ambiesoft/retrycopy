@@ -19,7 +19,7 @@ gitrev:
     - ../lsMisc
     - ../distSolution
   outheader: retrycopy/gitrev.h
-  outtxt: retrycopy/gitrev,
+  outtxt: retrycopy/gitrev
   char: wchar
 
 archivingdir: Release\v143\retrycopy

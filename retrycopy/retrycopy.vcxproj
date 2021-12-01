@@ -277,6 +277,7 @@
     <ClInclude Include="FormMain.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="gitrev.h" />
     <ClInclude Include="helper.h" />
     <ClInclude Include="OverwriteInfo.h" />
     <ClInclude Include="RemoveInfo.h" />

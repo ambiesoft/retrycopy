@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 #include "../../lsMisc/CommandLineParser.h"
+#include "gitrev.h"
 #include "FormMain.h"
 
 using namespace retrycopy;
@@ -26,8 +27,22 @@ int main(cli::array<System::String ^> ^args)
 		ArgEncodingFlags::ArgEncodingFlags_Default,
 		I18N(L"Destination"));
 
+	bool bShowGitRev = false;
+	parser.AddOption(L"--show-gitrev", 0, &bShowGitRev,
+		ArgEncodingFlags::ArgEncodingFlags_Default,
+		I18N(L"Show Gitrev"));
+
 	parser.Parse();
 
+	if (bShowGitRev)
+	{
+		MessageBox::Show(
+			gcnew String(GITREV::GetHashMessage().c_str()),
+			L"Gitrev - " + Application::ProductName,
+			MessageBoxButtons::OK,
+			MessageBoxIcon::Information);
+		return 0;
+	}
 	// Create the main window and run it
 	FormMain f(gcnew String(source.c_str()), gcnew String(dest.c_str()));
 	f.ShowDialog();
