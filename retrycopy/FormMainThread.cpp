@@ -2,6 +2,7 @@
 
 #include "helper.h"
 #include "FormMain.h"
+using namespace System::Collections::Generic;
 
 #pragma comment(lib, "User32.lib")
 
@@ -10,12 +11,113 @@ using namespace System::Text;
 using namespace System::Threading;
 using namespace System::IO;
 using namespace Ambiesoft;
+using namespace Ambiesoft::stdosd;
 namespace retrycopy {
 
 	void FormMain::StartOfThreadMaster(Object^ obj)
 	{
 		ThreadDataMaster^ thDataMaster = (ThreadDataMaster^)obj;
 		EndInvoke(BeginInvoke(gcnew VVDelegate(this, &FormMain::ThreadStarted)));
+
+		StartOfThreadMaster2(thDataMaster);
+
+		EndInvoke(BeginInvoke(gcnew VVDelegate(this, &FormMain::ThreadFinished)));
+	}
+	void FormMain::StartOfThreadMaster2(ThreadDataMaster^ thDataMaster)
+	{
+		String^ initialError;
+		do
+		{
+			if (String::IsNullOrEmpty(thDataMaster->Src))
+			{
+				initialError = I18N(L"The source is empty.");
+				break;
+			}
+			if (!File::Exists(thDataMaster->Src) && !Directory::Exists(thDataMaster->Src))
+			{
+				initialError = I18N(L"The source path does not exist.");
+				break;
+			}
+
+			if (String::IsNullOrEmpty(thDataMaster->Dst))
+			{
+				initialError = I18N(L"The destination path is empty.");
+				break;
+			}
+
+			if (Directory::Exists(thDataMaster->Src))
+			{
+				if (File::Exists(thDataMaster->Dst))
+				{
+					initialError = I18N(L"Source is directory but destination is a file.");
+					break;
+				}
+				if (stdIsSamePath(TO_LPCWSTR(thDataMaster->Src), TO_LPCWSTR(thDataMaster->Dst)))
+				{
+					initialError = I18N(L"The destination directory is a subdirectory of the source directory.");
+					break;
+				}
+				if (stdIsSamePath(TO_LPCWSTR(thDataMaster->Src), TO_LPCWSTR(thDataMaster->Dst)))
+				{
+					initialError = I18N(L"The destination directory is the same as the source directory.");
+					break;
+				}
+				if (!Directory::Exists(thDataMaster->Dst))
+				{
+					if (!(bool)EndInvoke(BeginInvoke(
+						gcnew BSDelegate(this, &FormMain::OnThreadYesNo),
+						String::Format(
+							I18N(L"'{0}' does not exist. Do you want to create a new directory?"),
+							thDataMaster->Dst
+							) // String::Format
+						) // BeginInvoke
+					) // EndInvoke
+					) // if
+					{
+						return;
+					}
+
+					Directory::CreateDirectory(thDataMaster->Dst);
+					if (!Directory::Exists(thDataMaster->Dst))
+					{
+						initialError = I18N(L"Failed to create a directory.");
+						break;
+					}
+				}
+			}
+			else
+			{
+				DASSERT(File::Exists(thDataMaster->Src));
+				if (stdIsSamePath(TO_LPCWSTR(thDataMaster->Src), TO_LPCWSTR(thDataMaster->Dst)))
+				{
+					initialError = I18N(L"The destination file is the same as the source file.");
+					break;
+				}
+
+			}
+		} while (false);
+		if (!String::IsNullOrEmpty(initialError))
+		{
+			EndInvoke(BeginInvoke(gcnew VSDelegate(this, &FormMain::OnThreadError),
+				initialError));
+			return;
+		}
+
+		{
+			List<String^>^ dstDirs;
+			KVS^ sds;
+			try
+			{
+				sds = AmbLib::GetSourceAndDestFiles(txtSource->Text, txtDestination->Text, dstDirs);
+			}
+			catch (Exception^ ex)
+			{
+				EndInvoke(BeginInvoke(gcnew VSDelegate(this, &FormMain::OnThreadError),
+					ex->Message));
+				return;
+			}
+			thDataMaster->SetSDS(sds, dstDirs);
+		}
 
 		try
 		{
@@ -26,7 +128,7 @@ namespace retrycopy {
 			LONGLONG totalInputSize = 0;
 			for each (KV kv in thDataMaster->SDS)
 			{
-				FileInfo fi(kv.Key);
+				System::IO::FileInfo fi(kv.Key);
 				totalInputSize += fi.Length;
 			}
 			
@@ -53,7 +155,7 @@ namespace retrycopy {
 			}
 		}
 		catch(Exception^){}
-		BeginInvoke(gcnew VTmDelegate(this, &FormMain::ThreadFinished), thDataMaster);
+		EndInvoke(BeginInvoke(gcnew VTmDelegate(this, &FormMain::ThreadTaskFinished), thDataMaster));
 	}
 	void FormMain::StartOfThreadFile(ThreadDataFile^ thFileData)
 	{

@@ -11,6 +11,15 @@ using namespace System::Threading;
 using namespace System::IO;
 using namespace Ambiesoft;
 namespace retrycopy {
+	bool FormMain::OnThreadYesNo(String^ question)
+	{
+		return System::Windows::Forms::DialogResult::Yes == CppUtils::YesOrNo(this, question,
+			MessageBoxDefaultButton::Button2);
+	}
+	void FormMain::OnThreadError(String^ error)
+	{
+		CppUtils::Alert(this, error);
+	}
 	void FormMain::ThreadFileStarted(ThreadDataFile^ thData)
 	{
 		txtCurSrc->Text = thData->SrcFile;
@@ -163,12 +172,16 @@ namespace retrycopy {
 
 	void FormMain::ThreadStarted()
 	{
+		ThreadState = ThreadStateType::RUNNING;
 		AppendLogNow(I18N(L"Thread Started"));
 	}
 
-	void FormMain::ThreadFinished(ThreadDataMaster^ thData)
+	void FormMain::ThreadFinished()
 	{
 		ThreadState = ThreadStateType::NONE;
+	}
+	void FormMain::ThreadTaskFinished(ThreadDataMaster^ thData)
+	{
 		if (thData->IsOK)
 		{
 			StringBuilder sbResult;

@@ -684,8 +684,11 @@ namespace retrycopy {
 		//HANDLE hDestination_;
 		
 		void StartOfThreadMaster(Object^ obj);
+		void StartOfThreadMaster2(ThreadDataMaster^);
 		void StartOfThreadFile(ThreadDataFile^ thData);
 		void ThreadStarted();
+		bool OnThreadYesNo(String^ question);
+		void OnThreadError(String^ error);
 		void ThreadFileStarted(ThreadDataFile^ thData);
 		void ThreadFileEnded(ThreadDataFile^ thData);
 		bool OpenFileFailedGetUserAction(DWORD le);
@@ -693,7 +696,8 @@ namespace retrycopy {
 		Object^ ReadFileFailedGetUserAction(LONGLONG pos, LONGLONG allSize, DWORD le, int retried);
 		void ProcessProgressed_obsolete(LONGLONG pos);
 		void ProgressWriteWithZero(LONGLONG pos, int bufferSize);
-		void ThreadFinished(ThreadDataMaster^ thData);
+		void ThreadTaskFinished(ThreadDataMaster^ thData);
+		void ThreadFinished();
 
 		void AppendLog(String^ message);
 		void AppendLogNow(String^ message);

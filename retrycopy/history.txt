@@ -1,6 +1,10 @@
-2021/11/30 v1.0.1
-first
+2021/12/02 v1.0.3
+Modified: Move the checking procudure to the thread.
 
 2021/12/01 v1.0.2
 Refine ComboItem
 Refine src/dst navigation
+
+2021/11/30 v1.0.1
+first
+

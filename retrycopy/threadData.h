@@ -220,26 +220,49 @@ namespace retrycopy {
 
 	ref class ThreadDataMaster
 	{
-		initonly String^ srcDir_;
-		initonly KVS^ sds_;
-		initonly System::Collections::Generic::List<String^>^ dstdirs_;
+		initonly String^ src_;
+		initonly String^ dst_;
+		KVS^ sds_ = nullptr;
+		System::Collections::Generic::List<String^>^ dstdirs_ = nullptr;
 		LONGLONG totalInputSize_;
 		LONGLONG totalProcessed_;
 		int totalOK_;
 
 	public:
-		ThreadDataMaster(String^ srcDir, KVS^ sds, System::Collections::Generic::List<String^>^ dstDirs) :
-			srcDir_(srcDir), sds_(sds), dstdirs_(dstDirs)
+		ThreadDataMaster(String^ src, String^ dst):
+			src_(src), dst_(dst)
 		{}
 
+		property String^ Src
+		{
+			String^ get() { return src_; }
+		}
+		property String^ Dst
+		{
+			String^ get() { return dst_; }
+		}
+		void SetSDS(KVS^ sds, System::Collections::Generic::List<String^>^ dstdirs)
+		{
+			DASSERT(sds_ == nullptr);
+			DASSERT(dstdirs_ == nullptr);
+			DASSERT(sds);
+			DASSERT(dstdirs);
+			sds_ = sds;
+			dstdirs_ = dstdirs;
+		}
 		void PrepareDstDirs();
 		property bool HasSrcDir
 		{
-			bool get() { return !String::IsNullOrEmpty(SrcDir); }
+			bool get() { return System::IO::Directory::Exists(src_); }
 		}
 		property String^ SrcDir
 		{
-			String^ get() { return srcDir_; }
+			String^ get() {
+				if (HasSrcDir)
+					return src_;
+				DASSERT(false);
+				return nullptr;
+			}
 		}
 		property KVS^ SDS
 		{

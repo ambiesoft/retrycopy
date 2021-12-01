@@ -151,69 +151,13 @@ namespace retrycopy {
 		}
 		DASSERT(ThreadState == ThreadStateType::NONE);
 
-		if (String::IsNullOrEmpty(txtSource->Text))
-		{
-			CppUtils::Alert(I18N(L"Source file is empty."));
-			return;
-		}
-		if (!File::Exists(txtSource->Text) && !Directory::Exists(txtSource->Text))
-		{
-			CppUtils::Alert(I18N(L"Source file or directory does not exist."));
-			return;
-		}
-
-		if (String::IsNullOrEmpty(txtDestination->Text))
-		{
-			CppUtils::Alert(I18N(L"Destination is empty."));
-			return;
-		}
-
-		if (Directory::Exists(txtSource->Text))
-		{
-			if (File::Exists(txtDestination->Text))
-			{
-				CppUtils::Alert(I18N(L"Source is directory but destination is a file."));
-				return;
-			}
-			if (!Directory::Exists(txtDestination->Text))
-			{
-				if (System::Windows::Forms::DialogResult::Yes != CppUtils::YesOrNo(this, 
-					String::Format(
-						I18N(L"'{0}' does not exist. Do you want to create directory?"),
-						txtDestination->Text),
-					MessageBoxDefaultButton::Button2))
-				{
-					return;
-				}
-
-				Directory::CreateDirectory(txtDestination->Text);
-				if (!Directory::Exists(txtDestination->Text))
-				{
-					CppUtils::Alert(I18N(L"Failed to create a directory."));
-					return;
-				}
-			}
-		}
-
-		List<String^>^ dstDirs;
-		KVS^ sds;
-		try
-		{
-			sds = AmbLib::GetSourceAndDestFiles(txtSource->Text, txtDestination->Text, dstDirs);
-		}
-		catch (Exception^ ex)
-		{
-			CppUtils::Alert(this, ex);
-			return;
-		}
 
 		ThreadDataMaster^ thData = gcnew ThreadDataMaster(
-			Directory::Exists(txtSource->Text) ? txtSource->Text : nullptr,
-			sds, dstDirs);
+			txtSource->Text, txtDestination->Text);
+
 		theThread_ = gcnew Thread(
 			gcnew ParameterizedThreadStart(this, &FormMain::StartOfThreadMaster));
 		theThread_->Start(thData);
-		ThreadState = ThreadStateType::RUNNING;
 	}
 	System::Void FormMain::timerUpdate_Tick(System::Object^ sender, System::EventArgs^ e)
 	{

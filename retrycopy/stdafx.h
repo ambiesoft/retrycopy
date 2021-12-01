@@ -12,8 +12,10 @@
 #include "../../lsMisc/GetLastErrorString.h"
 #include "../../lsMisc/WaitCursor.h"
 #include "../../lsMisc/SHMoveFile.h"
+#include "../../lsMisc/stdosd/stdosd.h"
 
 delegate void VVDelegate();
+delegate void VSDelegate(System::String^);
 delegate bool BSDelegate(System::String^);
 delegate void VLLDelegate(LONGLONG);
 delegate void VLLIDelegate(LONGLONG, int);
