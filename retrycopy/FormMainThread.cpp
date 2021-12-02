@@ -154,7 +154,13 @@ namespace retrycopy {
 				thDataMaster->AppendEnded(tdf);
 			}
 		}
-		catch(Exception^){}
+		catch(ThreadAbortException^)
+		{ }
+		catch(Exception^ ex)
+		{
+			EndInvoke(BeginInvoke(gcnew VSDelegate(this, &FormMain::OnThreadError),
+				ex->Message));
+		}
 		EndInvoke(BeginInvoke(gcnew VTmDelegate(this, &FormMain::ThreadTaskFinished), thDataMaster));
 	}
 	void FormMain::StartOfThreadFile(ThreadDataFile^ thFileData)
