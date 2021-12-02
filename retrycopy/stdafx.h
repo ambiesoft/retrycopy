@@ -37,5 +37,6 @@ inline std::wstring getStdWstring(System::String^ s)
 	return ret;
 }
 
+#define MAXREADBUFFERSIZE (10 * 1024 * 1024)
 // Thread::Suspend and Resume is obsolete
 #pragma warning(disable:4947)

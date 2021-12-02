@@ -93,7 +93,6 @@ namespace retrycopy {
 					initialError = I18N(L"The destination file is the same as the source file.");
 					break;
 				}
-
 			}
 		} while (false);
 		if (!String::IsNullOrEmpty(initialError))
@@ -141,8 +140,14 @@ namespace retrycopy {
 					thDataMaster->SDS[i].Key, thDataMaster->SDS[i].Value);
 
 				StartOfThreadFile(tdf);
+
 				thDataMaster->TotalProcessedSize += tdf->ProcessedSize;
 				tdf->CloseFiles();
+				if (tdf->IsSkipped)
+				{
+					DASSERT(!tdf->IsOK);
+					thDataMaster->IncrementSkipCount();
+				}
 				if (tdf->IsOK)
 				{
 					thDataMaster->IncrementOK();
@@ -171,9 +176,12 @@ namespace retrycopy {
 		
 		// first check
 		if (!thFileData->FirstCheck())
+		{
+			thFileData->SetSkipped();
 			return;
+		}
 		bool initSrc = true;
-		bool ignoreAllFail = false;
+		// bool ignoreAllFail = false;
 		int retried = 0;
 		int bufferSize = 0;
 		std::unique_ptr<BYTE[]> bb;
@@ -276,7 +284,7 @@ namespace retrycopy {
 					return;
 				}
 				Thread::Sleep(Math::Min(consecutiveErrorCount, 100u));
-				if (!ignoreAllFail)
+				//if (!ignoreAllFail)
 				{
 					if (ThreadTransitory::UserRetry < 0 ||
 						retried++ < ThreadTransitory::UserRetry)
@@ -294,14 +302,20 @@ namespace retrycopy {
 					}
 					// fail
 					UserResponceOfFail^ rfd = (UserResponceOfFail^)
-						EndInvoke(BeginInvoke(gcnew RSDLLLLDwIDelegate(this, &FormMain::ReadFileFailedGetUserAction),
+						EndInvoke(BeginInvoke(gcnew RSDLLLLDwIIDelegate(this, &FormMain::ReadFileFailedGetUserAction),
 							thFileData->SrcFile,
 							thFileData->ProcessedSize,
 							thFileData->SrcSize,
 							le,
-							retried));
+							retried,
+							bufferSize));
 					if (rfd->IsCancel)
 						return;
+
+					// Change bufferSize to user's specified size
+					DASSERT(ThreadTransitory::UserBuffer == rfd->BufferSize);
+					ThreadTransitory::UserBuffer = rfd->BufferSize;
+
 					if (rfd->IsRetry)
 					{
 						retried = 0;
@@ -311,8 +325,16 @@ namespace retrycopy {
 						}
 						continue;
 					}
-					if (rfd->IsIgnoreAll)
-						ignoreAllFail = true;
+
+					//if (rfd->IsIgnoreAll)
+					//	ignoreAllFail = true;
+
+					if (bufferSize != ThreadTransitory::UserBuffer)
+					{
+						bufferSize = ThreadTransitory::UserBuffer;
+						DASSERT(bufferSize > 0);
+						bb.reset(new BYTE[bufferSize]);
+					}
 				}
 				EndInvoke(BeginInvoke(gcnew VLLIDelegate(this, &FormMain::ProgressWriteWithZero),
 					thFileData->ProcessedSize, bufferSize));

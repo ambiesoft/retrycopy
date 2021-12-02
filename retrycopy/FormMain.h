@@ -693,7 +693,13 @@ namespace retrycopy {
 		void ThreadFileStarted(ThreadDataFile^ thData);
 		void ThreadFileEnded(ThreadDataFile^ thData);
 		bool OpenFileFailedGetUserAction(DWORD le);
-		UserResponceOfFail^ ReadFileFailedGetUserAction(String^ file, LONGLONG pos, LONGLONG allSize, DWORD le, int retried);
+		UserResponceOfFail^ ReadFileFailedGetUserAction(
+			String^ file, 
+			LONGLONG pos,
+			LONGLONG allSize,
+			DWORD le, 
+			int retried,
+			int bufferSize);
 		UserResponceOfFail^ SFPFailedGetUserAction(String^ file, LONGLONG pos, LONGLONG allSize, DWORD le, int retried);
 		void ProcessProgressed_obsolete(LONGLONG pos);
 		void ProgressWriteWithZero(LONGLONG pos, int bufferSize);
@@ -769,16 +775,17 @@ namespace retrycopy {
 		UA_RETRY,
 		UA_CANCEL,
 		UA_IGNORE,
-		UA_IGNOREALL,
+		// UA_IGNOREALL,
 	};
 	ref class UserResponceOfFail
 	{
-	public:
-
 	private:
 		USERACTION action_;
+		int bufferSize_ = -1;
 	public:
 		UserResponceOfFail(USERACTION action) : action_(action) {}
+		UserResponceOfFail(USERACTION action, int bs) :
+			action_(action), bufferSize_(bs) {}
 		property bool IsRetry
 		{
 			bool get() { return action_ == USERACTION::UA_RETRY; }
@@ -791,12 +798,17 @@ namespace retrycopy {
 		{
 			bool get() { return action_ == USERACTION::UA_IGNORE; }
 		}
-		property bool IsIgnoreAll
+		//property bool IsIgnoreAll
+		//{
+		//	bool get() { return action_ == USERACTION::UA_IGNOREALL; }
+		//}
+		property int BufferSize
 		{
-			bool get() { return action_ == USERACTION::UA_IGNOREALL; }
+			int get() { return bufferSize_; }
 		}
 	};
 	delegate UserResponceOfFail^ RSDLLLLDwIDelegate(String^, LONGLONG, LONGLONG, DWORD, int);
+	delegate UserResponceOfFail^ RSDLLLLDwIIDelegate(String^, LONGLONG, LONGLONG, DWORD, int, int);
 } // namespace
 
 

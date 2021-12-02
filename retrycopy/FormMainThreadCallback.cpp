@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "helper.h"
+#include "ReadErrorDialog.h"
 #include "FormMain.h"
 
 #pragma comment(lib, "User32.lib")
@@ -216,11 +217,23 @@ namespace retrycopy {
 		}
 		else
 		{
-			CppUtils::Alert(this, String::Format(
-				I18N(L"Failed: Total Input size={0}, Success Count={1}, Total Written size={2}"),
-				thData->TotalInputSize, 
-				thData->TotalOKCount,
+			StringBuilder message;
+			message.AppendLine(thData->HasFailed ? I18N(L"Failed:") : I18N(L"Some files were skipped:"));
+			message.AppendLine(String::Format(I18N(L"Total Input size = {0}"),
+				thData->TotalInputSize));
+			message.AppendLine(String::Format(I18N(L"success = {0}"),
+				thData->TotalOKCount));
+			message.AppendLine(String::Format(I18N(L"skip = {0}"),
+				thData->TotalSkipCount));
+			message.AppendLine(String::Format(I18N(L"fail = {0}"),
+				thData->TotalFailCount));
+			message.AppendLine(String::Format(I18N(L"Total Written size={0}"),
 				thData->TotalWrittenSize));
+
+			if (thData->HasFailed)
+				CppUtils::Alert(this, message.ToString());
+			else
+				CppUtils::Info(this, message.ToString());
 		}
 	}
 	bool FormMain::AskOverwrite(String^ fileTobeOverwritten)
@@ -275,28 +288,37 @@ namespace retrycopy {
 		}
 		return rfd;
 	}
-	UserResponceOfFail^ FormMain::ReadFileFailedGetUserAction(String^ file, LONGLONG pos, LONGLONG allSize, DWORD le, int retried)
+	UserResponceOfFail^ FormMain::ReadFileFailedGetUserAction(
+		String^ file, 
+		LONGLONG pos,
+		LONGLONG allSize,
+		DWORD le,
+		int retried,
+		int bufferSize)
 	{
+		DASSERT(txtBuffer->Text == bufferSize.ToString());
 		UserResponceOfFail^ rfd;
-		switch (CppUtils::CenteredMessageBox(
-			this,
-			String::Format(I18N(L"Failed to ReadFile at {0} on the file \"{1}\" {2} times."),
-				pos, file, retried),
-			Application::ProductName,
-			MessageBoxButtons::AbortRetryIgnore,
-			MessageBoxIcon::Error,
-			MessageBoxDefaultButton::Button2))
+		ReadErrorDialog dlg(
+			String::Format(I18N(L"Failed to ReadFile {0} bytes from {1} on the file \"{2}\" {3} times."),
+				bufferSize,
+				pos,
+				file,
+				retried),
+			bufferSize);
+
+		const READERROR_RESPONSE res = dlg.ShowDialogAndGetResponce();
+		txtBuffer->Text = dlg.BufferSize.ToString();
+		DASSERT(txtBuffer->Text == dlg.BufferSize.ToString());
+		switch (res)
 		{
-		case System::Windows::Forms::DialogResult::Abort:
+		case READERROR_RESPONSE::RR_RETRY:
+			rfd = gcnew UserResponceOfFail(USERACTION::UA_RETRY, dlg.BufferSize);
+			break;
+		case READERROR_RESPONSE::RR_WRITEZERO:
+			rfd = gcnew UserResponceOfFail(USERACTION::UA_IGNORE, dlg.BufferSize);
+			break;
+		case READERROR_RESPONSE::RR_CANCEL:
 			rfd = gcnew UserResponceOfFail(USERACTION::UA_CANCEL);
-			break;
-		case System::Windows::Forms::DialogResult::Retry:
-			rfd = gcnew UserResponceOfFail(USERACTION::UA_RETRY);
-			break;
-		case System::Windows::Forms::DialogResult::Ignore:
-			rfd = gcnew UserResponceOfFail(
-				(GetAsyncKeyState(VK_SHIFT) < 0) ?
-				USERACTION::UA_IGNOREALL : USERACTION::UA_IGNORE);
 			break;
 		default:
 			CppUtils::Fatal(L"Illegal");

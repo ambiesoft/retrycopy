@@ -227,7 +227,7 @@ namespace retrycopy {
 		LONGLONG totalInputSize_;
 		LONGLONG totalProcessed_;
 		int totalOK_;
-
+		int totalSkipped_;
 	public:
 		ThreadDataMaster(String^ src, String^ dst):
 			src_(src), dst_(dst)
@@ -271,20 +271,33 @@ namespace retrycopy {
 		void IncrementOK() {
 			++totalOK_;
 		}
-
+		void IncrementSkipCount() {
+			++totalSkipped_;
+		}
 		property bool IsOK
 		{
-			bool get() { return totalOK_==sds_->Count; }
+			bool get() { return totalOK_ == sds_->Count; }
 		}
 		property int TotalOKCount
 		{
 			int get() { return totalOK_; }
 		}
+		property int TotalSkipCount
+		{
+			int get() { return totalSkipped_; }
+		}
+		property int TotalFailCount
+		{
+			int get() { return sds_->Count - TotalOKCount - TotalSkipCount; }
+		}
 		property LONGLONG TotalWrittenSize
 		{
 			LONGLONG get() { return totalProcessed_; }
 		}
-		
+		property bool HasFailed
+		{
+			bool get() { return TotalFailCount != 0; }
+		}
 		void SetTotalInputSize(LONGLONG size) {
 			totalInputSize_ = size;
 			ThreadTransitory::TotalSize = size;
@@ -326,10 +339,19 @@ namespace retrycopy {
 		bool done_ = false;
 		int taskNo_ = -1;
 		DWORD dwCDForWrite_ = 0;
+		bool skipped_ = false;
 	public:
 		ThreadDataFile(int taskNo, String^ srcFile, String^ dstFile):
 			taskNo_(taskNo), srcFile_(srcFile), dstFile_(dstFile){}
 
+		void SetSkipped() {
+			DASSERT(!skipped_);
+			skipped_ = true;
+		}
+		property bool IsSkipped
+		{
+			bool get() { return skipped_; }
+		}
 		property int TaskNo
 		{
 			int get() { return taskNo_; }
