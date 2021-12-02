@@ -12,6 +12,7 @@ namespace retrycopy {
 	using namespace System::Data;
 	using namespace System::Drawing;
 
+	ref class UserResponceOfFail;
 	/// <summary>
 	/// Summary for FormMain
 	///
@@ -682,7 +683,7 @@ namespace retrycopy {
 		System::Threading::Thread^ theThread_;
 		//HANDLE hSource_;
 		//HANDLE hDestination_;
-		
+
 		void StartOfThreadMaster(Object^ obj);
 		void StartOfThreadMaster2(ThreadDataMaster^);
 		void StartOfThreadFile(ThreadDataFile^ thData);
@@ -692,8 +693,8 @@ namespace retrycopy {
 		void ThreadFileStarted(ThreadDataFile^ thData);
 		void ThreadFileEnded(ThreadDataFile^ thData);
 		bool OpenFileFailedGetUserAction(DWORD le);
-		void ReadFileFailed_obsolete(LONGLONG pos, LONGLONG allSize, DWORD le, int retried);
-		Object^ ReadFileFailedGetUserAction(LONGLONG pos, LONGLONG allSize, DWORD le, int retried);
+		UserResponceOfFail^ ReadFileFailedGetUserAction(String^ file, LONGLONG pos, LONGLONG allSize, DWORD le, int retried);
+		UserResponceOfFail^ SFPFailedGetUserAction(String^ file, LONGLONG pos, LONGLONG allSize, DWORD le, int retried);
 		void ProcessProgressed_obsolete(LONGLONG pos);
 		void ProgressWriteWithZero(LONGLONG pos, int bufferSize);
 		void ThreadTaskFinished(ThreadDataMaster^ thData);
@@ -715,7 +716,7 @@ namespace retrycopy {
 		void UpdateTitle();
 	internal:
 		bool AskOverwrite(String^ fileTobeOverwritten);
-		
+
 	private:
 		System::Void btnNavSource_Click(System::Object^ sender, System::EventArgs^ e);
 		System::Void btnNavDestination_Click(System::Object^ sender, System::EventArgs^ e);
@@ -761,35 +762,41 @@ namespace retrycopy {
 		System::Void tsmiFile_Click(System::Object^ sender, System::EventArgs^ e);
 		System::Void tsmiDirectory_Click(System::Object^ sender, System::EventArgs^ e);
 
-}; // FormMain
+	}; // FormMain
 
-ref class ReadFailData
-{
-public:
-	enum class ACTION {
-		NONE,
-		RETRY,
-		CANCEL,
-		IGNOREALL,
+	enum class USERACTION {
+		UA_NONE,
+		UA_RETRY,
+		UA_CANCEL,
+		UA_IGNORE,
+		UA_IGNOREALL,
 	};
-private:
-	ACTION action_;
-public:
-	ReadFailData(ACTION action) : action_(action) {}
-	property bool IsRetry
+	ref class UserResponceOfFail
 	{
-		bool get() { return action_ == ACTION::RETRY; }
-	}
-	property bool IsCancel
-	{
-		bool get() { return action_ == ACTION::CANCEL; }
-	}
-	property bool IsIgnoreAll
-	{
-		bool get() { return action_ == ACTION::IGNOREALL; }
-	}
-};
+	public:
 
+	private:
+		USERACTION action_;
+	public:
+		UserResponceOfFail(USERACTION action) : action_(action) {}
+		property bool IsRetry
+		{
+			bool get() { return action_ == USERACTION::UA_RETRY; }
+		}
+		property bool IsCancel
+		{
+			bool get() { return action_ == USERACTION::UA_CANCEL; }
+		}
+		property bool IsIgnore
+		{
+			bool get() { return action_ == USERACTION::UA_IGNORE; }
+		}
+		property bool IsIgnoreAll
+		{
+			bool get() { return action_ == USERACTION::UA_IGNOREALL; }
+		}
+	};
+	delegate UserResponceOfFail^ RSDLLLLDwIDelegate(String^, LONGLONG, LONGLONG, DWORD, int);
 } // namespace
 
 

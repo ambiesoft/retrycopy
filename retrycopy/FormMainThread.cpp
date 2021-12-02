@@ -216,10 +216,46 @@ namespace retrycopy {
 			}
 			LARGE_INTEGER li;
 			li.QuadPart = thFileData->ProcessedSize;
-			bool sfpFailed = (0 == SetFilePointerEx(thFileData->HSrc, li, NULL, FILE_BEGIN));
+			if (!SetFilePointerEx(thFileData->HSrc, li, NULL, FILE_BEGIN))
+			{
+				const DWORD le = GetLastError();
+				
+				if (ThreadTransitory::UserRetry < 0 ||
+					retried++ < ThreadTransitory::UserRetry)
+				{
+					// Do retry
+					ThreadTransitory::SetFileLastError(
+						thFileData->ProcessedSize,
+						thFileData->SrcSize,
+						le,
+						retried);
+					initSrc = true;
+					System::Threading::Thread::Sleep(100);
+					continue;
+				}
+
+				// Ask user
+				UserResponceOfFail^ sfpFail = (UserResponceOfFail^)
+					EndInvoke(BeginInvoke(gcnew RSDLLLLDwIDelegate(this, &FormMain::SFPFailedGetUserAction),
+						thFileData->SrcFile,
+						thFileData->ProcessedSize,
+						thFileData->SrcSize,
+						le,
+						retried));
+				if (sfpFail->IsCancel)
+					return;
+				if (sfpFail->IsRetry)
+				{
+					retried = 0;
+					initSrc = true;
+					continue;
+				}
+				DASSERT(false);
+				return;
+			}
 			
 			DWORD dwRead;
-			if (sfpFailed || !ReadFile(thFileData->HSrc,
+			if (!ReadFile(thFileData->HSrc,
 				bb.get(),
 				bufferSize,
 				&dwRead,
@@ -257,8 +293,9 @@ namespace retrycopy {
 						continue;
 					}
 					// fail
-					ReadFailData^ rfd = (ReadFailData^)
-						EndInvoke(BeginInvoke(gcnew RDLLLLDwIDelegate(this, &FormMain::ReadFileFailedGetUserAction), 
+					UserResponceOfFail^ rfd = (UserResponceOfFail^)
+						EndInvoke(BeginInvoke(gcnew RSDLLLLDwIDelegate(this, &FormMain::ReadFileFailedGetUserAction),
+							thFileData->SrcFile,
 							thFileData->ProcessedSize,
 							thFileData->SrcSize,
 							le,
@@ -306,17 +343,6 @@ namespace retrycopy {
 				thFileData->SetDone();
 				return;
 			}
-
-			// if ((thData->allProcessed_ % 10000) == 0)
-			//{
-			//	BeginInvoke(gcnew VLLDelegate(this, &FormMain::ProcessProgressed), 
-			//		thFileData->ProcessedSize);
-			//}
 		} while (true);
 	}
-	//void FormMain::OnUpdateSize()
-	//{
-	//}
-
-
 }

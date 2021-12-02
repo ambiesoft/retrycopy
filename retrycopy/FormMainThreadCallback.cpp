@@ -239,7 +239,7 @@ namespace retrycopy {
 	}
 	void FormMain::ProgressWriteWithZero(LONGLONG pos, int bufferSize)
 	{
-		txtLog->Text = (String::Format(I18N(L"Write 0 at {0} with size {1}."), pos, bufferSize));
+		txtLog->Text = (String::Format(I18N(L"Write 0 from {0} with size {1}."), pos, bufferSize));
 	}
 
 	bool FormMain::OpenFileFailedGetUserAction(DWORD le)
@@ -254,35 +254,49 @@ namespace retrycopy {
 			Application::ProductName,
 			MessageBoxButtons::RetryCancel);
 	}
-	void FormMain::ReadFileFailed_obsolete(LONGLONG pos, LONGLONG allSize, DWORD le, int retried)
+	UserResponceOfFail^ FormMain::SFPFailedGetUserAction(String^ file, LONGLONG pos, LONGLONG allSize, DWORD le, int retried)
 	{
-		//txtLog->Text = (
-		//	String::Format(I18N(L"{0} Failed to ReadFile at {1} ({2})"),
-		//		retried,
-		//		pos,
-		//		gcnew String(GetLastErrorString(le).c_str())));
-	}
-	Object^ FormMain::ReadFileFailedGetUserAction(LONGLONG pos, LONGLONG allSize, DWORD le, int retried)
-	{
-		ReadFileFailed_obsolete(pos, allSize, le, retried);
-		ReadFailData^ rfd;
+		UserResponceOfFail^ rfd;
 		switch (CppUtils::CenteredMessageBox(
 			this,
-			String::Format(I18N(L"Failed to ReadFile at {0}"), pos),
+			String::Format(I18N(L"Failed to SetFilePointer at {0} on the file \"{1}\" {2} times."),
+				pos, file, retried),
+			Application::ProductName,
+			MessageBoxButtons::RetryCancel,
+			MessageBoxIcon::Error,
+			MessageBoxDefaultButton::Button2))
+		{
+		case System::Windows::Forms::DialogResult::Retry:
+			rfd = gcnew UserResponceOfFail(USERACTION::UA_RETRY);
+			break;
+		default:
+			rfd = gcnew UserResponceOfFail(USERACTION::UA_CANCEL);
+			break;
+		}
+		return rfd;
+	}
+	UserResponceOfFail^ FormMain::ReadFileFailedGetUserAction(String^ file, LONGLONG pos, LONGLONG allSize, DWORD le, int retried)
+	{
+		UserResponceOfFail^ rfd;
+		switch (CppUtils::CenteredMessageBox(
+			this,
+			String::Format(I18N(L"Failed to ReadFile at {0} on the file \"{1}\" {2} times."),
+				pos, file, retried),
 			Application::ProductName,
 			MessageBoxButtons::AbortRetryIgnore,
-			MessageBoxIcon::Warning,
+			MessageBoxIcon::Error,
 			MessageBoxDefaultButton::Button2))
 		{
 		case System::Windows::Forms::DialogResult::Abort:
-			rfd = gcnew ReadFailData(ReadFailData::ACTION::CANCEL);
+			rfd = gcnew UserResponceOfFail(USERACTION::UA_CANCEL);
 			break;
 		case System::Windows::Forms::DialogResult::Retry:
-			rfd = gcnew ReadFailData(ReadFailData::ACTION::RETRY);
+			rfd = gcnew UserResponceOfFail(USERACTION::UA_RETRY);
 			break;
 		case System::Windows::Forms::DialogResult::Ignore:
-			if (GetAsyncKeyState(VK_SHIFT) < 0)
-				rfd = gcnew ReadFailData(ReadFailData::ACTION::IGNOREALL);
+			rfd = gcnew UserResponceOfFail(
+				(GetAsyncKeyState(VK_SHIFT) < 0) ?
+				USERACTION::UA_IGNOREALL : USERACTION::UA_IGNORE);
 			break;
 		default:
 			CppUtils::Fatal(L"Illegal");

@@ -3,6 +3,7 @@
 #include "../../lsMisc/CommandLineParser.h"
 #include "gitrev.h"
 #include "FormMain.h"
+using namespace System::Text;
 
 using namespace retrycopy;
 using namespace Ambiesoft;
@@ -32,8 +33,34 @@ int main(cli::array<System::String ^> ^args)
 		ArgEncodingFlags::ArgEncodingFlags_Default,
 		I18N(L"Show Gitrev"));
 
+	wstring mainArg;
+	parser.AddOption(L"", ArgCount::ArgCount_ZeroToInfinite,
+		&mainArg);
 	parser.Parse();
 
+	// check input
+	if (!parser.getUnknowOptionStrings().empty())
+	{
+		StringBuilder message;
+		message.AppendLine(I18N(L"Unknown option(s):"));
+		message.AppendLine(gcnew String(parser.getUnknowOptionStrings().c_str()));
+		MessageBox::Show(message.ToString(),
+			Application::ProductName,
+			MessageBoxButtons::OK,
+			MessageBoxIcon::Exclamation);
+		return 1;
+	}
+	if (!mainArg.empty())
+	{
+		StringBuilder message;
+		message.AppendLine(I18N(L"Unknown argument:"));
+		message.AppendLine(gcnew String(mainArg.c_str()));
+		MessageBox::Show(message.ToString(),
+			Application::ProductName,
+			MessageBoxButtons::OK,
+			MessageBoxIcon::Exclamation);
+		return 1;
+	}
 	if (bShowGitRev)
 	{
 		MessageBox::Show(

@@ -20,7 +20,6 @@ delegate bool BSDelegate(System::String^);
 delegate void VLLDelegate(LONGLONG);
 delegate void VLLIDelegate(LONGLONG, int);
 delegate void VLLLLDwIDelegate(LONGLONG,LONGLONG,DWORD,int);
-delegate System::Object^ RDLLLLDwIDelegate(LONGLONG,LONGLONG,DWORD,int);
 delegate bool BDwDelegate(DWORD);
 
 #define I18N(s) (s)
