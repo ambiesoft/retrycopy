@@ -42,6 +42,10 @@ ShouldBeFiles:
 - retrycopy.pdb
 - retrycopymisc.dll
 - retrycopymisc.pdb
+- ja-JP\Ambiesoft.GetNumericTextDialog.resources.dll
+- Ambiesoft.GetNumericTextDialog.pdb
+- Ambiesoft.GetNumericTextDialog.dll
+
 TotalFileCount: exact
 archivedir: C:\Linkout
 remotedir: https://ambiesoft.com/ffdav/uploads/retrycopy/
