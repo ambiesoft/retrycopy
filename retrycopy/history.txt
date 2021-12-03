@@ -1,3 +1,6 @@
+2021/12/03 v1.0.8
+More logs
+
 2021/12/03 v1.0.7
 WZOmode (Write Zero by 1-byte)
 

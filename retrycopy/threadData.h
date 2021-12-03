@@ -221,6 +221,9 @@ namespace retrycopy {
 			}
 		}
 		static void SetLastErrorDisp(LONGLONG pos, LONGLONG allSize, DWORD le, int retried);
+		static void SetProgress(String^ message) {
+			progressDisp_ = message;
+		}
 		static void SetReadingProgress(LONGLONG pos, LONGLONG allSize, int retried);
 		static void SetWrittingProgress(LONGLONG pos, LONGLONG allSize);
 		static void ClearLastErrorDisp() {

@@ -144,8 +144,9 @@ namespace retrycopy {
 			KVS^ sds;
 			try
 			{
-				BeginInvoke(gcnew VSDelegate(this, &FormMain::ThreadLog),
-						I18N(L"Obtaining source files and directories..."));
+				String^ message = I18N(L"Obtaining source files and directories...");
+				BeginInvoke(gcnew VSDelegate(this, &FormMain::ThreadLog), message);
+				ThreadTransitory::SetProgress(message);
 				sds = AmbLib::GetSourceAndDestFiles(txtSource->Text, txtDestination->Text, dstDirs);
 			}
 			catch (Exception^ ex)
@@ -163,11 +164,15 @@ namespace retrycopy {
 		try
 		{
 			// prepare target dirs
-			BeginInvoke(gcnew VSDelegate(this, &FormMain::ThreadLog),
-				I18N(L"Preparing target directories..."));
+			String^ message = I18N(L"Preparing target directories...");
+			BeginInvoke(gcnew VSDelegate(this, &FormMain::ThreadLog), message);
+			ThreadTransitory::SetProgress(message);
 			thDataMaster->PrepareDstDirs();
-
+			
 			// calc total input size
+			message = I18N(L"Calculating total size...");
+			BeginInvoke(gcnew VSDelegate(this, &FormMain::ThreadLog), message);
+			ThreadTransitory::SetProgress(message);
 			LONGLONG totalInputSize = 0;
 			for each (KV kv in thDataMaster->SDS)
 			{

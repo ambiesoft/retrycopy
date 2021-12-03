@@ -265,7 +265,7 @@ namespace retrycopy {
 			this->txtProgress->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
 				| System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
-			this->txtProgress->Location = System::Drawing::Point(81, 301);
+			this->txtProgress->Location = System::Drawing::Point(81, 295);
 			this->txtProgress->Name = L"txtProgress";
 			this->txtProgress->ReadOnly = true;
 			this->txtProgress->Size = System::Drawing::Size(431, 20);
@@ -493,7 +493,7 @@ namespace retrycopy {
 			// label12
 			// 
 			this->label12->AutoSize = true;
-			this->label12->Location = System::Drawing::Point(12, 304);
+			this->label12->Location = System::Drawing::Point(12, 298);
 			this->label12->Name = L"label12";
 			this->label12->Size = System::Drawing::Size(51, 13);
 			this->label12->TabIndex = 2400;
@@ -504,7 +504,7 @@ namespace retrycopy {
 			this->btnSuspend->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->btnSuspend->Enabled = false;
-			this->btnSuspend->Location = System::Drawing::Point(12, 355);
+			this->btnSuspend->Location = System::Drawing::Point(12, 352);
 			this->btnSuspend->Name = L"btnSuspend";
 			this->btnSuspend->Size = System::Drawing::Size(503, 23);
 			this->btnSuspend->TabIndex = 2600;
@@ -643,7 +643,7 @@ namespace retrycopy {
 			this->txtLastError->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
 				| System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
-			this->txtLastError->Location = System::Drawing::Point(81, 329);
+			this->txtLastError->Location = System::Drawing::Point(81, 321);
 			this->txtLastError->Name = L"txtLastError";
 			this->txtLastError->ReadOnly = true;
 			this->txtLastError->Size = System::Drawing::Size(431, 20);
@@ -652,7 +652,7 @@ namespace retrycopy {
 			// label13
 			// 
 			this->label13->AutoSize = true;
-			this->label13->Location = System::Drawing::Point(12, 332);
+			this->label13->Location = System::Drawing::Point(12, 324);
 			this->label13->Name = L"label13";
 			this->label13->Size = System::Drawing::Size(55, 13);
 			this->label13->TabIndex = 2525;
