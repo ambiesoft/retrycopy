@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 namespace retrycopy {
 
@@ -10,7 +10,7 @@ namespace retrycopy {
 	using namespace System::Drawing;
 
 	/// <summary>
-	/// FormAbout ‚ÌŠT—v
+	/// FormAbout ã®æ¦‚è¦
 	/// </summary>
 	public ref class FormAbout : public System::Windows::Forms::Form
 	{
@@ -27,7 +27,7 @@ namespace retrycopy {
 
 	protected:
 		/// <summary>
-		/// g—p’†‚ÌƒŠƒ\[ƒX‚ğ‚·‚×‚ÄƒNƒŠ[ƒ“ƒAƒbƒv‚µ‚Ü‚·B
+		/// ä½¿ç”¨ä¸­ã®ãƒªã‚½ãƒ¼ã‚¹ã‚’ã™ã¹ã¦ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—ã—ã¾ã™ã€‚
 		/// </summary>
 		~FormAbout()
 		{
@@ -42,14 +42,14 @@ namespace retrycopy {
 
 	private:
 		/// <summary>
-		/// •K—v‚ÈƒfƒUƒCƒi[•Ï”‚Å‚·B
+		/// å¿…è¦ãªãƒ‡ã‚¶ã‚¤ãƒŠãƒ¼å¤‰æ•°ã§ã™ã€‚
 		/// </summary>
 		System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
-		/// ƒfƒUƒCƒi[ ƒTƒ|[ƒg‚É•K—v‚Èƒƒ\ƒbƒh‚Å‚·B‚±‚Ìƒƒ\ƒbƒh‚Ì“à—e‚ğ
-		/// ƒR[ƒh ƒGƒfƒBƒ^[‚Å•ÏX‚µ‚È‚¢‚Å‚­‚¾‚³‚¢B
+		/// ãƒ‡ã‚¶ã‚¤ãƒŠãƒ¼ ã‚µãƒãƒ¼ãƒˆã«å¿…è¦ãªãƒ¡ã‚½ãƒƒãƒ‰ã§ã™ã€‚ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã®å†…å®¹ã‚’
+		/// ã‚³ãƒ¼ãƒ‰ ã‚¨ãƒ‡ã‚£ã‚¿ãƒ¼ã§å¤‰æ›´ã—ãªã„ã§ãã ã•ã„ã€‚
 		/// </summary>
 		void InitializeComponent(void)
 		{
@@ -101,9 +101,6 @@ namespace retrycopy {
 		System::Void btnOK_Click(System::Object^ sender, System::EventArgs^ e) {
 			Close();
 		}
-		System::Void FormAbout_FormClosing(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e) {
-			e->Cancel = true;
-			Visible = false;
-		}
+		System::Void FormAbout_FormClosing(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e);
 	};
 }

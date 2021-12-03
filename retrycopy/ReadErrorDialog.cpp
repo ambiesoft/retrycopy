@@ -5,9 +5,9 @@ using namespace Ambiesoft;
 
 namespace retrycopy {
 
-	READERROR_RESPONSE ReadErrorDialog::ShowDialogAndGetResponce()
+	READERROR_RESPONSE ReadErrorDialog::ShowDialogAndGetResponce(System::Windows::Forms::IWin32Window^ parent)
 	{
-		if (System::Windows::Forms::DialogResult::Cancel == this->ShowDialog())
+		if (System::Windows::Forms::DialogResult::Cancel == this->ShowDialog(parent))
 			return READERROR_RESPONSE::RR_CANCEL;
 		return responce_;
 	}
@@ -44,5 +44,23 @@ namespace retrycopy {
 		this->DialogResult = System::Windows::Forms::DialogResult::OK;
 		Close();
 	}
-
+	System::Void ReadErrorDialog::btnGiveUpAndWZOmode_Click(System::Object^ sender, System::EventArgs^ e)
+	{
+		if (initialBufferSize_ != 1)
+		{
+			CppUtils::Info(this, I18N(L"Only available when 1-byte read fails. Please set the buffer size to 1 and Retry."));
+			return;
+		}
+		String^ message = String::Format(
+			I18N(L"Are you sure to give up on reading any more bytes, and read one byte at a time, writing zero for each one that fails {0} times?"),
+			RetryCount + 1);
+		if (System::Windows::Forms::DialogResult::Yes !=
+			CppUtils::YesOrNo(this, message, MessageBoxDefaultButton::Button2))
+		{
+			return;
+		}
+		responce_ = READERROR_RESPONSE::RR_WZOMODE;
+		this->DialogResult = System::Windows::Forms::DialogResult::OK;
+		Close();
+	}
 }

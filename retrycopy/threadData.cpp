@@ -152,13 +152,25 @@ namespace retrycopy {
 	}
 	
 	// static
-	void ThreadTransitory::SetFileLastError(LONGLONG pos, LONGLONG allSize, DWORD le, int retried) 
+	void ThreadTransitory::SetLastErrorDisp(LONGLONG pos, LONGLONG allSize, DWORD le, int retried) 
 	{
-		fileLastError_ = (
-			String::Format(I18N(L"{0} Failed to ReadFile at {1} ({2})"),
+		lastErrorDisp_ = (
+			String::Format(I18N(L"Failed to ReadFile at {1} ({2}) {0} times"),
 				retried,
 				pos,
 				gcnew String(GetLastErrorString(le).c_str())));
+	}
+	void ThreadTransitory::SetReadingProgress(LONGLONG pos, LONGLONG allSize, int retried)
+	{
+		progressDisp_ =
+			String::Format(I18N(L"Reading at {0} with size {1} {2} times..."),
+				pos, allSize, retried + 1);
+	}
+	void ThreadTransitory::SetWrittingProgress(LONGLONG pos, LONGLONG allSize)
+	{
+		progressDisp_ = 
+			String::Format(I18N(L"Writting at {0} with size {1}..."),
+				pos, allSize);
 	}
 
 }

@@ -279,7 +279,7 @@ namespace retrycopy {
 
 		String^ message = String::Format(I18N(L"Failed to open file. ({0})"),
 			gcnew String(GetLastErrorString(le).c_str()));
-		txtLog->Text = (message);
+		txtLastError->Text = message;
 
 		return System::Windows::Forms::DialogResult::Retry == CppUtils::CenteredMessageBox(this,
 			message,
@@ -317,6 +317,7 @@ namespace retrycopy {
 		LONGLONG allSize,
 		DWORD le,
 		int retried,
+		int retryCount,
 		int bufferSize)
 	{
 		if (tn != ThreadTransitory::ThreadNumber)
@@ -330,9 +331,9 @@ namespace retrycopy {
 				pos,
 				file,
 				retried),
-			bufferSize);
+			bufferSize, retryCount);
 
-		const READERROR_RESPONSE res = dlg.ShowDialogAndGetResponce();
+		const READERROR_RESPONSE res = dlg.ShowDialogAndGetResponce(this);
 		udBuffer->Text = dlg.BufferSize.ToString();
 		DASSERT(udBuffer->Text == dlg.BufferSize.ToString());
 		switch (res)
@@ -342,6 +343,11 @@ namespace retrycopy {
 			break;
 		case READERROR_RESPONSE::RR_WRITEZERO:
 			rfd = gcnew UserResponceOfFail(USERACTION::UA_IGNORE, dlg.BufferSize);
+			break;
+		case READERROR_RESPONSE::RR_WZOMODE:
+			rfd = gcnew UserResponceOfFail(USERACTION::UA_WZOMODE, dlg.BufferSize);
+			udBuffer->Value = 1;
+			ThreadTransitory::UserBuffer = 1;
 			break;
 		case READERROR_RESPONSE::RR_CANCEL:
 			rfd = gcnew UserResponceOfFail(USERACTION::UA_CANCEL);

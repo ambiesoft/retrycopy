@@ -29,7 +29,8 @@ namespace retrycopy {
 		static int userBuffer_ = 40960;
 		static int userRetry_ = 10;
 
-		static String^ fileLastError_ = String::Empty;
+		static String^ lastErrorDisp_ = String::Empty;
+		static String^ progressDisp_ = String::Empty;
 		static bool userRemoveDirty_;
 
 		ref struct RLocker
@@ -67,7 +68,8 @@ namespace retrycopy {
 			curSize_ = 0;
 			curProcessedSize_ = 0;
 
-			fileLastError_ = String::Empty;
+			progressDisp_ = String::Empty;
+			lastErrorDisp_ = String::Empty;
 			userRemoveDirty_ = false;
 		}
 		static int IncrementThreadNumber() {
@@ -218,13 +220,19 @@ namespace retrycopy {
 				userRemove_ = v;
 			}
 		}
-		static void SetFileLastError(LONGLONG pos, LONGLONG allSize, DWORD le, int retried);
-		static void ClearFileLastError() {
-			fileLastError_ = String::Empty;
+		static void SetLastErrorDisp(LONGLONG pos, LONGLONG allSize, DWORD le, int retried);
+		static void SetReadingProgress(LONGLONG pos, LONGLONG allSize, int retried);
+		static void SetWrittingProgress(LONGLONG pos, LONGLONG allSize);
+		static void ClearLastErrorDisp() {
+			lastErrorDisp_ = String::Empty;
 		}
-		static property String^ FileLastError
+		static property String^ ProgressDisp
 		{
-			String^ get() { return fileLastError_; }
+			String^ get() { return progressDisp_; }
+		}
+		static property String^ LastErrorDisp
+		{
+			String^ get() { return lastErrorDisp_; }
 		}
 	};
 

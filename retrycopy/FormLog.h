@@ -79,9 +79,7 @@ namespace retrycopy {
 
 		}
 #pragma endregion
-	private: System::Void FormLog_FormClosing(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e) {
-		e->Cancel = true;
-		Visible = false;
-	}
+	private: 
+		System::Void FormLog_FormClosing(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e);
 	};
 }

@@ -318,7 +318,8 @@ namespace retrycopy {
 		txtCurrentSize->Text = SizeToUser(ThreadTransitory::CurSize);
 		txtCurrentProcessed->Text = SizeToUser(ThreadTransitory::ProcessedCurSize);
 
-		txtLog->Text = ThreadTransitory::FileLastError;
+		txtProgress->Text = ThreadTransitory::ProgressDisp;
+		txtLastError->Text = ThreadTransitory::LastErrorDisp;
 
 		progressMain->Value = ThreadTransitory::TotalPercent;
 

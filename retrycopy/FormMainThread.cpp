@@ -239,7 +239,7 @@ namespace retrycopy {
 			return;
 		}
 		bool initSrc = true;
-		// bool ignoreAllFail = false;
+		bool bWZOMode = false;
 		int retried = 0;
 		int bufferSize = 0;
 		std::unique_ptr<BYTE[]> bb;
@@ -293,11 +293,11 @@ namespace retrycopy {
 				RETURNIFTHREADNUMBER;
 				const DWORD le = GetLastError();
 				
-				if (ThreadTransitory::UserRetry < 0 ||
-					retried++ < ThreadTransitory::UserRetry)
+				if (retried++ < ThreadTransitory::UserRetry ||
+					ThreadTransitory::UserRetry < 0)
 				{
 					// Do retry
-					ThreadTransitory::SetFileLastError(
+					ThreadTransitory::SetLastErrorDisp(
 						thFileData->ProcessedSize,
 						thFileData->SrcSize,
 						le,
@@ -335,6 +335,10 @@ namespace retrycopy {
 				return;
 			}
 			
+			ThreadTransitory::SetReadingProgress(
+				thFileData->ProcessedSize,
+				bufferSize,
+				retried);
 			DWORD dwRead;
 			if (!ReadFile(thFileData->HSrc,
 				bb.get(),
@@ -358,12 +362,12 @@ namespace retrycopy {
 					return;
 				}
 				Thread::Sleep(Math::Min(consecutiveErrorCount, 100u));
-				//if (!ignoreAllFail)
+				if (!bWZOMode)
 				{
-					if (ThreadTransitory::UserRetry < 0 ||
-						retried++ < ThreadTransitory::UserRetry)
+					if (retried++ < ThreadTransitory::UserRetry ||
+						ThreadTransitory::UserRetry < 0)
 					{
-						ThreadTransitory::SetFileLastError(
+						ThreadTransitory::SetLastErrorDisp(
 							thFileData->ProcessedSize,
 							thFileData->SrcSize,
 							le,
@@ -378,13 +382,14 @@ namespace retrycopy {
 					UserResponceOfFail^ rfd = (UserResponceOfFail^)
 						EndInvokeWithTN(
 							thFileData->ThreadNumber,
-							BeginInvoke(gcnew RISDLLLLDwIIDelegate(this, &FormMain::ReadFileFailedGetUserAction),
+							BeginInvoke(gcnew RISDLLLLDwIIIDelegate(this, &FormMain::ReadFileFailedGetUserAction),
 							thFileData->ThreadNumber,
 							thFileData->SrcFile,
 							thFileData->ProcessedSize,
 							thFileData->SrcSize,
 							le,
 							retried,
+							ThreadTransitory::UserRetry,
 							bufferSize));
 					if (!rfd)
 					{
@@ -408,16 +413,39 @@ namespace retrycopy {
 						continue;
 					}
 
-					//if (rfd->IsIgnoreAll)
-					//	ignoreAllFail = true;
-					
+					if (rfd->IsWZOMode)
+					{
+						bWZOMode = true;
+						DASSERT(ThreadTransitory::UserBuffer == 1);
+						ThreadTransitory::UserBuffer = 1;
+						retried = 0;
+						continue;
+					}
 					if (bufferSize != ThreadTransitory::UserBuffer)
 					{
 						bufferSize = ThreadTransitory::UserBuffer;
 						DASSERT(bufferSize > 0);
 						bb.reset(new BYTE[bufferSize]);
 					}
-					thFileData->AddZeroWritten(bufferSize);
+				}
+				else
+				{
+					// WZOMode
+					if (retried++ < ThreadTransitory::UserRetry ||
+						ThreadTransitory::UserRetry < 0)
+					{
+						ThreadTransitory::SetLastErrorDisp(
+							thFileData->ProcessedSize,
+							thFileData->SrcSize,
+							le,
+							retried);
+						if (ShouldReopenError(le))
+						{
+							initSrc = true;
+						}
+						continue;
+					}
+					retried = 0;
 				}
 				EndInvokeWithTN(
 					thFileData->ThreadNumber,
@@ -427,11 +455,20 @@ namespace retrycopy {
 					bufferSize));
 				ZeroMemory(bb.get(), bufferSize);
 				dwRead = bufferSize;
+				thFileData->AddZeroWritten(bufferSize);
+			}
+			else
+			{
+				// ReadFile OK
+				bWZOMode = false;
+				ThreadTransitory::ClearLastErrorDisp();
 			}
 
 			consecutiveErrorCount = 0;
 			lastError = 0;
-			ThreadTransitory::ClearFileLastError();
+			ThreadTransitory::SetWrittingProgress(
+				thFileData->ProcessedSize,
+				bufferSize);
 
 			RETURNIFTHREADNUMBER;
 
