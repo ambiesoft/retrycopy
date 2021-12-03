@@ -62,7 +62,7 @@ namespace retrycopy {
 		// Rest from command line
 		{
 			CCommandLineParser parser(CaseFlags::CaseFlags_Default,
-				I18N(L"Copy date from broken HDD"),
+				I18N(L"Copy data from broken HDD"),
 				L"retrycopy");
 
 			wstring source;
