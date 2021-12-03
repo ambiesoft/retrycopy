@@ -9,12 +9,7 @@ namespace retrycopy {
 	using namespace System::Data;
 	using namespace System::Drawing;
 
-	public enum class READERROR_RESPONSE {
-		RR_NONE,
-		RR_RETRY,
-		RR_WRITEZERO,
-		RR_CANCEL,
-	};
+
 	/// <summary>
 	/// Summary for ReadErrorDialog
 	/// </summary>
@@ -139,6 +134,7 @@ namespace retrycopy {
 			this->Name = L"ReadErrorDialog";
 			this->ShowIcon = false;
 			this->ShowInTaskbar = false;
+			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterParent;
 			this->Text = L"ReadErrorDialog";
 			this->ResumeLayout(false);
 			this->PerformLayout();

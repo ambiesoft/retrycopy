@@ -42,10 +42,12 @@ namespace retrycopy {
 		Profile::GetInt(SECTION_OPTION, KEY_RETRY_COUNT,
 			ThreadTransitory::UserRetry, intval, ini);
 		udRetry->Value = std::clamp(intval, MINRETRYCOUNT, MAXRETRYCOUNT);
+		ThreadTransitory::UserRetry = Decimal::ToInt32(udRetry->Value);
 
 		Profile::GetInt(SECTION_OPTION, KEY_BUFFER_SIZE,
 			ThreadTransitory::UserBuffer, intval, ini);
 		udBuffer->Value = std::clamp(intval, MINREADBUFFERSIZE, MAXREADBUFFERSIZE);
+		ThreadTransitory::UserBuffer = Decimal::ToInt32(udBuffer->Value);
 
 		OverwriteItem::AddComboItem(cmbOverwrite);
 		Profile::GetInt(SECTION_OPTION, KEY_OVERWRITE,

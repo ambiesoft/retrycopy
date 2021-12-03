@@ -135,7 +135,8 @@ namespace retrycopy {
 		if (!done_)
 			lst.Add(I18N(L"Not Done"));
 		if (zeroWritten_ != 0)
-			lst.Add(String::Format(I18N(L"{0} bytes of zero was written")));
+			lst.Add(String::Format(I18N(L"{0} bytes of zero was written"),
+				zeroWritten_));
 		if (leRead_ != 0)
 			lst.Add(gcnew String(GetLastErrorString(leRead_).c_str()));
 		if (leWrite_ != 0)

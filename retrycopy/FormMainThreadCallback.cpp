@@ -268,7 +268,8 @@ namespace retrycopy {
 	{
 		if (tn != ThreadTransitory::ThreadNumber)
 			return;
-		txtLog->Text = (String::Format(I18N(L"Write 0 from {0} with size {1}."), pos, bufferSize));
+		AppendLog(String::Format(
+			I18N(L"Write zero from {0} with size {1}."), pos, bufferSize));
 	}
 
 	bool FormMain::OpenFileFailedGetUserAction(int tn, DWORD le)
@@ -324,7 +325,7 @@ namespace retrycopy {
 		DASSERT(udBuffer->Text == bufferSize.ToString());
 		UserResponceOfFail^ rfd;
 		ReadErrorDialog dlg(
-			String::Format(I18N(L"Failed to ReadFile {0} bytes from {1} on the file \"{2}\" {3} times."),
+			String::Format(I18N(L"Failed to read {0} bytes from {1} on the file \"{2}\" {3} times."),
 				bufferSize,
 				pos,
 				file,

@@ -38,7 +38,12 @@ inline std::wstring getStdWstring(System::String^ s)
 	ret = p;
 	return ret;
 }
-
+public enum class READERROR_RESPONSE {
+	RR_NONE,
+	RR_RETRY,
+	RR_WRITEZERO,
+	RR_CANCEL,
+};
 #define MINREADBUFFERSIZE 1
 #define MAXREADBUFFERSIZE (10 * 1024 * 1024)
 
