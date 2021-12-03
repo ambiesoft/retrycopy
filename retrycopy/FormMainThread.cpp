@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "helper.h"
+#include "threadData.h"
 #include "FormMain.h"
 using namespace System::Collections::Generic;
 
@@ -12,16 +13,34 @@ using namespace System::Threading;
 using namespace System::IO;
 using namespace Ambiesoft;
 using namespace Ambiesoft::stdosd;
-namespace retrycopy {
 
+namespace retrycopy {
+	Object^ FormMain::EndInvokeWithTN(int tn, IAsyncResult^ ir)
+	{
+		if (tn != ThreadTransitory::ThreadNumber)
+			return nullptr;
+
+		return Form::EndInvoke(ir);
+	}
 	void FormMain::StartOfThreadMaster(Object^ obj)
 	{
 		ThreadDataMaster^ thDataMaster = (ThreadDataMaster^)obj;
-		EndInvoke(BeginInvoke(gcnew VVDelegate(this, &FormMain::ThreadStarted)));
+
+		SetThreadDescription(
+			GetCurrentThread(),
+			L"ThisIsMyThreadName!"
+		);
+
+		EndInvokeWithTN(thDataMaster->ThreadNumber,
+			BeginInvoke(gcnew VIDelegate(this, &FormMain::ThreadStarted),
+			thDataMaster->ThreadNumber));
 
 		StartOfThreadMaster2(thDataMaster);
 
-		EndInvoke(BeginInvoke(gcnew VVDelegate(this, &FormMain::ThreadFinished)));
+		EndInvokeWithTN(
+			thDataMaster->ThreadNumber,
+			BeginInvoke(gcnew VIDelegate(this, &FormMain::ThreadFinished),
+			thDataMaster->ThreadNumber));
 	}
 	void FormMain::StartOfThreadMaster2(ThreadDataMaster^ thDataMaster)
 	{
@@ -64,8 +83,11 @@ namespace retrycopy {
 				}
 				if (!Directory::Exists(thDataMaster->Dst))
 				{
-					if (!(bool)EndInvoke(BeginInvoke(
-						gcnew BSDelegate(this, &FormMain::OnThreadYesNo),
+					if (!(bool)EndInvokeWithTN(
+						thDataMaster->ThreadNumber,
+						BeginInvoke(
+						gcnew BISDelegate(this, &FormMain::OnThreadYesNo),
+						thDataMaster->ThreadNumber,
 						String::Format(
 							I18N(L"'{0}' does not exist. Do you want to create a new directory?"),
 							thDataMaster->Dst
@@ -97,7 +119,10 @@ namespace retrycopy {
 		} while (false);
 		if (!String::IsNullOrEmpty(initialError))
 		{
-			EndInvoke(BeginInvoke(gcnew VSDelegate(this, &FormMain::OnThreadError),
+			EndInvokeWithTN(
+				thDataMaster->ThreadNumber,
+				BeginInvoke(gcnew VISDelegate(this, &FormMain::OnThreadError),
+				thDataMaster->ThreadNumber,
 				initialError));
 			return;
 		}
@@ -107,11 +132,16 @@ namespace retrycopy {
 			KVS^ sds;
 			try
 			{
+				BeginInvoke(gcnew VSDelegate(this, &FormMain::ThreadLog),
+						I18N(L"Obtaining source files and directories..."));
 				sds = AmbLib::GetSourceAndDestFiles(txtSource->Text, txtDestination->Text, dstDirs);
 			}
 			catch (Exception^ ex)
 			{
-				EndInvoke(BeginInvoke(gcnew VSDelegate(this, &FormMain::OnThreadError),
+				EndInvokeWithTN(
+					thDataMaster->ThreadNumber,
+					BeginInvoke(gcnew VISDelegate(this, &FormMain::OnThreadError),
+					thDataMaster->ThreadNumber,
 					ex->Message));
 				return;
 			}
@@ -121,6 +151,8 @@ namespace retrycopy {
 		try
 		{
 			// prepare target dirs
+			BeginInvoke(gcnew VSDelegate(this, &FormMain::ThreadLog),
+				I18N(L"Preparing target directories..."));
 			thDataMaster->PrepareDstDirs();
 
 			// calc total input size
@@ -136,11 +168,13 @@ namespace retrycopy {
 			for (int i = 0; i < thDataMaster->SDS->Count; ++i)
 			{
 				ThreadTransitory::ProcessedTotalCount = i + 1;
-				ThreadDataFile^ tdf = gcnew ThreadDataFile(i + 1,
+				ThreadDataFile^ tdf = gcnew ThreadDataFile(
+					thDataMaster->ThreadNumber, i + 1,
 					thDataMaster->SDS[i].Key, thDataMaster->SDS[i].Value);
 
 				StartOfThreadFile(tdf);
-
+				if (thDataMaster->ThreadNumber != ThreadTransitory::ThreadNumber)
+					return;
 				thDataMaster->TotalProcessedSize += tdf->ProcessedSize;
 				tdf->CloseFiles();
 				if (tdf->IsSkipped)
@@ -154,23 +188,35 @@ namespace retrycopy {
 					AmbLib::CopyFileTime(tdf->SrcFile, tdf->DstFile,
 						AmbLib::CFT::Creation);
 				}
-				EndInvoke(BeginInvoke(gcnew VTfDelegate(this, &FormMain::ThreadFileEnded),
+				EndInvokeWithTN(
+					tdf->ThreadNumber,
+					BeginInvoke(gcnew VTfDelegate(this, &FormMain::ThreadFileEnded),
 					tdf));
 				thDataMaster->AppendEnded(tdf);
 			}
 		}
-		catch(ThreadAbortException^)
-		{ }
+		catch(ThreadAbortException^){}
 		catch(Exception^ ex)
 		{
-			EndInvoke(BeginInvoke(gcnew VSDelegate(this, &FormMain::OnThreadError),
+			EndInvokeWithTN(
+				thDataMaster->ThreadNumber,
+				BeginInvoke(gcnew VISDelegate(this, &FormMain::OnThreadError),
+				thDataMaster->ThreadNumber,
 				ex->Message));
 		}
-		EndInvoke(BeginInvoke(gcnew VTmDelegate(this, &FormMain::ThreadTaskFinished), thDataMaster));
+		EndInvokeWithTN(
+			thDataMaster->ThreadNumber,
+			BeginInvoke(gcnew VTmDelegate(this, &FormMain::ThreadTaskFinished), thDataMaster));
 	}
+
+#define RETURNIFTHREADNUMBER do { if(thFileData->ThreadNumber != ThreadTransitory::ThreadNumber) { return; } }while(false)
 	void FormMain::StartOfThreadFile(ThreadDataFile^ thFileData)
 	{
-		EndInvoke(BeginInvoke(gcnew VTfDelegate(this, &FormMain::ThreadFileStarted),
+		RETURNIFTHREADNUMBER;
+
+		EndInvokeWithTN(
+			thFileData->ThreadNumber,
+			BeginInvoke(gcnew VTfDelegate(this, &FormMain::ThreadFileStarted),
 			thFileData));
 		thFileData->ProcessedSize = 0;
 		
@@ -188,6 +234,9 @@ namespace retrycopy {
 		unsigned consecutiveErrorCount = 0;
 		unsigned sameErrorCount = 0;
 		DWORD lastError = 0;
+
+		RETURNIFTHREADNUMBER;
+
 		do 
 		{
 			if (bufferSize != ThreadTransitory::UserBuffer)
@@ -203,8 +252,11 @@ namespace retrycopy {
 				{
 				case ThreadDataFile::INITSRCRET::INITSRC_CANNOTOPEN:
 					// ask user
-					if ((bool)EndInvoke(BeginInvoke(
-						gcnew BDwDelegate(this, &FormMain::OpenFileFailedGetUserAction),
+					if ((bool)EndInvokeWithTN(
+						thFileData->ThreadNumber,
+						BeginInvoke(
+						gcnew BIDwDelegate(this, &FormMain::OpenFileFailedGetUserAction),
+						thFileData->ThreadNumber,
 						thFileData->SrcLE)))
 					{
 						// retry
@@ -226,6 +278,7 @@ namespace retrycopy {
 			li.QuadPart = thFileData->ProcessedSize;
 			if (!SetFilePointerEx(thFileData->HSrc, li, NULL, FILE_BEGIN))
 			{
+				RETURNIFTHREADNUMBER;
 				const DWORD le = GetLastError();
 				
 				if (ThreadTransitory::UserRetry < 0 ||
@@ -244,12 +297,20 @@ namespace retrycopy {
 
 				// Ask user
 				UserResponceOfFail^ sfpFail = (UserResponceOfFail^)
-					EndInvoke(BeginInvoke(gcnew RSDLLLLDwIDelegate(this, &FormMain::SFPFailedGetUserAction),
+					EndInvokeWithTN(
+						thFileData->ThreadNumber,
+						BeginInvoke(gcnew RISDLLLLDwIDelegate(this, &FormMain::SFPFailedGetUserAction),
+						thFileData->ThreadNumber,
 						thFileData->SrcFile,
 						thFileData->ProcessedSize,
 						thFileData->SrcSize,
 						le,
 						retried));
+				if (!sfpFail)
+				{
+					DASSERT(thFileData->ThreadNumber != ThreadTransitory::ThreadNumber);
+					return;
+				}
 				if (sfpFail->IsCancel)
 					return;
 				if (sfpFail->IsRetry)
@@ -269,6 +330,7 @@ namespace retrycopy {
 				&dwRead,
 				NULL))
 			{
+				RETURNIFTHREADNUMBER;
 				const DWORD le = GetLastError();
 				if (le == lastError)
 				{
@@ -302,13 +364,21 @@ namespace retrycopy {
 					}
 					// fail
 					UserResponceOfFail^ rfd = (UserResponceOfFail^)
-						EndInvoke(BeginInvoke(gcnew RSDLLLLDwIIDelegate(this, &FormMain::ReadFileFailedGetUserAction),
+						EndInvokeWithTN(
+							thFileData->ThreadNumber,
+							BeginInvoke(gcnew RISDLLLLDwIIDelegate(this, &FormMain::ReadFileFailedGetUserAction),
+							thFileData->ThreadNumber,
 							thFileData->SrcFile,
 							thFileData->ProcessedSize,
 							thFileData->SrcSize,
 							le,
 							retried,
 							bufferSize));
+					if (!rfd)
+					{
+						DASSERT(thFileData->ThreadNumber != ThreadTransitory::ThreadNumber);
+						return;
+					}
 					if (rfd->IsCancel)
 						return;
 
@@ -328,16 +398,21 @@ namespace retrycopy {
 
 					//if (rfd->IsIgnoreAll)
 					//	ignoreAllFail = true;
-
+					
 					if (bufferSize != ThreadTransitory::UserBuffer)
 					{
 						bufferSize = ThreadTransitory::UserBuffer;
 						DASSERT(bufferSize > 0);
 						bb.reset(new BYTE[bufferSize]);
 					}
+					thFileData->AddZeroWritten(bufferSize);
 				}
-				EndInvoke(BeginInvoke(gcnew VLLIDelegate(this, &FormMain::ProgressWriteWithZero),
-					thFileData->ProcessedSize, bufferSize));
+				EndInvokeWithTN(
+					thFileData->ThreadNumber,
+					BeginInvoke(gcnew VILLIDelegate(this, &FormMain::ProgressWriteWithZero),
+					thFileData->ThreadNumber,
+					thFileData->ProcessedSize,
+					bufferSize));
 				ZeroMemory(bb.get(), bufferSize);
 				dwRead = bufferSize;
 			}
@@ -345,6 +420,8 @@ namespace retrycopy {
 			consecutiveErrorCount = 0;
 			lastError = 0;
 			ThreadTransitory::ClearFileLastError();
+
+			RETURNIFTHREADNUMBER;
 
 			DWORD dwWritten;
 			if (!(WriteFile(thFileData->HDst,
@@ -365,6 +442,6 @@ namespace retrycopy {
 				thFileData->SetDone();
 				return;
 			}
-		} while (true);
+		} while (thFileData->ThreadNumber == ThreadTransitory::ThreadNumber);
 	}
 }

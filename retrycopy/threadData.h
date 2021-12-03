@@ -13,6 +13,7 @@ namespace retrycopy {
 	{
 		static System::Threading::ReaderWriterLock^ rwl_ = gcnew System::Threading::ReaderWriterLock();
 
+		static int threadNumber_ = 1;
 		static LONGLONG totalSize_;
 		static LONGLONG processedTotalSize_;
 
@@ -68,6 +69,13 @@ namespace retrycopy {
 
 			fileLastError_ = String::Empty;
 			userRemoveDirty_ = false;
+		}
+		static int IncrementThreadNumber() {
+			threadNumber_++;
+			return threadNumber_;
+		}
+		static property int ThreadNumber {
+			int get() { return threadNumber_; }
 		}
 		static property bool HasUserRemoveChanged
 		{
@@ -166,22 +174,24 @@ namespace retrycopy {
 		{
 			int get() {
 				RLocker r(rwl_);
-				return userBuffer_ < 0 ? 1 : userBuffer_;
+				int t = userBuffer_;
+				return std::clamp(t, MINREADBUFFERSIZE, MAXREADBUFFERSIZE);
 			}
 			void set(int v) {
 				WLocker w(rwl_);
-				userBuffer_ = v;
+				userBuffer_ = std::clamp(v, MINREADBUFFERSIZE, MAXREADBUFFERSIZE);
 			}
 		}
 		static property int UserRetry
 		{
 			int get() {
 				RLocker r(rwl_);
-				return userRetry_;
+				int t = userRetry_;
+				return std::clamp(t, MINRETRYCOUNT, MAXRETRYCOUNT);
 			}
 			void set(int v) {
 				WLocker w(rwl_);
-				userRetry_ = v;
+				userRetry_ = std::clamp(v, MINRETRYCOUNT, MAXRETRYCOUNT);
 			}
 		}
 		static property OVERWRITE_TYPE UserOverWrite
@@ -220,6 +230,7 @@ namespace retrycopy {
 
 	ref class ThreadDataMaster
 	{
+		initonly int threadNumber_;
 		initonly String^ src_;
 		initonly String^ dst_;
 		KVS^ sds_ = nullptr;
@@ -229,10 +240,13 @@ namespace retrycopy {
 		int totalOK_;
 		int totalSkipped_;
 	public:
-		ThreadDataMaster(String^ src, String^ dst):
-			src_(src), dst_(dst)
+		ThreadDataMaster(int threadNumber, String^ src, String^ dst):
+			threadNumber_(threadNumber), src_(src), dst_(dst)
 		{}
-
+		property int ThreadNumber
+		{
+			int get() { return threadNumber_; }
+		}
 		property String^ Src
 		{
 			String^ get() { return src_; }
@@ -324,6 +338,8 @@ namespace retrycopy {
 
 	ref class ThreadDataFile
 	{
+		initonly int threadNumber_;
+
 		String^ srcFile_;
 		HANDLE hSrc_;
 		DWORD srcLE_;
@@ -340,10 +356,19 @@ namespace retrycopy {
 		int taskNo_ = -1;
 		DWORD dwCDForWrite_ = 0;
 		bool skipped_ = false;
+		LONGLONG zeroWritten_ = 0;
 	public:
-		ThreadDataFile(int taskNo, String^ srcFile, String^ dstFile):
-			taskNo_(taskNo), srcFile_(srcFile), dstFile_(dstFile){}
+		ThreadDataFile(int threadNumber, int taskNo, String^ srcFile, String^ dstFile):
+			threadNumber_(threadNumber), taskNo_(taskNo), srcFile_(srcFile), dstFile_(dstFile){}
 
+		property int ThreadNumber
+		{
+			int get() { return threadNumber_; }
+		}
+		void AddZeroWritten(int size) {
+			DASSERT(size > 0);
+			zeroWritten_ += size;
+		}
 		void SetSkipped() {
 			DASSERT(!skipped_);
 			skipped_ = true;
@@ -385,7 +410,7 @@ namespace retrycopy {
 		property bool IsOK
 		{
 			bool get() { 
-				return done_ &&
+				return done_ && zeroWritten_ == 0 &&
 					leRead_ == 0 && leWrite_ == 0 &&
 					SrcSize != -1 && SrcSize == allProcessed_;
 			}

@@ -5,6 +5,7 @@
 #include "threadData.h"
 #include "helper.h"
 #include "FormLog.h"
+#include "FormAbout.h"
 #include "OverwriteInfo.h"
 #include "RemoveInfo.h"
 #include "FormMain.h"
@@ -23,6 +24,13 @@ namespace retrycopy {
 
 		theForm_ = this;
 		logForm_ = gcnew FormLog();
+		udBuffer->Minimum = MINREADBUFFERSIZE;
+		udBuffer->Maximum = MAXREADBUFFERSIZE;
+		udBuffer->TextChanged += gcnew System::EventHandler(this, &FormMain::OnBufferSizeChanged);
+
+		udRetry->Minimum = MINRETRYCOUNT;
+		udRetry->Maximum = MAXRETRYCOUNT;
+		udRetry->TextChanged += gcnew System::EventHandler(this, &FormMain::OnRetryCountChanged);
 
 		int intval;
 		Ambiesoft::AmbLib::MakeTripleClickTextBox(txtSource);
@@ -33,11 +41,11 @@ namespace retrycopy {
 		HashIni^ ini = Profile::ReadAll(IniPath);
 		Profile::GetInt(SECTION_OPTION, KEY_RETRY_COUNT,
 			ThreadTransitory::UserRetry, intval, ini);
-		txtRetryCount->Text = intval.ToString();
+		udRetry->Value = std::clamp(intval, MINRETRYCOUNT, MAXRETRYCOUNT);
 
 		Profile::GetInt(SECTION_OPTION, KEY_BUFFER_SIZE,
 			ThreadTransitory::UserBuffer, intval, ini);
-		txtBuffer->Text = intval.ToString();
+		udBuffer->Value = std::clamp(intval, MINREADBUFFERSIZE, MAXREADBUFFERSIZE);
 
 		OverwriteItem::AddComboItem(cmbOverwrite);
 		Profile::GetInt(SECTION_OPTION, KEY_OVERWRITE,
@@ -51,8 +59,6 @@ namespace retrycopy {
 			(int)RemoveInfo::DefaultItem, intval, ini);
 		if (0 <= intval && intval < cmbRemove->Items->Count)
 			cmbRemove->SelectedIndex = intval;
-
-
 	}
 	void FormMain::AppendLog(String^ message)
 	{
@@ -151,8 +157,8 @@ namespace retrycopy {
 		}
 		DASSERT(ThreadState == ThreadStateType::NONE);
 
-
 		ThreadDataMaster^ thData = gcnew ThreadDataMaster(
+			ThreadTransitory::IncrementThreadNumber(),
 			txtSource->Text, txtDestination->Text);
 
 		theThread_ = gcnew Thread(
@@ -186,30 +192,14 @@ namespace retrycopy {
 		Ambiesoft::RetrycopyMisc::SetTaskProgress(ThreadTransitory::TotalPercent);
 		UpdateTitle();
 	}
-	System::Void FormMain::txtRetryCount_TextChanged(System::Object^ sender, System::EventArgs^ e)
+
+	void FormMain::OnRetryCountChanged(System::Object^ sender, System::EventArgs^ e)
 	{
-		int v;
-		if (!Int32::TryParse(txtRetryCount->Text, v))
-		{
-			txtRetryCount->Text = ThreadTransitory::UserRetry.ToString();
-			return;
-		}
-		if (v < 0 && v != -1)
-		{
-			txtRetryCount->Text = L"-1";
-			return;
-		}
-		ThreadTransitory::UserRetry = v;
+		ThreadTransitory::UserRetry = Decimal::ToInt32(udRetry->Value);
 	}
-	System::Void FormMain::txtBuffer_TextChanged(System::Object^ sender, System::EventArgs^ e)
+	void FormMain::OnBufferSizeChanged(System::Object^ sender, System::EventArgs^ e)
 	{
-		int v;
-		if (!Int32::TryParse(txtBuffer->Text, v) || v < 1)
-		{
-			txtBuffer->Text = ThreadTransitory::UserBuffer.ToString();
-			return;
-		}
-		ThreadTransitory::UserBuffer = v;
+		ThreadTransitory::UserBuffer = Decimal::ToInt32(udBuffer->Value);
 	}
 
 	String^ FormMain::IniPath::get()
@@ -222,25 +212,26 @@ namespace retrycopy {
 	{
 		if (ThreadState != ThreadStateType::NONE)
 		{
+			ThreadStateType prevState = ThreadState;
+			ThreadState = ThreadStateType::PAUSED;
 			if (System::Windows::Forms::DialogResult::Yes != CppUtils::YesOrNo(this,
 				I18N(L"Operation is in progress. Are you sure to quit?"),
 				MessageBoxDefaultButton::Button2))
 			{
+				ThreadState = prevState;
 				e->Cancel = true;
 				return;
 			}
 		}
 
 		HashIni^ ini = Profile::ReadAll(IniPath);
-		int v;
-		if (Int32::TryParse(txtRetryCount->Text, v))
-		{
-			Profile::WriteInt(SECTION_OPTION, KEY_RETRY_COUNT, v, ini);
-		}
-		if (Int32::TryParse(txtBuffer->Text, v))
-		{
-			Profile::WriteInt(SECTION_OPTION, KEY_BUFFER_SIZE, v, ini);
-		}
+
+		Profile::WriteInt(SECTION_OPTION, KEY_RETRY_COUNT, 
+			Decimal::ToInt32(udRetry->Value), ini);
+
+		Profile::WriteInt(SECTION_OPTION, KEY_BUFFER_SIZE, 
+			Decimal::ToInt32(udBuffer->Value), ini);
+
 		Profile::WriteInt(SECTION_OPTION, KEY_OVERWRITE, cmbOverwrite->SelectedIndex, ini);
 		Profile::WriteInt(SECTION_OPTION, KEY_REMOVE, cmbRemove->SelectedIndex, ini);
 
@@ -249,7 +240,7 @@ namespace retrycopy {
 			CppUtils::Alert(this, I18N(L"Failed to save ini."));
 		}
 
-		// CWaitCursor wc;
+		CWaitCursor wc;
 		ThreadState = ThreadStateType::NONE;
 	}
 	System::Void FormMain::btnSuspend_Click(System::Object^ sender, System::EventArgs^ e)
@@ -298,6 +289,7 @@ namespace retrycopy {
 				ThreadState = ThreadStateType::RUNNING;
 			if (theThread_)
 			{
+				ThreadTransitory::IncrementThreadNumber();
 				theThread_->Abort();
 				theThread_->Join();
 				delete theThread_;
@@ -380,4 +372,25 @@ namespace retrycopy {
 		System::Drawing::Point pos(btnAbout->Location.X, btnAbout->Location.Y + btnAbout->Size.Height);
 		ctxAbout->Show(this, pos.X, pos.Y);
 	}
+	System::Void FormMain::showLogToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
+		if (!logForm_->Visible) {
+			logForm_->Show(this);
+		}
+		else {
+			logForm_->Visible = false;
+		}
+	}
+	System::Void FormMain::tsmiAboutThisApplication_Click(System::Object^ sender, System::EventArgs^ e) {
+		if (!aboutForm_) {
+			aboutForm_ = gcnew FormAbout();
+		}
+		if (!aboutForm_->Visible) {
+			aboutForm_->Show(this);
+		}
+		else {
+			aboutForm_->Visible = false;
+		}
+	}
+
 }
+

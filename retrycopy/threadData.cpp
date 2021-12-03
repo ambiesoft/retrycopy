@@ -52,8 +52,12 @@ namespace retrycopy {
 				setWriteError(ERROR_FILE_EXISTS);
 				return false;
 			case OVERWRITE_TYPE::OVERWRITE_ASK:
-				if ((bool)FormMain::theForm_->EndInvoke(FormMain::theForm_->BeginInvoke(
-					gcnew BSDelegate(FormMain::theForm_, &FormMain::AskOverwrite), dstFile_)))
+				if ((bool)FormMain::theForm_->EndInvokeWithTN(
+					ThreadNumber,
+					FormMain::theForm_->BeginInvoke(
+					gcnew BISDelegate(FormMain::theForm_, &FormMain::AskOverwrite), 
+					ThreadNumber,
+					dstFile_)))
 				{
 					dwCDForWrite_ = OPEN_ALWAYS;
 				}
@@ -129,13 +133,15 @@ namespace retrycopy {
 			return String::Empty;
 		System::Collections::Generic::List<String^> lst;
 		if (!done_)
-			lst.Add(L"Not Done");
+			lst.Add(I18N(L"Not Done"));
+		if (zeroWritten_ != 0)
+			lst.Add(String::Format(I18N(L"{0} bytes of zero was written")));
 		if (leRead_ != 0)
 			lst.Add(gcnew String(GetLastErrorString(leRead_).c_str()));
 		if (leWrite_ != 0)
 			lst.Add(gcnew String(GetLastErrorString(leWrite_).c_str()));
 		if (SrcSize == -1)
-			lst.Add(L"Source size is not obtained");
+			lst.Add(I18N(L"Source size is not obtained"));
 		if (SrcSize != allProcessed_)
 		{
 			lst.Add(String::Format(I18N(L"Source size not equal to written size {0} != {1}"),
@@ -143,12 +149,6 @@ namespace retrycopy {
 		}
 		return String::Join(L",", % lst);
 	}
-	//// static
-	//void ThreadTransitory::OnUpdate()
-	//{
-	//	FormMain::theForm_->BeginInvoke(
-	//		gcnew VVDelegate(FormMain::theForm_, &FormMain::OnUpdateSize));
-	//}
 	
 	// static
 	void ThreadTransitory::SetFileLastError(LONGLONG pos, LONGLONG allSize, DWORD le, int retried) 

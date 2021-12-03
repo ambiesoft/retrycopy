@@ -16,6 +16,15 @@
     <Filter Include="04 dists">
       <UniqueIdentifier>{836329ee-23d5-4a06-8ab0-9f34c6e769d9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02 Source Files\lsMisc">
+      <UniqueIdentifier>{6dd8689f-2a57-45cc-85b0-7b9062066387}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01 Header Files\lsMisc">
+      <UniqueIdentifier>{6b2e08b4-607e-4be3-97dc-4b7dfbb1c0c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01 Header Files\refclass">
+      <UniqueIdentifier>{aa64d299-05a0-4447-9949-0a5c23af7615}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp">
@@ -33,21 +42,6 @@
     <ClCompile Include="FormMainThread.cpp">
       <Filter>02 Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lsMisc\CommandLineParser.cpp">
-      <Filter>02 Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lsMisc\UrlEncode.cpp">
-      <Filter>02 Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lsMisc\UTF16toUTF8.cpp">
-      <Filter>02 Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lsMisc\DebugMacro.cpp">
-      <Filter>02 Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lsMisc\GetLastErrorString.cpp">
-      <Filter>02 Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="threadData.cpp">
       <Filter>02 Source Files</Filter>
     </ClCompile>
@@ -57,13 +51,7 @@
     <ClCompile Include="helper.cpp">
       <Filter>02 Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lsMisc\WaitCursor.cpp">
-      <Filter>02 Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FormLog.cpp">
-      <Filter>02 Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lsMisc\SHMoveFile.cpp">
       <Filter>02 Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FormAbout.cpp">
@@ -75,17 +63,38 @@
     <ClCompile Include="OverwriteInfo.cpp">
       <Filter>02 Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lsMisc\BrowseFolder.cpp">
-      <Filter>02 Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lsMisc\stdosd\stdosd.cpp">
-      <Filter>02 Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lsMisc\stdosd\stdosd_win.cpp">
-      <Filter>02 Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ReadErrorDialog.cpp">
       <Filter>02 Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lsMisc\BrowseFolder.cpp">
+      <Filter>02 Source Files\lsMisc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lsMisc\CommandLineParser.cpp">
+      <Filter>02 Source Files\lsMisc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lsMisc\DebugMacro.cpp">
+      <Filter>02 Source Files\lsMisc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lsMisc\GetLastErrorString.cpp">
+      <Filter>02 Source Files\lsMisc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lsMisc\SHMoveFile.cpp">
+      <Filter>02 Source Files\lsMisc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lsMisc\stdosd\stdosd.cpp">
+      <Filter>02 Source Files\lsMisc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lsMisc\stdosd\stdosd_win.cpp">
+      <Filter>02 Source Files\lsMisc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lsMisc\UrlEncode.cpp">
+      <Filter>02 Source Files\lsMisc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lsMisc\UTF16toUTF8.cpp">
+      <Filter>02 Source Files\lsMisc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lsMisc\WaitCursor.cpp">
+      <Filter>02 Source Files\lsMisc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -101,31 +110,10 @@
     <ClInclude Include="threadData.h">
       <Filter>01 Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lsMisc\CommandLineParser.h">
-      <Filter>01 Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lsMisc\UrlEncode.h">
-      <Filter>01 Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lsMisc\UTF16toUTF8.h">
-      <Filter>01 Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lsMisc\DebugMacro.h">
-      <Filter>01 Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lsMisc\GetLastErrorString.h">
-      <Filter>01 Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="helper.h">
       <Filter>01 Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lsMisc\WaitCursor.h">
-      <Filter>01 Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FormLog.h">
-      <Filter>01 Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lsMisc\SHMoveFile.h">
       <Filter>01 Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FormAbout.h">
@@ -137,20 +125,44 @@
     <ClInclude Include="OverwriteInfo.h">
       <Filter>01 Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lsMisc\BrowseFolder.h">
-      <Filter>01 Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="gitrev.h">
-      <Filter>01 Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lsMisc\stdosd\stdosd.h">
-      <Filter>01 Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lsMisc\stdosd\stdosd_literal.h">
       <Filter>01 Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ReadErrorDialog.h">
       <Filter>01 Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lsMisc\BrowseFolder.h">
+      <Filter>01 Header Files\lsMisc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lsMisc\CommandLineParser.h">
+      <Filter>01 Header Files\lsMisc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lsMisc\DebugMacro.h">
+      <Filter>01 Header Files\lsMisc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lsMisc\GetLastErrorString.h">
+      <Filter>01 Header Files\lsMisc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lsMisc\SHMoveFile.h">
+      <Filter>01 Header Files\lsMisc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lsMisc\stdosd\stdosd.h">
+      <Filter>01 Header Files\lsMisc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lsMisc\stdosd\stdosd_literal.h">
+      <Filter>01 Header Files\lsMisc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lsMisc\UrlEncode.h">
+      <Filter>01 Header Files\lsMisc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lsMisc\UTF16toUTF8.h">
+      <Filter>01 Header Files\lsMisc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lsMisc\WaitCursor.h">
+      <Filter>01 Header Files\lsMisc</Filter>
+    </ClInclude>
+    <ClInclude Include="Ref.h">
+      <Filter>01 Header Files\refclass</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -7,6 +7,7 @@
 #include <string>
 #include <vcclr.h>
 #include <memory>
+#include <algorithm>
 
 #include "../../lsMisc/DebugMacro.h"
 #include "../../lsMisc/GetLastErrorString.h"
@@ -14,13 +15,14 @@
 #include "../../lsMisc/SHMoveFile.h"
 #include "../../lsMisc/stdosd/stdosd.h"
 
-delegate void VVDelegate();
 delegate void VSDelegate(System::String^);
-delegate bool BSDelegate(System::String^);
+delegate void VIDelegate(int);
+delegate void VISDelegate(int, System::String^);
+delegate bool BISDelegate(int, System::String^);
 delegate void VLLDelegate(LONGLONG);
-delegate void VLLIDelegate(LONGLONG, int);
+delegate void VILLIDelegate(int, LONGLONG, int);
 delegate void VLLLLDwIDelegate(LONGLONG,LONGLONG,DWORD,int);
-delegate bool BDwDelegate(DWORD);
+delegate bool BIDwDelegate(int, DWORD);
 
 #define I18N(s) (s)
 using KV = System::Collections::Generic::KeyValuePair<System::String^, System::String^>;
@@ -37,6 +39,11 @@ inline std::wstring getStdWstring(System::String^ s)
 	return ret;
 }
 
+#define MINREADBUFFERSIZE 1
 #define MAXREADBUFFERSIZE (10 * 1024 * 1024)
+
+#define MINRETRYCOUNT -1
+#define MAXRETRYCOUNT 65535
+
 // Thread::Suspend and Resume is obsolete
 #pragma warning(disable:4947)
