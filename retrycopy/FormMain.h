@@ -691,7 +691,9 @@ namespace retrycopy {
 			this->Controls->Add(this->lblDest);
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->lblSource);
+			this->MinimumSize = System::Drawing::Size(543, 472);
 			this->Name = L"FormMain";
+			this->SizeGripStyle = System::Windows::Forms::SizeGripStyle::Show;
 			this->Text = L"retrycopy";
 			this->FormClosing += gcnew System::Windows::Forms::FormClosingEventHandler(this, &FormMain::FormMain_FormClosing);
 			this->Load += gcnew System::EventHandler(this, &FormMain::FormMain_Load);

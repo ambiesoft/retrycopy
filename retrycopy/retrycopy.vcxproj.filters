@@ -96,6 +96,9 @@
     <ClCompile Include="..\..\lsMisc\WaitCursor.cpp">
       <Filter>02 Source Files\lsMisc</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\lsMisc\HighDPI.cpp">
+      <Filter>02 Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FormMain.h">
@@ -163,6 +166,9 @@
     </ClInclude>
     <ClInclude Include="Ref.h">
       <Filter>01 Header Files\refclass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lsMisc\HighDPI.h">
+      <Filter>01 Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

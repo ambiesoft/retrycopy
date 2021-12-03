@@ -16,6 +16,7 @@
 #include "../../lsMisc/stdosd/stdosd.h"
 #include "../../lsMisc/BrowseFolder.h"
 #include "../../lsMisc/CommandLineParser.h"
+#include "../../lsMisc/HighDPI.h"
 
 delegate void VSDelegate(System::String^);
 delegate void VIDelegate(int);
