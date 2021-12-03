@@ -22,14 +22,26 @@ namespace retrycopy {
 
 		return Form::EndInvoke(ir);
 	}
+
+	//bool ddd(LPCWSTR pThreadName)
+	//{
+	//	typedef HRESULT(WINAPI* TSetThreadDescription)(HANDLE, PCWSTR);
+	//	HMODULE hKernel32 = GetModuleHandleA("Kernel32.dll");
+	//	if (hKernel32 == nullptr) {
+	//		return false;
+	//	}
+	//	TSetThreadDescription f = reinterpret_cast<TSetThreadDescription>(
+	//		GetProcAddress(hKernel32, "SetThreadDescription"));
+	//	if (f == nullptr) {
+	//		return false;
+	//	}
+	//	return SUCCEEDED(f(GetCurrentThread(), pThreadName));
+	//}
 	void FormMain::StartOfThreadMaster(Object^ obj)
 	{
 		ThreadDataMaster^ thDataMaster = (ThreadDataMaster^)obj;
 
-		SetThreadDescription(
-			GetCurrentThread(),
-			L"ThisIsMyThreadName!"
-		);
+		Thread::CurrentThread->Name = "Copy Thread";
 
 		EndInvokeWithTN(thDataMaster->ThreadNumber,
 			BeginInvoke(gcnew VIDelegate(this, &FormMain::ThreadStarted),
@@ -356,7 +368,7 @@ namespace retrycopy {
 							thFileData->SrcSize,
 							le,
 							retried);
-						if (le == ERROR_NOT_READY || le == ERROR_NO_SUCH_DEVICE)
+						if (ShouldReopenError(le))
 						{
 							initSrc = true;
 						}
@@ -389,7 +401,7 @@ namespace retrycopy {
 					if (rfd->IsRetry)
 					{
 						retried = 0;
-						if (le == ERROR_NOT_READY || le == ERROR_NO_SUCH_DEVICE)
+						if (ShouldReopenError(le))
 						{
 							initSrc = true;
 						}

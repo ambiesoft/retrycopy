@@ -50,5 +50,10 @@ public enum class READERROR_RESPONSE {
 #define MINRETRYCOUNT -1
 #define MAXRETRYCOUNT 65535
 
+#ifndef ERROR_NO_SUCH_DEVICE
+#define ERROR_NO_SUCH_DEVICE 433L
+#endif
+static_assert(ERROR_NO_SUCH_DEVICE == 433L, "");
+
 // Thread::Suspend and Resume is obsolete
 #pragma warning(disable:4947)

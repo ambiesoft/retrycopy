@@ -17,31 +17,10 @@ namespace retrycopy {
 			AmbLib::FormatSize(size));
 	}
 
-	//bool IsGiveUpError(DWORD le, bool bFirstTry)
-	//{
-	//	if (bFirstTry)
-	//	{
-	//		if (le == ERROR_ACCESS_DENIED ||
-	//			le == ERROR_FILE_NOT_FOUND)
-	//		{
-	//			return true;
-	//		}
-
-	//		if (le == ERROR_NOT_READY ||
-	//			le == ERROR_NO_SUCH_DEVICE)
-	//		{
-	//			return true;
-	//		}
-	//	}
-	//	else
-	//	{
-	//		if (le == ERROR_ACCESS_DENIED ||
-	//			le == ERROR_FILE_NOT_FOUND)
-	//		{
-	//			return true;
-	//		}
-	//	}
-	//}
+	bool ShouldReopenError(DWORD le)
+	{
+		return le == ERROR_NOT_READY || le == ERROR_DEV_NOT_EXIST || le == ERROR_NO_SUCH_DEVICE;
+	}
 	void EnsureDirectory(String^ path)
 	{
 		try
