@@ -14,6 +14,8 @@
 #include "../../lsMisc/WaitCursor.h"
 #include "../../lsMisc/SHMoveFile.h"
 #include "../../lsMisc/stdosd/stdosd.h"
+#include "../../lsMisc/BrowseFolder.h"
+#include "../../lsMisc/CommandLineParser.h"
 
 delegate void VSDelegate(System::String^);
 delegate void VIDelegate(int);

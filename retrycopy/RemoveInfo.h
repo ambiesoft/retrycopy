@@ -1,5 +1,6 @@
 #pragma once
 
+using namespace System;
 
 namespace retrycopy {
 
@@ -13,15 +14,19 @@ namespace retrycopy {
 		REMOVE_COUNT,
 	};
 	ref class RemoveItemInfo {
-		REMOVE_TYPE kind_;
-		System::String^ text_;
+		initonly REMOVE_TYPE kind_;
+		initonly String^ text_;
+		initonly String^ clValue_;
 	public:
-		RemoveItemInfo(REMOVE_TYPE kind, System::String^ text):
-			kind_(kind), text_(text){}
+		RemoveItemInfo(REMOVE_TYPE kind, String^ text, String^ clValue):
+			kind_(kind), text_(text), clValue_(clValue) {}
 		property REMOVE_TYPE Kind {
 			REMOVE_TYPE get() { return kind_; }
+		}		
+		property String^ CLValue {
+			String^ get() { return clValue_; }
 		}
-		System::String^ ToString() override {
+		String^ ToString() override {
 			return text_;
 		}
 	};
@@ -30,10 +35,10 @@ namespace retrycopy {
 	{
 	public:
 		initonly static cli::array<RemoveItemInfo^>^ itemInfos_ = {
-			gcnew RemoveItemInfo(REMOVE_TYPE::REMOVE_YES_RECYCLE, I18N("Yes (Recycle)")),
-			gcnew RemoveItemInfo(REMOVE_TYPE::REMOVE_YES_DELETE, I18N("Yes (Delete)")),
-			gcnew RemoveItemInfo(REMOVE_TYPE::REMOVE_NO, I18N("No")),
-			gcnew RemoveItemInfo(REMOVE_TYPE::REMOVE_ASK, I18N("Ask")),
+			gcnew RemoveItemInfo(REMOVE_TYPE::REMOVE_YES_RECYCLE, I18N("Yes (Recycle)"), "YesRecycle"),
+			gcnew RemoveItemInfo(REMOVE_TYPE::REMOVE_YES_DELETE, I18N("Yes (Delete)"), "YesDelete"),
+			gcnew RemoveItemInfo(REMOVE_TYPE::REMOVE_NO, I18N("No"), "No"),
+			gcnew RemoveItemInfo(REMOVE_TYPE::REMOVE_ASK, I18N("Ask"), "Ask"),
 		};
 		initonly static REMOVE_TYPE DefaultItem = REMOVE_TYPE::REMOVE_NO;
 		static RemoveInfo() {
@@ -44,5 +49,6 @@ namespace retrycopy {
 			}
 		}
 		static void AddComboItem(System::Windows::Forms::ComboBox^ cmb);
+		static void SetComboItemFromCL(System::Windows::Forms::ComboBox^ cmb, LPCWSTR pCLValue);
 	};
 }

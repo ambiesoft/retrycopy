@@ -34,20 +34,17 @@ namespace retrycopy {
 			String^ get();
 		}
 	private:
-		initonly String^ source_;
+
 		initonly FormLog^ logForm_;
 		FormAbout^ aboutForm_;
 		System::Text::StringBuilder sbLogBuffer_;
 
 	private: System::Windows::Forms::Label^ label1;
 	private: System::Windows::Forms::Label^ lblBuffer;
-
 	private: System::Windows::Forms::Label^ label2;
 	private: System::Windows::Forms::TextBox^ txtCurSrc;
 	private: System::Windows::Forms::Label^ label3;
 	private: System::Windows::Forms::TextBox^ txtCurDst;
-		   initonly String^ destination_;
-
 	private: System::Windows::Forms::Label^ label4;
 	private: System::Windows::Forms::Label^ label5;
 	private: System::Windows::Forms::ComboBox^ cmbRemove;
@@ -89,8 +86,9 @@ namespace retrycopy {
 
 
 	public:
-		FormMain(String^ src, String^ dest);
+		FormMain();
 		static FormMain^ theForm_;
+		bool bCloseNow_ = false;
 	protected:
 		/// <summary>
 		/// Clean up any resources being used.
@@ -564,27 +562,27 @@ namespace retrycopy {
 					this->tsmiHelp
 			});
 			this->ctxAbout->Name = L"ctxAbout";
-			this->ctxAbout->Size = System::Drawing::Size(201, 70);
+			this->ctxAbout->Size = System::Drawing::Size(190, 70);
 			this->ctxAbout->Opening += gcnew System::ComponentModel::CancelEventHandler(this, &FormMain::ctxAbout_Opening);
 			// 
 			// tsmiShowLog
 			// 
 			this->tsmiShowLog->Name = L"tsmiShowLog";
-			this->tsmiShowLog->Size = System::Drawing::Size(200, 22);
+			this->tsmiShowLog->Size = System::Drawing::Size(189, 22);
 			this->tsmiShowLog->Text = L"&Show Log";
 			this->tsmiShowLog->Click += gcnew System::EventHandler(this, &FormMain::showLogToolStripMenuItem_Click);
 			// 
 			// tsmiAboutThisApplication
 			// 
 			this->tsmiAboutThisApplication->Name = L"tsmiAboutThisApplication";
-			this->tsmiAboutThisApplication->Size = System::Drawing::Size(200, 22);
+			this->tsmiAboutThisApplication->Size = System::Drawing::Size(189, 22);
 			this->tsmiAboutThisApplication->Text = L"&About this application...";
 			this->tsmiAboutThisApplication->Click += gcnew System::EventHandler(this, &FormMain::tsmiAboutThisApplication_Click);
 			// 
 			// tsmiHelp
 			// 
 			this->tsmiHelp->Name = L"tsmiHelp";
-			this->tsmiHelp->Size = System::Drawing::Size(200, 22);
+			this->tsmiHelp->Size = System::Drawing::Size(189, 22);
 			this->tsmiHelp->Text = L"&Help";
 			// 
 			// btnClose
@@ -602,19 +600,19 @@ namespace retrycopy {
 			// 
 			this->ctxNavigate->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) { this->tsmiFile, this->tsmiDirectory });
 			this->ctxNavigate->Name = L"ctxNavigate";
-			this->ctxNavigate->Size = System::Drawing::Size(123, 48);
+			this->ctxNavigate->Size = System::Drawing::Size(119, 48);
 			// 
 			// tsmiFile
 			// 
 			this->tsmiFile->Name = L"tsmiFile";
-			this->tsmiFile->Size = System::Drawing::Size(122, 22);
+			this->tsmiFile->Size = System::Drawing::Size(118, 22);
 			this->tsmiFile->Text = L"&File";
 			this->tsmiFile->Click += gcnew System::EventHandler(this, &FormMain::tsmiFile_Click);
 			// 
 			// tsmiDirectory
 			// 
 			this->tsmiDirectory->Name = L"tsmiDirectory";
-			this->tsmiDirectory->Size = System::Drawing::Size(122, 22);
+			this->tsmiDirectory->Size = System::Drawing::Size(118, 22);
 			this->tsmiDirectory->Text = L"&Directory";
 			this->tsmiDirectory->Click += gcnew System::EventHandler(this, &FormMain::tsmiDirectory_Click);
 			// 
@@ -666,6 +664,7 @@ namespace retrycopy {
 			this->Name = L"FormMain";
 			this->Text = L"retrycopy";
 			this->FormClosing += gcnew System::Windows::Forms::FormClosingEventHandler(this, &FormMain::FormMain_FormClosing);
+			this->Load += gcnew System::EventHandler(this, &FormMain::FormMain_Load);
 			this->spTransitory->Panel1->ResumeLayout(false);
 			this->spTransitory->Panel1->PerformLayout();
 			this->spTransitory->Panel2->ResumeLayout(false);
@@ -755,6 +754,11 @@ namespace retrycopy {
 
 		void OnBufferSizeChanged(System::Object^ sender, System::EventArgs^ e);
 		void OnRetryCountChanged(System::Object^ sender, System::EventArgs^ e);
+		System::Void FormMain_Load(System::Object^ sender, System::EventArgs^ e) {
+			if (bCloseNow_)
+				Close();
+		}
+
 }; // FormMain
 
 	enum class USERACTION {

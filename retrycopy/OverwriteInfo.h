@@ -1,5 +1,6 @@
 #pragma once
 
+using namespace System;
 
 namespace retrycopy {
 
@@ -12,15 +13,19 @@ namespace retrycopy {
 		OVERWRITE_COUNT,
 	};
 	ref class OverwriteItemInfo {
-		OVERWRITE_TYPE kind_;
-		System::String^ text_;
+		initonly OVERWRITE_TYPE kind_;
+		initonly String^ text_;
+		initonly String^ clValue_;
 	public:
-		OverwriteItemInfo(OVERWRITE_TYPE kind, System::String^ text):
-			kind_(kind), text_(text){}
+		OverwriteItemInfo(OVERWRITE_TYPE kind, String^ text, String^ clValue):
+			kind_(kind), text_(text), clValue_(clValue) {}
 		property OVERWRITE_TYPE Kind {
 			OVERWRITE_TYPE get() { return kind_; }
 		}
-		System::String^ ToString() override {
+		property String^ CLValue {
+			String^ get() { return clValue_; }
+		}
+		String^ ToString() override {
 			return text_;
 		}
 	};
@@ -29,9 +34,9 @@ namespace retrycopy {
 	{
 	public:
 		initonly static cli::array<OverwriteItemInfo^>^ itemInfos_ = {
-			gcnew OverwriteItemInfo(OVERWRITE_TYPE::OVERWRITE_YES, I18N("Yes")),
-			gcnew OverwriteItemInfo(OVERWRITE_TYPE::OVERWRITE_NO, I18N("No")),
-			gcnew OverwriteItemInfo(OVERWRITE_TYPE::OVERWRITE_ASK, I18N("Ask")),
+			gcnew OverwriteItemInfo(OVERWRITE_TYPE::OVERWRITE_YES, I18N("Yes"), "Yes"),
+			gcnew OverwriteItemInfo(OVERWRITE_TYPE::OVERWRITE_NO, I18N("No"), "No"),
+			gcnew OverwriteItemInfo(OVERWRITE_TYPE::OVERWRITE_ASK, I18N("Ask"), "Ask"),
 		};
 		initonly static OVERWRITE_TYPE DefaultItem = OVERWRITE_TYPE::OVERWRITE_NO;
 		static OverwriteItem() {
@@ -42,5 +47,6 @@ namespace retrycopy {
 			}
 		}
 		static void AddComboItem(System::Windows::Forms::ComboBox^ cmb);
+		static void SetComboItemFromCL(System::Windows::Forms::ComboBox^ cmb, LPCWSTR pCLValue);
 	};
 }

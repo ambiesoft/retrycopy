@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
-#include "../../lsMisc/BrowseFolder.h"
-
+#include "gitrev.h"
 #include "threadData.h"
 #include "helper.h"
 #include "FormLog.h"
@@ -9,16 +8,17 @@
 #include "OverwriteInfo.h"
 #include "RemoveInfo.h"
 #include "FormMain.h"
+
 using namespace System::Collections::Generic;
 using namespace System::Text;
 
 using namespace System::IO;
 using namespace System::Threading;
 using namespace Ambiesoft;
+using namespace std;
 namespace retrycopy {
 
-	FormMain::FormMain(String^ src, String^ dest) :
-		source_(src), destination_(dest)
+	FormMain::FormMain()
 	{
 		InitializeComponent();
 
@@ -35,8 +35,6 @@ namespace retrycopy {
 		int intval;
 		Ambiesoft::AmbLib::MakeTripleClickTextBox(txtSource);
 		Ambiesoft::AmbLib::MakeTripleClickTextBox(txtDestination);
-		txtSource->Text = source_;
-		txtDestination->Text = destination_;
 
 		HashIni^ ini = Profile::ReadAll(IniPath);
 		Profile::GetInt(SECTION_OPTION, KEY_RETRY_COUNT,
@@ -55,12 +53,154 @@ namespace retrycopy {
 		if (0 <= intval && intval < cmbOverwrite->Items->Count)
 			cmbOverwrite->SelectedIndex = intval;
 
-
 		RemoveInfo::AddComboItem(cmbRemove);
 		Profile::GetInt(SECTION_OPTION, KEY_REMOVE,
 			(int)RemoveInfo::DefaultItem, intval, ini);
 		if (0 <= intval && intval < cmbRemove->Items->Count)
 			cmbRemove->SelectedIndex = intval;
+
+		// Rest from command line
+		{
+			CCommandLineParser parser(CaseFlags::CaseFlags_Default,
+				I18N(L"Copy date from broken HDD"),
+				L"retrycopy");
+
+			wstring source;
+			parser.AddOption(L"-s", ArgCount::ArgCount_One, &source,
+				ArgEncodingFlags::ArgEncodingFlags_Default,
+				I18N(L"Source"));
+
+			wstring dest;
+			parser.AddOption(L"-d", ArgCount::ArgCount_One, &dest,
+				ArgEncodingFlags::ArgEncodingFlags_Default,
+				I18N(L"Destination"));
+
+			wstring retryCount;
+			parser.AddOption(L"-r", ArgCount::ArgCount_One, &retryCount,
+				ArgEncodingFlags::ArgEncodingFlags_Default,
+				I18N(L"Retry count"));
+
+			wstring bufferSize;
+			parser.AddOption(L"-b", ArgCount::ArgCount_One, &bufferSize,
+				ArgEncodingFlags::ArgEncodingFlags_Default,
+				I18N(L"Buffer size"));
+
+			wstring overwrite;
+			parser.AddOption(L"-ov", ArgCount::ArgCount_One, &overwrite,
+				ArgEncodingFlags::ArgEncodingFlags_Default,
+				I18N(L"Overwrite: One of 'Yes', 'No', 'Ask'"));
+
+			wstring remove;
+			parser.AddOption(L"-rm", ArgCount::ArgCount_One, &remove,
+				ArgEncodingFlags::ArgEncodingFlags_Default,
+				I18N(L"Remove: One of 'YesRecycle', 'YesDelete', 'No' or 'Ask'"));
+
+			wstring mainArg;
+			parser.AddOption(L"", ArgCount::ArgCount_ZeroToInfinite,
+				&mainArg);
+			
+			bool bShowGitRev = false;
+			parser.AddOption(L"--show-gitrev", 0, &bShowGitRev,
+				ArgEncodingFlags::ArgEncodingFlags_Default,
+				I18N(L"Show Gitrev"));
+
+			bool bShowHelp = false;
+			parser.AddOptionRange({ L"-h",L"--help",L"/h",L"/?" }, 0, &bShowHelp,
+				ArgEncodingFlags::ArgEncodingFlags_Default,
+				I18N(L"Show Help"));
+
+			parser.Parse();
+
+			if (bShowHelp)
+			{
+				CppUtils::Info(gcnew String(parser.getHelpMessage(L"").c_str()));
+				bCloseNow_ = true;
+				return;
+			}
+			if (bShowGitRev)
+			{
+				MessageBox::Show(
+					gcnew String(GITREV::GetHashMessage().c_str()),
+					L"Gitrev - " + Application::ProductName,
+					MessageBoxButtons::OK,
+					MessageBoxIcon::Information);
+				bCloseNow_ = true;
+				return;
+			}
+
+			// check input
+			if (!parser.getUnknowOptionStrings().empty())
+			{
+				StringBuilder message;
+				message.AppendLine(I18N(L"Unknown option(s):"));
+				message.AppendLine(gcnew String(parser.getUnknowOptionStrings().c_str()));
+				MessageBox::Show(message.ToString(),
+					Application::ProductName,
+					MessageBoxButtons::OK,
+					MessageBoxIcon::Exclamation);
+			}
+			if (!mainArg.empty())
+			{
+				StringBuilder message;
+				message.AppendLine(I18N(L"Unknown argument:"));
+				message.AppendLine(gcnew String(mainArg.c_str()));
+				MessageBox::Show(message.ToString(),
+					Application::ProductName,
+					MessageBoxButtons::OK,
+					MessageBoxIcon::Exclamation);
+			}
+			txtSource->Text = gcnew String(source.c_str());
+			txtDestination->Text = gcnew String(dest.c_str());
+
+			if (!retryCount.empty())
+			{
+				if (!Int32::TryParse(gcnew String(retryCount.c_str()), intval))
+				{
+					CppUtils::Alert(I18N(L"-r value must be int"));
+				}
+				else
+				{
+					if (!(MINRETRYCOUNT <= intval && intval <= MAXRETRYCOUNT))
+					{
+						CppUtils::Alert(String::Format(I18N(L"-r value must be between {0} and {1}."),
+							MINRETRYCOUNT, MAXRETRYCOUNT));
+					}
+					else
+					{
+						udRetry->Value = intval;
+						ThreadTransitory::UserRetry = intval;
+					}
+				}
+			}
+			if (!bufferSize.empty())
+			{
+				if (!Int32::TryParse(gcnew String(bufferSize.c_str()), intval))
+				{
+					CppUtils::Alert(I18N(L"-b value must be int"));
+				}
+				else
+				{
+					if (!(MINREADBUFFERSIZE <= intval && intval <= MAXREADBUFFERSIZE))
+					{
+						CppUtils::Alert(String::Format(I18N(L"-b value must be between {0} and {1}."),
+							MINREADBUFFERSIZE, MAXREADBUFFERSIZE));
+					}
+					else
+					{
+						udBuffer->Value = intval;
+						ThreadTransitory::UserBuffer = intval;
+					}
+				}
+			}
+			if (!overwrite.empty())
+			{
+				OverwriteItem::SetComboItemFromCL(cmbOverwrite, overwrite.c_str());
+			}
+			if (!remove.empty())
+			{
+				RemoveInfo::SetComboItemFromCL(cmbRemove, remove.c_str());
+			}
+		}
 	}
 	void FormMain::AppendLog(String^ message)
 	{
