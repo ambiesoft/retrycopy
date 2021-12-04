@@ -127,6 +127,14 @@ namespace retrycopy {
 					initialError = I18N(L"The destination file is the same as the source file.");
 					break;
 				}
+				if (thDataMaster->Dst->EndsWith("\\") || thDataMaster->Dst->EndsWith("/"))
+				{
+					if (File::Exists(thDataMaster->Dst->TrimEnd((gcnew String( L"/\\"))->ToCharArray())))
+					{
+						initialError = I18N(L"The destination name ends with path separator but it exists as a file.");
+						break;
+					}
+				}
 			}
 		} while (false);
 		if (!String::IsNullOrEmpty(initialError))
