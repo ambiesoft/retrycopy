@@ -323,14 +323,43 @@ namespace retrycopy {
 		if (tn != ThreadTransitory::ThreadNumber)
 			return nullptr;
 
-		DASSERT(udBuffer->Text == bufferSize.ToString());
 		UserResponceOfFail^ rfd;
-		ReadErrorDialog dlg(
-			String::Format(I18N(L"Failed to read {0} bytes from {1} on the file \"{2}\" {3} times."),
+		StringBuilder sbMessage;
+
+		// Get Disk Info
+		{
+			sbMessage.AppendLine(String::Format(I18N(L"Failed to read {0} bytes from {1} on the file \"{2}\" {3} times."),
 				bufferSize,
 				pos,
 				file,
-				retried),
+				retried));
+			DWORD dwSectorsPerCluster = 0;
+			DWORD dwBytesPerSector = 0;
+			DWORD dwNumberOfFreeClusters = 0;
+			DWORD dwTotalNumberOfClusters = 0;
+			sbMessage.AppendLine();
+			sbMessage.AppendLine(I18N(L"Disk Information:"));
+			if (!GetDiskFreeSpace(TO_LPCWSTR(Path::GetPathRoot(file)),
+				&dwSectorsPerCluster,
+				&dwBytesPerSector,
+				&dwNumberOfFreeClusters,
+				&dwTotalNumberOfClusters))
+			{
+				sbMessage.AppendLine(I18N(L"Failed to get Disk Infomation"));
+			}
+			else
+			{
+				sbMessage.AppendLine(String::Format(I18N(L"The total number of clusters of the dirve '{0}' is {1}."),
+					Path::GetPathRoot(file), dwTotalNumberOfClusters));
+				sbMessage.AppendLine(String::Format(I18N(L"The number of free clusters of the dirve '{0}' is {1}."),
+					Path::GetPathRoot(file), dwNumberOfFreeClusters));
+				sbMessage.AppendLine(String::Format(I18N(L"The number of sectors per cluster of the dirve '{0}' is {1}."),
+					Path::GetPathRoot(file), dwSectorsPerCluster));
+				sbMessage.AppendLine(String::Format(I18N(L"The sector size of the dirve '{0}' is {1} bytes."),
+					Path::GetPathRoot(file), dwBytesPerSector));
+			}
+		}
+		ReadErrorDialog dlg(sbMessage.ToString(),
 			bufferSize, retryCount);
 
 		const READERROR_RESPONSE res = dlg.ShowDialogAndGetResponce(this);

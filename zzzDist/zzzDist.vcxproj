@@ -135,7 +135,8 @@ copy "$(SolutionDir)LICENSE" "$(TargetDir)"
 
 del "$(TargetDir)zzzDist.*"
 del "$(TargetDir)retrycopy.exe.metagen"
-</Command>
+
+C:\LegacyPrograms\FFC\FFC.exe /t12 "$(SolutionDir)GetDriveInfo\bin\$(ConfigurationName)\*" /to:"$(TargetDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -183,7 +184,8 @@ copy "$(SolutionDir)LICENSE" "$(TargetDir)"
 
 del "$(TargetDir)zzzDist.*"
 del "$(TargetDir)retrycopy.exe.metagen"
-</Command>
+
+C:\LegacyPrograms\FFC\FFC.exe /t12 "$(SolutionDir)GetDriveInfo\bin\$(ConfigurationName)\*" /to:"$(TargetDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

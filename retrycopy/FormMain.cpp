@@ -7,6 +7,7 @@
 #include "FormAbout.h"
 #include "OverwriteInfo.h"
 #include "RemoveInfo.h"
+#include "ReadErrorDialog.h"
 #include "FormMain.h"
 
 using namespace System::Collections::Generic;
@@ -98,7 +99,7 @@ namespace retrycopy {
 			wstring mainArg;
 			parser.AddOption(L"", ArgCount::ArgCount_ZeroToInfinite,
 				&mainArg);
-			
+
 			bool bShowGitRev = false;
 			parser.AddOption(L"--show-gitrev", 0, &bShowGitRev,
 				ArgEncodingFlags::ArgEncodingFlags_Default,
@@ -109,7 +110,12 @@ namespace retrycopy {
 				ArgEncodingFlags::ArgEncodingFlags_Default,
 				I18N(L"Show Help"));
 
+			bool bTestShowReadErrorDialog = false;
+			parser.AddOption(L"--test-showreaderrordlg", 0, &bTestShowReadErrorDialog);
+
 			parser.Parse();
+
+			bTestShowReadErrorDialog_ = bTestShowReadErrorDialog;
 
 			if (bShowHelp)
 			{
@@ -202,6 +208,25 @@ namespace retrycopy {
 			}
 		}
 	}
+	System::Void FormMain::FormMain_Load(System::Object^ sender, System::EventArgs^ e)
+	{
+		if (bCloseNow_)
+			Close();
+
+		if (bTestShowReadErrorDialog_)
+		{
+			ReadFileFailedGetUserAction(
+				ThreadTransitory::ThreadNumber,
+				Application::ExecutablePath,
+				0,
+				1000,
+				3,
+				1,
+				3,
+				4096);
+		}
+	}
+
 	void FormMain::AppendLog(String^ message)
 	{
 		DASSERT(logForm_);

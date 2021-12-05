@@ -756,6 +756,7 @@ namespace retrycopy {
 		void UpdateTitle();
 
 		static bool appClosing_ = false;
+		initonly bool bTestShowReadErrorDialog_ = false;
 	internal:
 		static property bool AppClosing
 		{
@@ -795,11 +796,7 @@ namespace retrycopy {
 
 		void OnBufferSizeChanged(System::Object^ sender, System::EventArgs^ e);
 		void OnRetryCountChanged(System::Object^ sender, System::EventArgs^ e);
-		System::Void FormMain_Load(System::Object^ sender, System::EventArgs^ e) {
-			if (bCloseNow_)
-				Close();
-		}
-
+		System::Void FormMain_Load(System::Object^ sender, System::EventArgs^ e);
 }; // FormMain
 
 	enum class USERACTION {
