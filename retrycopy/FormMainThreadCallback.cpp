@@ -359,7 +359,7 @@ namespace retrycopy {
 					Path::GetPathRoot(file), dwBytesPerSector));
 			}
 		}
-		ReadErrorDialog dlg(sbMessage.ToString(),
+		ReadErrorDialog dlg(sbMessage.ToString(), Path::GetPathRoot(file),
 			bufferSize, retryCount);
 
 		const READERROR_RESPONSE res = dlg.ShowDialogAndGetResponce(this);

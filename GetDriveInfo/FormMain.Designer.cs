@@ -35,21 +35,21 @@ namespace GetDriveInfo
             // txtDriveInfo
             // 
             this.txtDriveInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtDriveInfo.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtDriveInfo.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtDriveInfo.Location = new System.Drawing.Point(0, 0);
             this.txtDriveInfo.Multiline = true;
             this.txtDriveInfo.Name = "txtDriveInfo";
             this.txtDriveInfo.ReadOnly = true;
             this.txtDriveInfo.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtDriveInfo.Size = new System.Drawing.Size(571, 397);
+            this.txtDriveInfo.Size = new System.Drawing.Size(571, 366);
             this.txtDriveInfo.TabIndex = 0;
             this.txtDriveInfo.WordWrap = false;
             // 
             // FormMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(571, 397);
+            this.ClientSize = new System.Drawing.Size(571, 366);
             this.Controls.Add(this.txtDriveInfo);
             this.Name = "FormMain";
             this.Text = "Form1";

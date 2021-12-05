@@ -50,10 +50,12 @@ namespace testretrycopy
             txtLog.AppendText(message);
             txtLog.AppendText(Environment.NewLine);
         }
-        private void Button_Click(object sender, RoutedEventArgs e)
+        void StartRetryCopy(string arg)
         {
-            txtLog.AppendText("Test Started" + Environment.NewLine);
-            txtLog.AppendText("Test Ended");
+            AppendLog("LaunchWith=" + arg);
+            Process proc = Process.Start(RetryCopyExe, arg);
+            proc.WaitForExit();
+            AppendLog("Done");
         }
 
         private void btnShowHelp_Click(object sender, RoutedEventArgs e)
@@ -64,13 +66,6 @@ namespace testretrycopy
             AppendLog("Done");
         }
 
-        void StartRetryCopy(string arg)
-        {
-            AppendLog("LaunchWith=" + arg);
-            Process proc = Process.Start(RetryCopyExe, arg);
-            proc.WaitForExit();
-            AppendLog("Done");
-        }
         private void btnGitRev_Click(object sender, RoutedEventArgs e)
         {
             StartRetryCopy("--show-gitrev");
@@ -87,21 +82,13 @@ namespace testretrycopy
         {
         }
 
-        private void btnSetSrcDst_DstNotExists_Click(object sender, RoutedEventArgs e)
+        static void SafeDeleteFile(string path)
         {
-            string dir = ".\\testdir";
-            Directory.CreateDirectory(dir);
-            string file = "testfile";
-            string path1 = Path.Combine(dir, file);
-            File.WriteAllBytes(path1, GetRandomByte(1024));
-
-            string path2 = ".\\targetdir1\\aaa";
-            File.Delete(path2);
-
-            StartRetryCopy(string.Format("-s \"{0}\" -d \"{1}\"",
-                path1, path2));
-
-            AppendLog(IsSameFileContent(path1, path2) ? "OK" : "NG");
+            try
+            {
+                File.Delete(path);
+            }
+            catch (Exception) { }
         }
 
         private bool IsSameFileContent(string path1, string path2)
@@ -125,117 +112,133 @@ namespace testretrycopy
             }
             return true;
         }
-        private void btnSetSrcDst_DstIsDir_Click(object sender, RoutedEventArgs e)
+
+        enum PathType
         {
-            string dir = ".\\testdir";
-            CppUtils.DeleteFile(dir);
-
-            Directory.CreateDirectory(dir);
-            string file = "testfile";
-            string path1 = Path.Combine(dir, file);
-            File.WriteAllBytes(path1, GetRandomByte(1024));
-
-            CppUtils.DeleteFile(".\\targetdir1");
-            string path2 = ".\\targetdir1\\ddd";
-            Directory.CreateDirectory(path2);
-
-            StartRetryCopy(string.Format("-s \"{0}\" -d \"{1}\" -ov Yes",
-                path1, path2));
-
-            AppendLog(IsSameFileContent(path1, 
-                Path.Combine(path2, "testfile")) ? "OK" : "NG");
+            Dir,File,
         }
 
-        private void btnDstNotExistEndWithSep_Click(object sender, RoutedEventArgs e)
+        class PathInfo
         {
-            string dir = ".\\testdir";
-            CppUtils.DeleteFile(dir);
+            string _path;
+            PathType _type;
+            byte[] _b;
+            public PathInfo(string path, PathType type, byte[] b)
+            {
+                if (path.StartsWith("\\"))
+                    throw new Exception("should not start with \\");
+                _path = path;
+                _type = type;
+                _b = b;
+                prepareDirStructure();
+            }
+            public PathInfo(string path, PathType type)
+            {
+                _path = path;
+                _type = type;
+                prepareDirStructure();
+            }
+            public string ThePath { get { return _path; } }
+            public bool IsFile { get { return _type == PathType.File; } }
+            void prepareDirStructure()
+            {
+                DirectoryInfo di = new DirectoryInfo(IsFile ? Path.GetDirectoryName(ThePath) : ThePath);
+                di.Create();
+                if (IsFile)
+                {
+                    if (_b == null)
+                        SafeDeleteFile(ThePath);
+                    else
+                        File.WriteAllBytes(ThePath, _b);
+                }
+            }
 
-            Directory.CreateDirectory(dir);
-            string file = "testfile";
-            string path1 = Path.Combine(dir, file);
-            File.WriteAllBytes(path1, GetRandomByte(1024));
+        }
+        private void btnCopyFileToNonexistentPath_Click(object sender, RoutedEventArgs e)
+        {
+            var path1 = new PathInfo(".\\testdir\\testfile", PathType.File, GetRandomByte(111));
+            var path2 = new PathInfo(".\\targetdir\\targetfile", PathType.File);
 
-            string path2 = ".\\targetdir1\\ddd\\";
-            CppUtils.DeleteFile(path2);
+            StartRetryCopy(string.Format("-s \"{0}\" -d \"{1}\" -ov No -rm No",
+                path1.ThePath, path2.ThePath));
 
-            StartRetryCopy(string.Format("-s \"{0}\" -d {1} -ov Yes",
-                path1, path2));
+            AppendLog(IsSameFileContent(path1.ThePath, path2.ThePath) ? "OK" : "NG");
+        }
 
-            AppendLog(IsSameFileContent(path1,
-                Path.Combine(path2, "testfile")) ? "OK" : "NG");
+        void deepCommon(bool yen)
+        {
+            var path1 = new PathInfo(".\\testdir\\testfile", PathType.File, GetRandomByte(111));
+
+            CppUtils.DeleteFile(".\\targetdir1");
+            string path2 = ".\\targetdir1\\deep1\\deep2" + (yen ? "\\" : "");
+
+            StartRetryCopy(string.Format("-s {0} -d {1} -ov Yes -rm No",
+                path1.ThePath, path2));
+
+            string result = yen ? Path.Combine(path2, Path.GetFileName(path1.ThePath)) :
+                path2;
+            AppendLog(IsSameFileContent(
+                path1.ThePath,
+                result)
+                ? "OK" : "NG");
+        }
+        private void btnCopyFileToNonExistentPathDeep_Click(object sender, RoutedEventArgs e)
+        {
+            deepCommon(false);
+        }
+
+        private void btnCopyFileToNonExistentPathDeepYen_Click(object sender, RoutedEventArgs e)
+        {
+            deepCommon(true);
         }
 
         private void btnDstFileExistButEndWithSep_Click(object sender, RoutedEventArgs e)
         {
-            string dir = ".\\testdir";
-            CppUtils.DeleteFile(dir);
-
-            Directory.CreateDirectory(dir);
-            string file = "testfile";
-            string path1 = Path.Combine(dir, file);
-            File.WriteAllBytes(path1, GetRandomByte(1024));
+            var path1 = new PathInfo(".\\testdir\\testfile", PathType.File, GetRandomByte(111));
 
             string path2 = ".\\targetdir1\\ddd";
             CppUtils.DeleteFile(path2);
             File.WriteAllText(path2, "a");
 
             StartRetryCopy(string.Format("-s \"{0}\" -d {1}\\ -ov Yes",
-                Path.GetFullPath( path1), Path.GetFullPath( path2)));
+                Path.GetFullPath(path1.ThePath), Path.GetFullPath(path2)));
         }
 
-        private void btnCopyDir_Click(object sender, RoutedEventArgs e)
+        void dirCommon(bool copy)
         {
             string dir1 = ".\\dir1";
             CppUtils.DeleteFile(dir1);
-            Directory.CreateDirectory(dir1);
-            string file1 = Path.Combine(dir1, "file1");
-            File.WriteAllBytes(file1, GetRandomByte(1000));
-            string file2 = Path.Combine(dir1, "file2");
-            File.WriteAllBytes(file2, GetRandomByte(1000));
-            string file3 = Path.Combine(dir1, "file3");
-            File.WriteAllBytes(file3, GetRandomByte(0));
 
-            string dir12 = Path.Combine(dir1, "dir12");
-            Directory.CreateDirectory(dir12);
-            string file12 = Path.Combine(dir12, "file12");
-            File.WriteAllBytes(file12, GetRandomByte(222));
+            var path1 = new PathInfo(".\\dir1\\file1", PathType.File, GetRandomByte(1000));
+            var path2 = new PathInfo(".\\dir1\\file2", PathType.File, GetRandomByte(1000));
+            var path3 = new PathInfo(".\\dir1\\file3", PathType.File, GetRandomByte(0));
+
+            var path12 = new PathInfo(".\\dir1\\dir12\\file12", PathType.File, GetRandomByte(222));
 
             string outdir = ".\\outdir\\vvv";
             CppUtils.DeleteFile(outdir);
 
-            StartRetryCopy(string.Format("-s \"{0}\" -d {1}\\ -ov Ask",
+            StartRetryCopy(string.Format("-s \"{0}\" -d {1}\\ -ov Ask -rm " + (copy ? "No" : "YesDelete"),
                 Path.GetFullPath(dir1), Path.GetFullPath(outdir)));
 
-            AppendLog(IsSameDirContent(dir1, Path.Combine(outdir, "dir1"))
-                ? "OK" : "NG");
-
+            if (copy)
+            {
+                AppendLog(IsSameDirContent(dir1, Path.Combine(outdir, "dir1"))
+                    ? "OK" : "NG");
+            }
+            else
+            {
+                AppendLog(!Directory.Exists(dir1) ? "OK" : "NG");
+            }
+        }
+        private void btnCopyDir_Click(object sender, RoutedEventArgs e)
+        {
+            dirCommon(true);
         }
 
         private void btnMoveDir_Click(object sender, RoutedEventArgs e)
         {
-            string dir1 = ".\\dir1";
-            CppUtils.DeleteFile(dir1);
-            Directory.CreateDirectory(dir1);
-            string file1 = Path.Combine(dir1, "file1");
-            File.WriteAllBytes(file1, GetRandomByte(1000));
-            string file2 = Path.Combine(dir1, "file2");
-            File.WriteAllBytes(file2, GetRandomByte(1000));
-            string file3 = Path.Combine(dir1, "file3");
-            File.WriteAllBytes(file3, GetRandomByte(0));
-
-            string dir12 = Path.Combine(dir1, "dir12");
-            Directory.CreateDirectory(dir12);
-            string file12 = Path.Combine(dir12, "file12");
-            File.WriteAllBytes(file12, GetRandomByte(222));
-
-            string outdir = ".\\outdir\\vvv";
-            CppUtils.DeleteFile(outdir);
-
-            StartRetryCopy(string.Format("-s \"{0}\" -d {1}\\ -ov Ask -rm YesDelete",
-                Path.GetFullPath(dir1), Path.GetFullPath(outdir)));
-
-            AppendLog(!Directory.Exists(dir1) ? "OK" : "NG");
+            dirCommon(false);
         }
     }
 }

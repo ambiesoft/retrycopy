@@ -111,7 +111,8 @@ namespace retrycopy {
 				I18N(L"Show Help"));
 
 			bool bTestShowReadErrorDialog = false;
-			parser.AddOption(L"--test-showreaderrordlg", 0, &bTestShowReadErrorDialog);
+			constexpr wchar_t* pOpStringTestShowReadErrorDlg = L"--test-showreaderrordlg";
+			parser.AddOption(pOpStringTestShowReadErrorDlg, 0, &bTestShowReadErrorDialog);
 
 			parser.Parse();
 
@@ -119,7 +120,7 @@ namespace retrycopy {
 
 			if (bShowHelp)
 			{
-				CppUtils::Info(gcnew String(parser.getHelpMessage(L"").c_str()));
+				CppUtils::Info(gcnew String(parser.getHelpMessage({ L"",pOpStringTestShowReadErrorDlg }).c_str()));
 				bCloseNow_ = true;
 				return;
 			}

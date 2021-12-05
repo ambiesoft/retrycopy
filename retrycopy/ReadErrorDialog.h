@@ -16,17 +16,23 @@ namespace retrycopy {
 	public ref class ReadErrorDialog : public System::Windows::Forms::Form
 	{
 		initonly int initialBufferSize_ = 0;
+		initonly String^ drive_;
 	public:
-		ReadErrorDialog(String^ message, int bufferSize, int retryCount)
+		ReadErrorDialog(String^ message, String^ drive, int bufferSize, int retryCount)
 		{
 			InitializeComponent();
 
 			txtMessage->Text = message;
+			drive_ = drive;
 			bufferSize_ = bufferSize;
 			initialBufferSize_ = bufferSize;
 			retryCount_ = retryCount;
 		}
-
+	private:
+		property String^ Drive
+		{
+			String^ get() { return drive_; }
+		}
 	protected:
 		/// <summary>
 		/// Clean up any resources being used.
@@ -48,6 +54,7 @@ namespace retrycopy {
 	private: System::Windows::Forms::Button^ btnGiveUpAndWZOmode;
 	private: System::Windows::Forms::SplitContainer^ spMain;
 	private: System::Windows::Forms::TextBox^ txtInfo;
+	private: System::Windows::Forms::Button^ btnShowDriveInfo;
 
 	private:
 		/// <summary>
@@ -70,6 +77,7 @@ namespace retrycopy {
 			this->btnGiveUpAndWZOmode = (gcnew System::Windows::Forms::Button());
 			this->spMain = (gcnew System::Windows::Forms::SplitContainer());
 			this->txtInfo = (gcnew System::Windows::Forms::TextBox());
+			this->btnShowDriveInfo = (gcnew System::Windows::Forms::Button());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->spMain))->BeginInit();
 			this->spMain->Panel1->SuspendLayout();
 			this->spMain->Panel2->SuspendLayout();
@@ -84,15 +92,15 @@ namespace retrycopy {
 			this->txtMessage->Name = L"txtMessage";
 			this->txtMessage->ReadOnly = true;
 			this->txtMessage->ScrollBars = System::Windows::Forms::ScrollBars::Both;
-			this->txtMessage->Size = System::Drawing::Size(603, 143);
+			this->txtMessage->Size = System::Drawing::Size(603, 132);
 			this->txtMessage->TabIndex = 0;
 			// 
 			// btnRetry
 			// 
 			this->btnRetry->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-			this->btnRetry->Location = System::Drawing::Point(12, 304);
+			this->btnRetry->Location = System::Drawing::Point(12, 281);
 			this->btnRetry->Name = L"btnRetry";
-			this->btnRetry->Size = System::Drawing::Size(113, 67);
+			this->btnRetry->Size = System::Drawing::Size(94, 62);
 			this->btnRetry->TabIndex = 1;
 			this->btnRetry->Text = L"&Retry";
 			this->btnRetry->UseVisualStyleBackColor = true;
@@ -103,9 +111,9 @@ namespace retrycopy {
 			// btnChangeBufferSize
 			// 
 			this->btnChangeBufferSize->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-			this->btnChangeBufferSize->Location = System::Drawing::Point(131, 304);
+			this->btnChangeBufferSize->Location = System::Drawing::Point(112, 281);
 			this->btnChangeBufferSize->Name = L"btnChangeBufferSize";
-			this->btnChangeBufferSize->Size = System::Drawing::Size(113, 67);
+			this->btnChangeBufferSize->Size = System::Drawing::Size(94, 62);
 			this->btnChangeBufferSize->TabIndex = 2;
 			this->btnChangeBufferSize->Text = L"Change Buffer size";
 			this->btnChangeBufferSize->UseVisualStyleBackColor = true;
@@ -114,9 +122,9 @@ namespace retrycopy {
 			// btnGiveupAndWriteZero
 			// 
 			this->btnGiveupAndWriteZero->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-			this->btnGiveupAndWriteZero->Location = System::Drawing::Point(250, 304);
+			this->btnGiveupAndWriteZero->Location = System::Drawing::Point(212, 281);
 			this->btnGiveupAndWriteZero->Name = L"btnGiveupAndWriteZero";
-			this->btnGiveupAndWriteZero->Size = System::Drawing::Size(113, 67);
+			this->btnGiveupAndWriteZero->Size = System::Drawing::Size(94, 62);
 			this->btnGiveupAndWriteZero->TabIndex = 3;
 			this->btnGiveupAndWriteZero->Text = L"Give up to read and write zero";
 			this->btnGiveupAndWriteZero->UseVisualStyleBackColor = true;
@@ -126,9 +134,9 @@ namespace retrycopy {
 			// 
 			this->btnCancel->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Right));
 			this->btnCancel->DialogResult = System::Windows::Forms::DialogResult::Cancel;
-			this->btnCancel->Location = System::Drawing::Point(516, 304);
+			this->btnCancel->Location = System::Drawing::Point(535, 281);
 			this->btnCancel->Name = L"btnCancel";
-			this->btnCancel->Size = System::Drawing::Size(99, 67);
+			this->btnCancel->Size = System::Drawing::Size(80, 62);
 			this->btnCancel->TabIndex = 4;
 			this->btnCancel->Text = L"Cancel";
 			this->btnCancel->UseVisualStyleBackColor = true;
@@ -136,9 +144,9 @@ namespace retrycopy {
 			// btnGiveUpAndWZOmode
 			// 
 			this->btnGiveUpAndWZOmode->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-			this->btnGiveUpAndWZOmode->Location = System::Drawing::Point(369, 304);
+			this->btnGiveUpAndWZOmode->Location = System::Drawing::Point(312, 281);
 			this->btnGiveUpAndWZOmode->Name = L"btnGiveUpAndWZOmode";
-			this->btnGiveUpAndWZOmode->Size = System::Drawing::Size(113, 67);
+			this->btnGiveUpAndWZOmode->Size = System::Drawing::Size(94, 62);
 			this->btnGiveUpAndWZOmode->TabIndex = 3;
 			this->btnGiveUpAndWZOmode->Text = L"Give up to read 1 byte and write zero until it succeed";
 			this->btnGiveUpAndWZOmode->UseVisualStyleBackColor = true;
@@ -149,7 +157,7 @@ namespace retrycopy {
 			this->spMain->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
 				| System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
-			this->spMain->Location = System::Drawing::Point(12, 12);
+			this->spMain->Location = System::Drawing::Point(12, 11);
 			this->spMain->Name = L"spMain";
 			this->spMain->Orientation = System::Windows::Forms::Orientation::Horizontal;
 			// 
@@ -160,8 +168,8 @@ namespace retrycopy {
 			// spMain.Panel2
 			// 
 			this->spMain->Panel2->Controls->Add(this->txtInfo);
-			this->spMain->Size = System::Drawing::Size(603, 286);
-			this->spMain->SplitterDistance = 143;
+			this->spMain->Size = System::Drawing::Size(603, 264);
+			this->spMain->SplitterDistance = 132;
 			this->spMain->TabIndex = 5;
 			// 
 			// txtInfo
@@ -171,15 +179,27 @@ namespace retrycopy {
 			this->txtInfo->Multiline = true;
 			this->txtInfo->Name = L"txtInfo";
 			this->txtInfo->ReadOnly = true;
-			this->txtInfo->Size = System::Drawing::Size(603, 139);
+			this->txtInfo->Size = System::Drawing::Size(603, 128);
 			this->txtInfo->TabIndex = 6;
+			// 
+			// btnShowDriveInfo
+			// 
+			this->btnShowDriveInfo->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
+			this->btnShowDriveInfo->Location = System::Drawing::Point(412, 280);
+			this->btnShowDriveInfo->Name = L"btnShowDriveInfo";
+			this->btnShowDriveInfo->Size = System::Drawing::Size(94, 62);
+			this->btnShowDriveInfo->TabIndex = 6;
+			this->btnShowDriveInfo->Text = L"&Show Drive Info";
+			this->btnShowDriveInfo->UseVisualStyleBackColor = true;
+			this->btnShowDriveInfo->Click += gcnew System::EventHandler(this, &ReadErrorDialog::btnShowDriveInfo_Click);
 			// 
 			// ReadErrorDialog
 			// 
-			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->CancelButton = this->btnCancel;
-			this->ClientSize = System::Drawing::Size(627, 383);
+			this->ClientSize = System::Drawing::Size(627, 354);
+			this->Controls->Add(this->btnShowDriveInfo);
 			this->Controls->Add(this->spMain);
 			this->Controls->Add(this->btnCancel);
 			this->Controls->Add(this->btnGiveUpAndWZOmode);
@@ -231,5 +251,7 @@ private: System::Void btnRetry_MouseMove(System::Object^ sender, System::Windows
 private: System::Void btnRetry_Enter(System::Object^ sender, System::EventArgs^ e) {
 	txtInfo->Text = "2";
 }
+		 System::Void btnShowDriveInfo_Click(System::Object^ sender, System::EventArgs^ e);
+
 };
 }

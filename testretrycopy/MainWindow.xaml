@@ -7,18 +7,17 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Button Content="Start Test" Margin="662,21,26,0" Height="47" VerticalAlignment="Top" Click="Button_Click"/>
         <TextBox x:Name="txtLog" TextWrapping="Wrap" Margin="26,217,26,0" Height="192" VerticalAlignment="Top"/>
         <Button x:Name="btnShowHelp" Content="Show Help" Margin="26,10,652,368" Click="btnShowHelp_Click"/>
         <Button x:Name="btnGitRev" Content="Show Gitrev" Margin="168,11,510,367" Click="btnGitRev_Click" />
-        <Button x:Name="btnSetSrcDst_DstNotExists"  Margin="26,83,640,288" Click="btnSetSrcDst_DstNotExists_Click">
-            <TextBlock>set srcdst<LineBreak/>dst not exist</TextBlock>
+        <Button x:Name="btnCopyFileToNonexistentPath"  Margin="26,72,640,288" Click="btnCopyFileToNonexistentPath_Click">
+            <TextBlock TextWrapping="Wrap" >CopyFile to nonexistent path</TextBlock>
         </Button>
-        <Button x:Name="btnSetSrcDst_DstIsDir" Margin="168,83,498,288" Click="btnSetSrcDst_DstIsDir_Click">
-            <TextBlock>set srcdst<LineBreak/>dst is dir</TextBlock>
+        <Button x:Name="btnCopyFileToNonExistentPathDeep" Margin="168,72,498,288" Click="btnCopyFileToNonExistentPathDeep_Click">
+            <TextBlock TextWrapping="WrapWithOverflow" >CopyFile to nonexistent path deep</TextBlock>
         </Button>
-        <Button x:Name="btnDstNotExistEndWithSep" HorizontalAlignment="Left" Margin="307,86,0,0" VerticalAlignment="Top" Height="61" Click="btnDstNotExistEndWithSep_Click" Width="143">
-            <TextBlock>dst not exists<LineBreak/>end with \</TextBlock>
+        <Button x:Name="btnCopyFileToNonExistentPathDeepYen" HorizontalAlignment="Left" Margin="307,86,0,0" VerticalAlignment="Top" Height="61" Click="btnCopyFileToNonExistentPathDeepYen_Click" Width="143">
+            <TextBlock TextWrapping="WrapWithOverflow" >CopyFile to nonexistent path deep \</TextBlock>
         </Button>
         <Button HorizontalAlignment="Left" Margin="473,92,0,0" VerticalAlignment="Top" Height="50" Width="125" RenderTransformOrigin="-0.259,0.627" Click="btnDstFileExistButEndWithSep_Click">
             <TextBlock x:Name="btnDstFileExistButEndWithSep">dst file exists<LineBreak/>but endwith \</TextBlock>

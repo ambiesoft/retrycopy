@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "ReadErrorDialog.h"
+using namespace System::Diagnostics;
+using namespace System::IO;
 
 using namespace Ambiesoft;
 
@@ -62,5 +64,19 @@ namespace retrycopy {
 		responce_ = READERROR_RESPONSE::RR_WZOMODE;
 		this->DialogResult = System::Windows::Forms::DialogResult::OK;
 		Close();
+	}
+	System::Void ReadErrorDialog::btnShowDriveInfo_Click(System::Object^ sender, System::EventArgs^ e)
+	{
+		try
+		{
+			Process::Start(
+				Path::Combine(Path::GetDirectoryName(Application::ExecutablePath),
+					"GetDriveInfo.exe"),
+				Drive);
+		}
+		catch (Exception^ ex)
+		{
+			CppUtils::Alert(ex);
+		}
 	}
 }

@@ -59,7 +59,7 @@ namespace GetDriveInfo
             AmbLib.OpenCommandGetResultCallback(
                 "fsutil",
                 string.Format("fsinfo ntfsinfo {0}", drive_),
-                System.Text.Encoding.UTF8,
+                System.Text.Encoding.Default,
                 out retval,
                 new DataReceivedEventHandler(OnOutputReceived),
                 new DataReceivedEventHandler(OnErrReceived),
