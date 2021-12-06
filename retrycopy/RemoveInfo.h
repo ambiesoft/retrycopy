@@ -4,51 +4,66 @@ using namespace System;
 
 namespace retrycopy {
 
-	enum class REMOVE_TYPE
+	enum class OPERATION
 	{
-		REMOVE_YES_RECYCLE,
-		REMOVE_YES_DELETE,
-		REMOVE_NO,
-		REMOVE_ASK,
-
-		REMOVE_COUNT,
+		COPY,
+		MOVE,
+		MOVERECYCLE,
+		ASK,
+		OPERATION_COUNT,
 	};
-	ref class RemoveItemInfo {
-		initonly REMOVE_TYPE kind_;
+	ref class OperationItem {
+		initonly OPERATION kind_;
 		initonly String^ text_;
+		initonly String^ btnText_;
 		initonly String^ clValue_;
 	public:
-		RemoveItemInfo(REMOVE_TYPE kind, String^ text, String^ clValue):
-			kind_(kind), text_(text), clValue_(clValue) {}
-		property REMOVE_TYPE Kind {
-			REMOVE_TYPE get() { return kind_; }
+		OperationItem(OPERATION kind, String^ text, String^ btnText, String^ clValue):
+			kind_(kind), text_(text), btnText_(btnText), clValue_(clValue) {}
+		property OPERATION Kind {
+			OPERATION get() { return kind_; }
 		}		
 		property String^ CLValue {
 			String^ get() { return clValue_; }
+		}
+		property String^ ButtonText {
+			String^ get() { return btnText_; }
 		}
 		String^ ToString() override {
 			return text_;
 		}
 	};
 
-	ref class RemoveInfo sealed abstract
+	ref class OperationInfo sealed abstract
 	{
 	public:
-		initonly static cli::array<RemoveItemInfo^>^ itemInfos_ = {
-			gcnew RemoveItemInfo(REMOVE_TYPE::REMOVE_YES_RECYCLE, I18N("Yes (Recycle)"), "YesRecycle"),
-			gcnew RemoveItemInfo(REMOVE_TYPE::REMOVE_YES_DELETE, I18N("Yes (Delete)"), "YesDelete"),
-			gcnew RemoveItemInfo(REMOVE_TYPE::REMOVE_NO, I18N("No"), "No"),
-			gcnew RemoveItemInfo(REMOVE_TYPE::REMOVE_ASK, I18N("Ask"), "Ask"),
+		initonly static String^ ONEOFOPERATION = I18N(L"'copy', 'move', 'moverecycle', or 'ask'");
+		initonly static cli::array<OperationItem^>^ itemInfos_ = {
+			gcnew OperationItem(OPERATION::COPY, I18N(L"Copy"), I18N(L"&Copy"), "copy"),
+			gcnew OperationItem(OPERATION::MOVE, I18N(L"Move"), I18N(L"&Move"), "move"),
+			gcnew OperationItem(OPERATION::MOVERECYCLE, I18N(L"Move (Recycle)"), I18N(L"Move (&Recyle)"), "moverecycle"),
+			gcnew OperationItem(OPERATION::ASK, I18N("Ask"), I18N(L"&Ask"), "ask"),
 		};
-		initonly static REMOVE_TYPE DefaultItem = REMOVE_TYPE::REMOVE_NO;
-		static RemoveInfo() {
-			DASSERT((int)REMOVE_TYPE::REMOVE_COUNT == itemInfos_->Length);
+		initonly static OPERATION DefaultItem = OPERATION::COPY;
+		static OperationInfo() {
+			DASSERT((int)OPERATION::OPERATION_COUNT == itemInfos_->Length);
 			for (int i = 0; i < itemInfos_->Length; ++i)
 			{
-				DASSERT(itemInfos_[i]->Kind == (REMOVE_TYPE)i);
+				DASSERT(itemInfos_[i]->Kind == (OPERATION)i);
+			}
+		}
+		static property OperationItem^ CopyOpItem
+		{
+			OperationItem^ get() {
+				for each (OperationItem ^ oi in itemInfos_) {
+					if (oi->Kind == OPERATION::COPY)
+						return oi;
+				}
+				return nullptr;
 			}
 		}
 		static void AddComboItem(System::Windows::Forms::ComboBox^ cmb);
 		static void SetComboItemFromCL(System::Windows::Forms::ComboBox^ cmb, LPCWSTR pCLValue);
+		static String^ GetButtonTitle(System::Windows::Forms::ComboBox^ cmb);
 	};
 }

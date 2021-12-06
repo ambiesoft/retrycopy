@@ -52,6 +52,7 @@ namespace testretrycopy
         }
         void StartRetryCopy(string arg)
         {
+            arg += " -start";
             AppendLog("LaunchWith=" + arg);
             Process proc = Process.Start(RetryCopyExe, arg);
             proc.WaitForExit();
@@ -78,10 +79,7 @@ namespace testretrycopy
             rnd.NextBytes(b);
             return b;
         }
-        void PrepareFile()
-        {
-        }
-
+  
         static void SafeDeleteFile(string path)
         {
             try
@@ -159,7 +157,7 @@ namespace testretrycopy
             var path1 = new PathInfo(".\\testdir\\testfile", PathType.File, GetRandomByte(111));
             var path2 = new PathInfo(".\\targetdir\\targetfile", PathType.File);
 
-            StartRetryCopy(string.Format("-s \"{0}\" -d \"{1}\" -ov No -rm No",
+            StartRetryCopy(string.Format("-s \"{0}\" -d \"{1}\" -ov no -op copy",
                 path1.ThePath, path2.ThePath));
 
             AppendLog(IsSameFileContent(path1.ThePath, path2.ThePath) ? "OK" : "NG");
@@ -172,7 +170,7 @@ namespace testretrycopy
             CppUtils.DeleteFile(".\\targetdir1");
             string path2 = ".\\targetdir1\\deep1\\deep2" + (yen ? "\\" : "");
 
-            StartRetryCopy(string.Format("-s {0} -d {1} -ov Yes -rm No",
+            StartRetryCopy(string.Format("-s {0} -d {1} -ov Yes -op copy",
                 path1.ThePath, path2));
 
             string result = yen ? Path.Combine(path2, Path.GetFileName(path1.ThePath)) :
@@ -218,7 +216,7 @@ namespace testretrycopy
             string outdir = ".\\outdir\\vvv";
             CppUtils.DeleteFile(outdir);
 
-            StartRetryCopy(string.Format("-s \"{0}\" -d {1}\\ -ov Ask -rm " + (copy ? "No" : "YesDelete"),
+            StartRetryCopy(string.Format("-s \"{0}\" -d {1}\\ -ov Ask -op " + (copy ? "copy" : "move"),
                 Path.GetFullPath(dir1), Path.GetFullPath(outdir)));
 
             if (copy)

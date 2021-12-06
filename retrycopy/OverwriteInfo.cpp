@@ -7,18 +7,18 @@ using namespace System;
 using namespace Ambiesoft;
 namespace retrycopy {
 
-	void OverwriteItem::AddComboItem(System::Windows::Forms::ComboBox^ cmb)
+	void OverwriteInfo::AddComboItem(System::Windows::Forms::ComboBox^ cmb)
 	{
 		DASSERT(cmb);
 		DASSERT(cmb->Items->Count == 0);
-		for each (OverwriteItemInfo ^ ii in itemInfos_)
+		for each (OverwriteItem ^ ii in itemInfos_)
 			cmb->Items->Add(ii);
 	}
-	void OverwriteItem::SetComboItemFromCL(System::Windows::Forms::ComboBox^ cmb, LPCWSTR pCLValue)
+	void OverwriteInfo::SetComboItemFromCL(System::Windows::Forms::ComboBox^ cmb, LPCWSTR pCLValue)
 	{
 		for (int i = 0; i < itemInfos_->Length; ++i)
 		{
-			if (itemInfos_[i]->CLValue == gcnew String(pCLValue))
+			if (0 == String::Compare(itemInfos_[i]->CLValue, gcnew String(pCLValue), true))
 			{
 				cmb->SelectedIndex = i;
 				return;

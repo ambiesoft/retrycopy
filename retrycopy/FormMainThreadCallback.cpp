@@ -154,9 +154,9 @@ namespace retrycopy {
 		}
 		DASSERT(String::IsNullOrEmpty(thDataFile->GetNGReason()));
 
-		switch ((REMOVE_TYPE)cmbRemove->SelectedIndex)
+		switch ((OPERATION)cmbOperation->SelectedIndex)
 		{
-		case REMOVE_TYPE::REMOVE_ASK:
+		case OPERATION::ASK:
 			if (System::Windows::Forms::DialogResult::Yes != CppUtils::YesOrNo(
 				this,
 				String::Format(I18N(L"Copy finished. Do you want to remove source file \"{0}\"?"),
@@ -166,17 +166,17 @@ namespace retrycopy {
 				break;
 			}
 			// fall through
-		case REMOVE_TYPE::REMOVE_YES_RECYCLE:
+		case OPERATION::MOVERECYCLE:
 			sbResult.Append(L"\t");
 			RemoveFileCommon(thDataFile, % sbResult, true);
 			break;
-		case REMOVE_TYPE::REMOVE_YES_DELETE:
+		case OPERATION::MOVE:
 			sbResult.Append(L"\t");
 			RemoveFileCommon(thDataFile, % sbResult, false);
 			break;
-		case REMOVE_TYPE::REMOVE_NO:
+		case OPERATION::COPY:
 			sbResult.Append(L"\t");
-			sbResult.Append(I18N(L"No file remove"));
+			sbResult.Append(I18N(L"copying (file not removed"));
 			break;
 		default:
 			DASSERT(false);
@@ -209,9 +209,9 @@ namespace retrycopy {
 			sbResult.Append(L"\t");
 			if (!ThreadTransitory::HasUserRemoveChanged && thData->HasSrcDir)
 			{
-				switch (ThreadTransitory::UserRemove)
+				switch (ThreadTransitory::UserOperation)
 				{
-				case REMOVE_TYPE::REMOVE_ASK:
+				case OPERATION::ASK:
 					if (System::Windows::Forms::DialogResult::Yes != CppUtils::YesOrNo(
 						this,
 						String::Format(I18N(L"All Copy finished. Do you want to remove source directories \"{0}\"?"),
@@ -221,12 +221,17 @@ namespace retrycopy {
 						break;
 					}
 					// fall
-				case REMOVE_TYPE::REMOVE_YES_RECYCLE:
+				case OPERATION::MOVERECYCLE:
 					RemoveDirCommon(thData->SrcDir, % sbResult, true);
 					break;
-				case REMOVE_TYPE::REMOVE_YES_DELETE:
+				case OPERATION::MOVE:
 					RemoveDirCommon(thData->SrcDir, % sbResult, false);
 					break;
+				case OPERATION::COPY:
+					break;
+				default:
+					DASSERT(false);
+					ExitProcess(1);
 				}
 			}
 			AppendLogNow(sbResult.ToString());

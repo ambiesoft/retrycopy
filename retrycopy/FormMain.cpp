@@ -48,17 +48,17 @@ namespace retrycopy {
 		udBuffer->Value = std::clamp(intval, MINREADBUFFERSIZE, MAXREADBUFFERSIZE);
 		ThreadTransitory::UserBuffer = Decimal::ToInt32(udBuffer->Value);
 
-		OverwriteItem::AddComboItem(cmbOverwrite);
+		OverwriteInfo::AddComboItem(cmbOverwrite);
 		Profile::GetInt(SECTION_OPTION, KEY_OVERWRITE,
-			(int)OverwriteItem::DefaultItem, intval, ini);
+			(int)OverwriteInfo::DefaultItem, intval, ini);
 		if (0 <= intval && intval < cmbOverwrite->Items->Count)
 			cmbOverwrite->SelectedIndex = intval;
 
-		RemoveInfo::AddComboItem(cmbRemove);
-		Profile::GetInt(SECTION_OPTION, KEY_REMOVE,
-			(int)RemoveInfo::DefaultItem, intval, ini);
-		if (0 <= intval && intval < cmbRemove->Items->Count)
-			cmbRemove->SelectedIndex = intval;
+		OperationInfo::AddComboItem(cmbOperation);
+		Profile::GetInt(SECTION_OPTION, KEY_OPERATION,
+			(int)OperationInfo::DefaultItem, intval, ini);
+		if (0 <= intval && intval < cmbOperation->Items->Count)
+			cmbOperation->SelectedIndex = intval;
 
 		// Rest from command line
 		{
@@ -89,16 +89,21 @@ namespace retrycopy {
 			wstring overwrite;
 			parser.AddOption(L"-ov", ArgCount::ArgCount_One, &overwrite,
 				ArgEncodingFlags::ArgEncodingFlags_Default,
-				I18N(L"Overwrite: One of 'Yes', 'No', 'Ask'"));
+				TO_LPCWSTR(String::Format(I18N(L"Overwrite: One of {0}"), OverwriteInfo::ONEOFOPERATION)));
 
-			wstring remove;
-			parser.AddOption(L"-rm", ArgCount::ArgCount_One, &remove,
+			wstring operation;
+			parser.AddOption(L"-op", ArgCount::ArgCount_One, &operation,
 				ArgEncodingFlags::ArgEncodingFlags_Default,
-				I18N(L"Remove: One of 'YesRecycle', 'YesDelete', 'No' or 'Ask'"));
+				TO_LPCWSTR(String::Format(I18N(L"Operation: One of {0}"), OperationInfo::ONEOFOPERATION)));
 
 			wstring mainArg;
 			parser.AddOption(L"", ArgCount::ArgCount_ZeroToInfinite,
 				&mainArg);
+
+			bool bStart = false;
+			parser.AddOption(L"-start", 0, &bStart,
+				ArgEncodingFlags::ArgEncodingFlags_Default,
+				I18N(L"Start operation"));
 
 			bool bShowGitRev = false;
 			parser.AddOption(L"--show-gitrev", 0, &bShowGitRev,
@@ -117,7 +122,7 @@ namespace retrycopy {
 			parser.Parse();
 
 			bTestShowReadErrorDialog_ = bTestShowReadErrorDialog;
-
+			bStart_ = bStart;
 			if (bShowHelp)
 			{
 				CppUtils::Info(gcnew String(parser.getHelpMessage({ L"",pOpStringTestShowReadErrorDlg }).c_str()));
@@ -201,11 +206,11 @@ namespace retrycopy {
 			}
 			if (!overwrite.empty())
 			{
-				OverwriteItem::SetComboItemFromCL(cmbOverwrite, overwrite.c_str());
+				OverwriteInfo::SetComboItemFromCL(cmbOverwrite, overwrite.c_str());
 			}
-			if (!remove.empty())
+			if (!operation.empty())
 			{
-				RemoveInfo::SetComboItemFromCL(cmbRemove, remove.c_str());
+				OperationInfo::SetComboItemFromCL(cmbOperation, operation.c_str());
 			}
 		}
 	}
@@ -226,6 +231,8 @@ namespace retrycopy {
 				3,
 				4096);
 		}
+		if (bStart_)
+			btnStart->PerformClick();
 	}
 
 	void FormMain::AppendLog(String^ message)
@@ -306,9 +313,9 @@ namespace retrycopy {
 	{
 		ThreadTransitory::UserOverWrite = (OVERWRITE_TYPE)cmbOverwrite->SelectedIndex;
 	}
-	System::Void FormMain::cmbRemove_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e)
+	System::Void FormMain::cmbOperation_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e)
 	{
-		ThreadTransitory::UserRemove = (REMOVE_TYPE)cmbRemove->SelectedIndex;
+		ThreadTransitory::UserOperation = (OPERATION)cmbOperation->SelectedIndex;
 	}
 
 	System::Void FormMain::btnCopy_Click(System::Object^ sender, System::EventArgs^ e)
@@ -402,7 +409,7 @@ namespace retrycopy {
 			Decimal::ToInt32(udBuffer->Value), ini);
 
 		Profile::WriteInt(SECTION_OPTION, KEY_OVERWRITE, cmbOverwrite->SelectedIndex, ini);
-		Profile::WriteInt(SECTION_OPTION, KEY_REMOVE, cmbRemove->SelectedIndex, ini);
+		Profile::WriteInt(SECTION_OPTION, KEY_OPERATION, cmbOperation->SelectedIndex, ini);
 
 		if (!Profile::WriteAll(ini, IniPath))
 		{
@@ -468,7 +475,8 @@ namespace retrycopy {
 			btnNavSource->Enabled = true;
 			txtDestination->ReadOnly = false;
 			btnNavDestination->Enabled = true;
-			btnCopy->Enabled = true;
+			cmbOperation->Enabled = true;
+			btnStart->Enabled = true;
 			btnSuspend->Enabled = false;
 			timerUpdate->Enabled = false;
 			RetrycopyMisc::SetTaskbarStateNone();
@@ -482,7 +490,8 @@ namespace retrycopy {
 				btnNavSource->Enabled = false;
 				txtDestination->ReadOnly = true;
 				btnNavDestination->Enabled = false;
-				btnCopy->Enabled = false;
+				cmbOperation->Enabled = false;
+				btnStart->Enabled = false;
 				btnSuspend->Enabled = true;
 			}
 			else if (threadState_ == ThreadStateType::PAUSED)

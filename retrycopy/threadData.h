@@ -24,7 +24,7 @@ namespace retrycopy {
 		static LONGLONG curProcessedSize_;
 
 		static OVERWRITE_TYPE userOverwrite_;
-		static REMOVE_TYPE userRemove_;
+		static OPERATION userOperation_;
 
 		static int userBuffer_ = 40960;
 		static int userRetry_ = 10;
@@ -207,17 +207,17 @@ namespace retrycopy {
 				userOverwrite_ = v;
 			}
 		}
-		static property REMOVE_TYPE UserRemove
+		static property OPERATION UserOperation
 		{
-			REMOVE_TYPE get() {
+			OPERATION get() {
 				RLocker r(rwl_);
-				return userRemove_;
+				return userOperation_;
 			}
-			void set(REMOVE_TYPE v) {
+			void set(OPERATION v) {
 				WLocker w(rwl_);
-				if (userRemove_ != v)
+				if (userOperation_ != v)
 					userRemoveDirty_ = true;
-				userRemove_ = v;
+				userOperation_ = v;
 			}
 		}
 		static void SetLastErrorDisp(LONGLONG pos, LONGLONG allSize, DWORD le, int retried);

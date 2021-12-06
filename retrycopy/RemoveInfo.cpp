@@ -6,24 +6,43 @@ using namespace System;
 using namespace Ambiesoft;
 namespace retrycopy {
 
-	void RemoveInfo::AddComboItem(System::Windows::Forms::ComboBox^ cmb)
+	void OperationInfo::AddComboItem(System::Windows::Forms::ComboBox^ cmb)
 	{
 		DASSERT(cmb);
 		DASSERT(cmb->Items->Count == 0);
-		for each (RemoveItemInfo ^ ii in itemInfos_)
+		for each (OperationItem ^ ii in itemInfos_)
 			cmb->Items->Add(ii);
 	}
-	void RemoveInfo::SetComboItemFromCL(System::Windows::Forms::ComboBox^ cmb, LPCWSTR pCLValue)
+	void OperationInfo::SetComboItemFromCL(System::Windows::Forms::ComboBox^ cmb, LPCWSTR pCLValue)
 	{
+		String^ cl = gcnew String(pCLValue);
+
+		// default is copy
+		if (String::IsNullOrEmpty(cl))
+			cl = CopyOpItem->CLValue;
+
 		for (int i = 0; i < itemInfos_->Length; ++i)
 		{
-			if (itemInfos_[i]->CLValue == gcnew String(pCLValue))
+			if (0 == String::Compare(itemInfos_[i]->CLValue, cl, true))
 			{
 				cmb->SelectedIndex = i;
 				return;
 			}
 		}
-		CppUtils::Alert(I18N(L"-rm must be one of 'YesRecycle', 'YesDelete', 'No' or 'Ask'"));
+		CppUtils::Alert(String::Format(I18N(L"-op must be one of {0}"),
+			ONEOFOPERATION));
+	}
+	String^ OperationInfo::GetButtonTitle(System::Windows::Forms::ComboBox^ cmb)
+	{
+		for (int i = 0; i < itemInfos_->Length; ++i)
+		{
+			if (i == cmb->SelectedIndex)
+			{
+				return itemInfos_[i]->ButtonText;
+			}
+		}
+		DASSERT(false);
+		return nullptr;
 	}
 }
 

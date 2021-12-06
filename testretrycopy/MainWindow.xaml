@@ -5,25 +5,26 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:testretrycopy"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <TextBox x:Name="txtLog" TextWrapping="Wrap" Margin="26,217,26,0" Height="192" VerticalAlignment="Top"/>
-        <Button x:Name="btnShowHelp" Content="Show Help" Margin="26,10,652,368" Click="btnShowHelp_Click"/>
-        <Button x:Name="btnGitRev" Content="Show Gitrev" Margin="168,11,510,367" Click="btnGitRev_Click" />
-        <Button x:Name="btnCopyFileToNonexistentPath"  Margin="26,72,640,288" Click="btnCopyFileToNonexistentPath_Click">
-            <TextBlock TextWrapping="Wrap" >CopyFile to nonexistent path</TextBlock>
+        Title="MainWindow" Height="449" Width="674">
+    <Grid Height="440" VerticalAlignment="Top">
+
+
+        <Button x:Name="btnShowHelp" Content="Show Help" Margin="26,10,0,0" Click="btnShowHelp_Click" Height="57" VerticalAlignment="Top" HorizontalAlignment="Left" Width="122"/>
+        <Button x:Name="btnGitRev" Content="Show Gitrev" Margin="168,11,0,0" Click="btnGitRev_Click" Height="57" VerticalAlignment="Top" HorizontalAlignment="Left" Width="122" Grid.ColumnSpan="2" />
+        <Button x:Name="btnCopyFileToNonexistentPath"  Margin="26,72,0,0" Click="btnCopyFileToNonexistentPath_Click" Height="75" VerticalAlignment="Top" HorizontalAlignment="Left" Width="134">
+            <TextBlock TextWrapping="Wrap" Height="65" >CopyFile to nonexistent path</TextBlock>
         </Button>
-        <Button x:Name="btnCopyFileToNonExistentPathDeep" Margin="168,72,498,288" Click="btnCopyFileToNonExistentPathDeep_Click">
+        <Button x:Name="btnCopyFileToNonExistentPathDeep" Margin="168,72,0,0" Click="btnCopyFileToNonExistentPathDeep_Click" HorizontalAlignment="Left" Width="134" Height="75" VerticalAlignment="Top" Grid.ColumnSpan="2">
             <TextBlock TextWrapping="WrapWithOverflow" >CopyFile to nonexistent path deep</TextBlock>
         </Button>
-        <Button x:Name="btnCopyFileToNonExistentPathDeepYen" HorizontalAlignment="Left" Margin="307,86,0,0" VerticalAlignment="Top" Height="61" Click="btnCopyFileToNonExistentPathDeepYen_Click" Width="143">
+        <Button x:Name="btnCopyFileToNonExistentPathDeepYen" HorizontalAlignment="Left" Margin="325,86,0,0" VerticalAlignment="Top" Height="61" Click="btnCopyFileToNonExistentPathDeepYen_Click" Width="143">
             <TextBlock TextWrapping="WrapWithOverflow" >CopyFile to nonexistent path deep \</TextBlock>
         </Button>
-        <Button HorizontalAlignment="Left" Margin="473,92,0,0" VerticalAlignment="Top" Height="50" Width="125" RenderTransformOrigin="-0.259,0.627" Click="btnDstFileExistButEndWithSep_Click">
+        <Button HorizontalAlignment="Left" Margin="473,97,0,0" VerticalAlignment="Top" Height="50" Width="125" RenderTransformOrigin="-0.259,0.627" Click="btnDstFileExistButEndWithSep_Click">
             <TextBlock x:Name="btnDstFileExistButEndWithSep">dst file exists<LineBreak/>but endwith \</TextBlock>
         </Button>
         <Button x:Name="btnCopyDir" Content="CopyDir" HorizontalAlignment="Left" Margin="26,152,0,0" VerticalAlignment="Top" Height="48" Width="122" Click="btnCopyDir_Click"/>
-        <Button x:Name="btnMoveDir" Content="MoveDir" HorizontalAlignment="Left" Margin="174,152,0,0" VerticalAlignment="Top" Height="48" Width="122" Click="btnMoveDir_Click"/>
-
+        <Button x:Name="btnMoveDir" Content="MoveDir" HorizontalAlignment="Left" Margin="174,152,0,0" VerticalAlignment="Top" Height="48" Width="122" Click="btnMoveDir_Click" Grid.ColumnSpan="2"/>
+        <TextBox x:Name="txtLog" TextWrapping="Wrap" Margin="28,220,28,21"   />
     </Grid>
 </Window>
