@@ -49,9 +49,7 @@ namespace retrycopy {
 
 		StartOfThreadMaster2(thDataMaster);
 
-		EndInvokeWithTN(
-			thDataMaster->ThreadNumber,
-			BeginInvoke(gcnew VTmDelegate(this, &FormMain::ThreadFinished), thDataMaster));
+		BeginInvoke(gcnew VTmDelegate(this, &FormMain::ThreadFinished), thDataMaster);
 	}
 	void FormMain::StartOfThreadMaster2(ThreadDataMaster^ thDataMaster)
 	{
