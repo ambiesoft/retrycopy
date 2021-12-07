@@ -51,8 +51,7 @@ namespace retrycopy {
 
 		EndInvokeWithTN(
 			thDataMaster->ThreadNumber,
-			BeginInvoke(gcnew VIDelegate(this, &FormMain::ThreadFinished),
-			thDataMaster->ThreadNumber));
+			BeginInvoke(gcnew VTmDelegate(this, &FormMain::ThreadFinished), thDataMaster));
 	}
 	void FormMain::StartOfThreadMaster2(ThreadDataMaster^ thDataMaster)
 	{
@@ -171,6 +170,8 @@ namespace retrycopy {
 
 		try
 		{
+			thDataMaster->SetTaskStarted();
+
 			// prepare target dirs
 			String^ message = I18N(L"Preparing target directories...");
 			BeginInvoke(gcnew VSDelegate(this, &FormMain::ThreadLog), message);
@@ -229,9 +230,7 @@ namespace retrycopy {
 				thDataMaster->ThreadNumber,
 				ex->Message));
 		}
-		EndInvokeWithTN(
-			thDataMaster->ThreadNumber,
-			BeginInvoke(gcnew VTmDelegate(this, &FormMain::ThreadTaskFinished), thDataMaster));
+
 	}
 
 #define RETURNIFTHREADNUMBER do { if(thFileData->ThreadNumber != ThreadTransitory::ThreadNumber) { return; } }while(false)

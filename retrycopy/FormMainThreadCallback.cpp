@@ -192,16 +192,16 @@ namespace retrycopy {
 		AppendLogNow(I18N(L"Thread Started"));
 	}
 
-	void FormMain::ThreadFinished(int tn)
-	{
-		if (tn != ThreadTransitory::ThreadNumber)
-			return;
-		ThreadState = ThreadStateType::NONE;
-	}
-	void FormMain::ThreadTaskFinished(ThreadDataMaster^ thData)
+	void FormMain::ThreadFinished(ThreadDataMaster^ thData)
 	{
 		if (thData->ThreadNumber != ThreadTransitory::ThreadNumber)
 			return;
+
+		ThreadState = ThreadStateType::NONE;
+
+		if (!thData->TaskStarted)
+			return;
+
 		if (thData->IsOK)
 		{
 			StringBuilder sbResult;
@@ -235,9 +235,17 @@ namespace retrycopy {
 				}
 			}
 			AppendLogNow(sbResult.ToString());
-			CppUtils::Info(this, String::Format(
-				I18N(L"success Total Input size={0}, Total Written size={1}"),
-				thData->TotalInputSize, thData->TotalWrittenSize));
+			if(IsCloseOnFinish)
+			{
+				Close();
+				return;
+			}
+			else
+			{
+				CppUtils::Info(this, String::Format(
+					I18N(L"success Total Input size={0}, Total Written size={1}"),
+					thData->TotalInputSize, thData->TotalWrittenSize));
+			}
 		}
 		else
 		{

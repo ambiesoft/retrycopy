@@ -245,6 +245,7 @@ namespace retrycopy {
 		initonly String^ src_;
 		initonly String^ dst_;
 		KVS^ sds_ = nullptr;
+		bool taskStarted_ = false;
 		System::Collections::Generic::List<String^>^ dstdirs_ = nullptr;
 		LONGLONG totalInputSize_;
 		LONGLONG totalProcessed_;
@@ -275,6 +276,13 @@ namespace retrycopy {
 			sds_ = sds;
 			dstdirs_ = dstdirs;
 		}
+		void SetTaskStarted() {
+			taskStarted_ = true;
+		}
+		property bool TaskStarted
+		{
+			bool get() { return taskStarted_; }
+		}
 		void PrepareDstDirs();
 		property bool HasSrcDir
 		{
@@ -301,7 +309,7 @@ namespace retrycopy {
 		}
 		property bool IsOK
 		{
-			bool get() { return totalOK_ == sds_->Count; }
+			bool get() { return sds_ && totalOK_ == sds_->Count; }
 		}
 		property int TotalOKCount
 		{

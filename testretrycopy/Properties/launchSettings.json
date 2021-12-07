@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "testretrycopy": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

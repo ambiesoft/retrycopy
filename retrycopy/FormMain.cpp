@@ -33,6 +33,8 @@ namespace retrycopy {
 		udRetry->Maximum = MAXRETRYCOUNT;
 		udRetry->TextChanged += gcnew System::EventHandler(this, &FormMain::OnRetryCountChanged);
 
+
+		// first, load from ini
 		int intval;
 		Ambiesoft::AmbLib::MakeTripleClickTextBox(txtSource);
 		Ambiesoft::AmbLib::MakeTripleClickTextBox(txtDestination);
@@ -60,7 +62,7 @@ namespace retrycopy {
 		if (0 <= intval && intval < cmbOperation->Items->Count)
 			cmbOperation->SelectedIndex = intval;
 
-		// Rest from command line
+		// Second, read from command line
 		{
 			CCommandLineParser parser(CaseFlags::CaseFlags_Default,
 				I18N(L"Copy data from broken HDD"),
@@ -110,6 +112,11 @@ namespace retrycopy {
 				ArgEncodingFlags::ArgEncodingFlags_Default,
 				I18N(L"Show Gitrev"));
 
+			bool bIsCloseOnFinish = false;
+			parser.AddOption(L"-close", 0, &bIsCloseOnFinish,
+				ArgEncodingFlags::ArgEncodingFlags_Default,
+				I18N(L"Close when finished"));
+
 			bool bShowHelp = false;
 			parser.AddOptionRange({ L"-h",L"--help",L"/h",L"/?" }, 0, &bShowHelp,
 				ArgEncodingFlags::ArgEncodingFlags_Default,
@@ -123,6 +130,8 @@ namespace retrycopy {
 
 			bTestShowReadErrorDialog_ = bTestShowReadErrorDialog;
 			bStart_ = bStart;
+			IsCloseOnFinish = bIsCloseOnFinish;
+
 			if (bShowHelp)
 			{
 				CppUtils::Info(gcnew String(parser.getHelpMessage({ L"",pOpStringTestShowReadErrorDlg }).c_str()));
@@ -217,7 +226,10 @@ namespace retrycopy {
 	System::Void FormMain::FormMain_Load(System::Object^ sender, System::EventArgs^ e)
 	{
 		if (bCloseNow_)
+		{
 			Close();
+			return;
+		}
 
 		if (bTestShowReadErrorDialog_)
 		{

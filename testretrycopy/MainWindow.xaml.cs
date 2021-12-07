@@ -52,7 +52,7 @@ namespace testretrycopy
         }
         void StartRetryCopy(string arg)
         {
-            arg += " -start";
+            arg += " -start -close";
             AppendLog("LaunchWith=" + arg);
             Process proc = Process.Start(RetryCopyExe, arg);
             proc.WaitForExit();
