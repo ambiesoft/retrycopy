@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:testretrycopy"
         mc:Ignorable="d"
-        Title="MainWindow" Height="449" Width="674">
+        Title="MainWindow" Height="444" Width="668">
     <Grid Height="440" VerticalAlignment="Top">
 
 
@@ -25,9 +25,10 @@
         </Button>
         <Button x:Name="btnCopyDir" Content="CopyDir" HorizontalAlignment="Left" Margin="26,152,0,0" VerticalAlignment="Top" Height="48" Width="122" Click="btnCopyDir_Click"/>
         <Button x:Name="btnMoveDir" Content="MoveDir" HorizontalAlignment="Left" Margin="174,152,0,0" VerticalAlignment="Top" Height="48" Width="122" Click="btnMoveDir_Click" Grid.ColumnSpan="2"/>
-        <TextBox x:Name="txtLog" TextWrapping="Wrap" Margin="28,220,28,21"   />
+        <TextBox  x:Name="txtLog" TextWrapping="NoWrap" Margin="28,220,28,53"   />
         <Button x:Name="btnShowReadError" Content="Show Read Error Dailog" HorizontalAlignment="Left" Margin="311,11,0,0" VerticalAlignment="Top" Height="47" Width="104" Click="btnShowReadError_Click"/>
-        <CheckBox x:Name="chkClose" Content="Close" HorizontalAlignment="Left" Margin="536,188,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="chkClose" Content="Close" HorizontalAlignment="Left" Margin="597,191,0,0" VerticalAlignment="Top"/>
         <Button x:Name="btnCopy2Files" Content="Copy2Files" HorizontalAlignment="Left" Margin="325,152,0,0" VerticalAlignment="Top" Height="48" Width="122" Click="btnCopy2Files_Click" />
+        <Button x:Name="btnMove2Files" Content="Move2Files" Margin="452,152,0,0" Click="btnMove2Files_Click" HorizontalAlignment="Left" Width="116" Height="48" VerticalAlignment="Top" />
     </Grid>
 </Window>

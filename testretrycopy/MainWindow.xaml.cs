@@ -49,6 +49,9 @@ namespace testretrycopy
         {
             txtLog.AppendText(message);
             txtLog.AppendText(Environment.NewLine);
+            txtLog.SelectionStart = txtLog.Text.Length;
+            txtLog.SelectionLength = 0;
+            txtLog.CaretIndex = txtLog.Text.Length;
         }
         void StartRetryCopy(string arg)
         {
@@ -210,14 +213,32 @@ namespace testretrycopy
 
         bool IsDirMoved(PathInfo[] paths, string destRoot)
         {
-            if (paths.Length != Directory.GetFiles(destRoot,"*",SearchOption.AllDirectories).Length)
+            if (paths.Length != Directory.GetFiles(destRoot, "*", SearchOption.AllDirectories).Length)
                 return false;
-            foreach(var path in paths)
+            foreach (var path in paths)
             {
                 string origFile = path.ThePath;
                 if (File.Exists(origFile))
                     return false;
                 string destFile = Path.Combine(destRoot, path.ThePath);
+                if (!File.Exists(destFile))
+                    return false;
+                byte[] ba2 = File.ReadAllBytes(destFile);
+                if (!path.B.SequenceEqual(ba2))
+                    return false;
+            }
+            return true;
+        }
+        bool IsFileMoved(PathInfo[] paths, string destRoot)
+        {
+            if (paths.Length != Directory.GetFiles(destRoot, "*", SearchOption.AllDirectories).Length)
+                return false;
+            foreach (var path in paths)
+            {
+                string origFile = path.ThePath;
+                if (File.Exists(origFile))
+                    return false;
+                string destFile = Path.Combine(destRoot, Path.GetFileName( path.ThePath));
                 if (!File.Exists(destFile))
                     return false;
                 byte[] ba2 = File.ReadAllBytes(destFile);
@@ -266,9 +287,8 @@ namespace testretrycopy
             dirCommon(false);
         }
 
-        private void btnCopy2Files_Click(object sender, RoutedEventArgs e)
+        void multiCommon(bool bCopy)
         {
-            bool copy = true;
             string dir1 = ".\\dir1";
             CppUtils.DeleteFile(dir1);
 
@@ -278,13 +298,31 @@ namespace testretrycopy
             string outdir = ".\\outdir\\vvv";
             CppUtils.DeleteFile(outdir);
 
-            StartRetryCopy(string.Format("\"{0}\" \"{1}\" -d {2}\\ -ov Ask -op " + (copy ? "copy" : "move"),
+            StartRetryCopy(string.Format("\"{0}\" \"{1}\" -d {2}\\ -ov Ask -op " + (bCopy ? "copy" : "move"),
                 Path.GetFullPath(path1.ThePath),
                 Path.GetFullPath(path2.ThePath),
                 Path.GetFullPath(outdir)));
 
-            AppendLog(IsSameDirContent(dir1, outdir) ? "OK" : "NG");
-
+            if (bCopy)
+            {
+                AppendLog(IsSameDirContent(dir1, outdir) ? "OK" : "NG");
+            }
+            else
+            {
+                AppendLog(!File.Exists(path1.ThePath) ? "OK" : "NG");
+                AppendLog(!File.Exists(path2.ThePath) ? "OK" : "NG");
+                AppendLog(IsFileMoved(
+                    new PathInfo[] { path1, path2, },
+                    outdir) ? "OK" : "NG");
+            }
+        }
+        private void btnCopy2Files_Click(object sender, RoutedEventArgs e)
+        {
+            multiCommon(true);
+        }
+        private void btnMove2Files_Click(object sender, RoutedEventArgs e)
+        {
+            multiCommon(false);
         }
     }
 }

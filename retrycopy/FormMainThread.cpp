@@ -217,6 +217,7 @@ namespace retrycopy {
 						thDataPath->SDS[i].Key, thDataPath->SDS[i].Value);
 
 					StartOfThreadFile(tdf);
+					ThreadTransitory::SetProgress(String::Empty);
 
 					if (thDataMaster->ThreadNumber != ThreadTransitory::ThreadNumber)
 						return;
