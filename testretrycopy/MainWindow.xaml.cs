@@ -71,6 +71,10 @@ namespace testretrycopy
         {
             StartRetryCopy("--show-gitrev");
         }
+        private void btnShowReadError_Click(object sender, RoutedEventArgs e)
+        {
+            StartRetryCopy("--test-showreaderrordlg");
+        }
 
         byte[] GetRandomByte(int size)
         {
@@ -238,5 +242,6 @@ namespace testretrycopy
         {
             dirCommon(false);
         }
+
     }
 }

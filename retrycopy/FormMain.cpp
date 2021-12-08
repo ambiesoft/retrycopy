@@ -242,6 +242,8 @@ namespace retrycopy {
 				1,
 				3,
 				4096);
+			Close();
+			return;
 		}
 		if (bStart_)
 			btnStart->PerformClick();

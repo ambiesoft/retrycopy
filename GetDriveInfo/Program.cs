@@ -56,38 +56,44 @@ namespace GetDriveInfo
 
             int retval;
             Process process;
-            AmbLib.OpenCommandGetResultCallback(
-                "fsutil",
-                string.Format("fsinfo ntfsinfo {0}", drive_),
-                System.Text.Encoding.Default,
-                out retval,
-                new DataReceivedEventHandler(OnOutputReceived),
-                new DataReceivedEventHandler(OnErrReceived),
-                null,
-                out process);
-            process.WaitForExit();
-            if (retval != 0)
+            try
             {
-                var message = new StringBuilder();
-                message.Append("failed to execute fsutil");
-                message.AppendLine();
-                if (output_.Length != 0)
+                AmbLib.OpenCommandGetResultCallback(
+                    "fsutil",
+                    string.Format("fsinfo ntfsinfo {0}", drive_),
+                    System.Text.Encoding.Default,
+                    out retval,
+                    new DataReceivedEventHandler(OnOutputReceived),
+                    new DataReceivedEventHandler(OnErrReceived),
+                    null,
+                    out process);
+                process.WaitForExit();
+                if (retval != 0 && retval != 1)
                 {
-                    message.Append(output_);
+                    var message = new StringBuilder();
+                    message.Append("failed to execute fsutil");
                     message.AppendLine();
+                    if (output_.Length != 0)
+                    {
+                        message.Append(output_);
+                        message.AppendLine();
+                    }
+                    if (err_.Length != 0)
+                    {
+                        message.Append(err_);
+                        message.AppendLine();
+                    }
+                    CppUtils.Alert(message.ToString());
+                    return 1;
                 }
-                if (err_.Length != 0)
-                {
-                    message.Append(err_);
-                    message.AppendLine();
-                }
-                CppUtils.Alert(message.ToString());
-                return 1;
+                Application.Run(new FormMain());
+                return 0;
             }
-
-
-            Application.Run(new FormMain());
-            return 0;
+            catch(Exception ex)
+            {
+                CppUtils.Fatal(ex);
+                return ex.HResult;
+            }
         }
     }
 }
