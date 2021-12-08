@@ -242,7 +242,7 @@ namespace retrycopy {
 	ref class ThreadDataMaster
 	{
 		initonly int threadNumber_;
-		initonly String^ src_;
+		initonly String^ srces_;
 		initonly String^ dst_;
 		KVS^ sds_ = nullptr;
 		bool taskStarted_ = false;
@@ -252,16 +252,16 @@ namespace retrycopy {
 		int totalOK_;
 		int totalSkipped_;
 	public:
-		ThreadDataMaster(int threadNumber, String^ src, String^ dst):
-			threadNumber_(threadNumber), src_(src), dst_(dst)
+		ThreadDataMaster(int threadNumber, String^ srces, String^ dst):
+			threadNumber_(threadNumber), srces_(srces), dst_(dst)
 		{}
 		property int ThreadNumber
 		{
 			int get() { return threadNumber_; }
 		}
-		property String^ Src
+		property String^ Srces
 		{
-			String^ get() { return src_; }
+			String^ get() { return srces_; }
 		}
 		property String^ Dst
 		{
@@ -286,6 +286,7 @@ namespace retrycopy {
 		void PrepareDstDirs();
 		property bool HasSrcDir
 		{
+			// from here srces_ has many src_
 			bool get() { return System::IO::Directory::Exists(src_); }
 		}
 		property String^ SrcDir

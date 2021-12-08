@@ -286,11 +286,13 @@
   <ItemGroup>
     <ClInclude Include="..\..\lsMisc\BrowseFolder.h" />
     <ClInclude Include="..\..\lsMisc\CommandLineParser.h" />
+    <ClInclude Include="..\..\lsMisc\CommandLineString.h" />
     <ClInclude Include="..\..\lsMisc\DebugMacro.h" />
     <ClInclude Include="..\..\lsMisc\GetLastErrorString.h" />
     <ClInclude Include="..\..\lsMisc\HighDPI.h" />
     <ClInclude Include="..\..\lsMisc\SHMoveFile.h" />
     <ClInclude Include="..\..\lsMisc\stdosd\stdosd.h" />
+    <ClInclude Include="..\..\lsMisc\stdosd\stdosd_exception.h" />
     <ClInclude Include="..\..\lsMisc\stdosd\stdosd_literal.h" />
     <ClInclude Include="..\..\lsMisc\UrlEncode.h" />
     <ClInclude Include="..\..\lsMisc\UTF16toUTF8.h" />

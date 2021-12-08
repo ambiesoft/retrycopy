@@ -170,6 +170,12 @@
     <ClInclude Include="..\..\lsMisc\HighDPI.h">
       <Filter>01 Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\lsMisc\stdosd\stdosd_exception.h">
+      <Filter>01 Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lsMisc\CommandLineString.h">
+      <Filter>01 Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico">

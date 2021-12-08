@@ -17,6 +17,8 @@
 #include "../../lsMisc/BrowseFolder.h"
 #include "../../lsMisc/CommandLineParser.h"
 #include "../../lsMisc/HighDPI.h"
+#include "../../lsMisc/stdosd/stdosd.h"
+#include "../../lsMisc/CommandLineString.h"
 
 delegate void VSDelegate(System::String^);
 delegate void VIDelegate(int);
@@ -61,3 +63,6 @@ static_assert(ERROR_NO_SUCH_DEVICE == 433L, "");
 
 // Thread::Suspend and Resume is obsolete
 #pragma warning(disable:4947)
+
+using namespace Ambiesoft;
+using namespace Ambiesoft::stdosd;

@@ -39,6 +39,11 @@ namespace retrycopy {
 		FormAbout^ aboutForm_;
 		System::Text::StringBuilder sbLogBuffer_;
 		property bool IsCloseOnFinish;
+		initonly String^ lblSourceOrig_;
+		property String^ LblSrouceOrig
+		{
+			String^ get() {return lblSourceOrig_; }
+		}
 	private: System::Windows::Forms::Label^ label1;
 	private: System::Windows::Forms::Label^ lblBuffer;
 	private: System::Windows::Forms::Label^ label2;
@@ -86,6 +91,7 @@ namespace retrycopy {
 
 	private: System::Windows::Forms::Label^ label13;
 	private: System::Windows::Forms::ComboBox^ cmbOperation;
+	private: System::Windows::Forms::Button^ btnAddSource;
 	private: System::Windows::Forms::ComboBox^ cmbOverwrite;
 
 
@@ -93,7 +99,7 @@ namespace retrycopy {
 		FormMain();
 		static FormMain^ theForm_;
 		bool bCloseNow_ = false;
-		
+
 	protected:
 		/// <summary>
 		/// Clean up any resources being used.
@@ -182,6 +188,7 @@ namespace retrycopy {
 			this->txtLastError = (gcnew System::Windows::Forms::TextBox());
 			this->label13 = (gcnew System::Windows::Forms::Label());
 			this->cmbOperation = (gcnew System::Windows::Forms::ComboBox());
+			this->btnAddSource = (gcnew System::Windows::Forms::Button());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->spTransitory))->BeginInit();
 			this->spTransitory->Panel1->SuspendLayout();
 			this->spTransitory->Panel2->SuspendLayout();
@@ -216,8 +223,9 @@ namespace retrycopy {
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->txtSource->Location = System::Drawing::Point(12, 23);
 			this->txtSource->Name = L"txtSource";
-			this->txtSource->Size = System::Drawing::Size(468, 19);
+			this->txtSource->Size = System::Drawing::Size(437, 19);
 			this->txtSource->TabIndex = 200;
+			this->txtSource->TextChanged += gcnew System::EventHandler(this, &FormMain::txtSource_TextChanged);
 			// 
 			// txtDestination
 			// 
@@ -225,13 +233,13 @@ namespace retrycopy {
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->txtDestination->Location = System::Drawing::Point(12, 59);
 			this->txtDestination->Name = L"txtDestination";
-			this->txtDestination->Size = System::Drawing::Size(468, 19);
+			this->txtDestination->Size = System::Drawing::Size(437, 19);
 			this->txtDestination->TabIndex = 500;
 			// 
 			// btnNavSource
 			// 
 			this->btnNavSource->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
-			this->btnNavSource->Location = System::Drawing::Point(486, 23);
+			this->btnNavSource->Location = System::Drawing::Point(455, 23);
 			this->btnNavSource->Name = L"btnNavSource";
 			this->btnNavSource->Size = System::Drawing::Size(29, 19);
 			this->btnNavSource->TabIndex = 300;
@@ -242,7 +250,7 @@ namespace retrycopy {
 			// btnNavDestination
 			// 
 			this->btnNavDestination->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
-			this->btnNavDestination->Location = System::Drawing::Point(486, 59);
+			this->btnNavDestination->Location = System::Drawing::Point(455, 59);
 			this->btnNavDestination->Name = L"btnNavDestination";
 			this->btnNavDestination->Size = System::Drawing::Size(29, 19);
 			this->btnNavDestination->TabIndex = 600;
@@ -649,11 +657,22 @@ namespace retrycopy {
 			this->cmbOperation->TabIndex = 625;
 			this->cmbOperation->SelectedIndexChanged += gcnew System::EventHandler(this, &FormMain::cmbOperation_SelectedIndexChanged);
 			// 
+			// btnAddSource
+			// 
+			this->btnAddSource->Location = System::Drawing::Point(486, 23);
+			this->btnAddSource->Name = L"btnAddSource";
+			this->btnAddSource->Size = System::Drawing::Size(29, 19);
+			this->btnAddSource->TabIndex = 350;
+			this->btnAddSource->Text = L"+";
+			this->btnAddSource->UseVisualStyleBackColor = true;
+			this->btnAddSource->Click += gcnew System::EventHandler(this, &FormMain::btnAddSource_Click);
+			// 
 			// FormMain
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(527, 421);
+			this->Controls->Add(this->btnAddSource);
 			this->Controls->Add(this->udRetry);
 			this->Controls->Add(this->udBuffer);
 			this->Controls->Add(this->btnClose);
@@ -747,6 +766,17 @@ namespace retrycopy {
 		static bool appClosing_ = false;
 		initonly bool bTestShowReadErrorDialog_ = false;
 		initonly bool bStart_ = false;
+
+		System::Collections::Generic::List<String^>^ GetSourceText();
+		void SetSourceText(const std::vector<std::wstring>& args);
+		void SetSourceText(cli::array<String^>^ files);
+		void SetSourceText(String^ file) {
+			SetSourceText(gcnew cli::array<String^>{file});
+		}
+		void AddSourceText(cli::array<String^>^ files);
+		void AddSourceText(String^ file) {
+			AddSourceText(gcnew cli::array<String^>{file});
+		}
 	internal:
 		static property bool AppClosing
 		{
@@ -762,6 +792,7 @@ namespace retrycopy {
 		
 	private:
 		System::Void btnNavSource_Click(System::Object^ sender, System::EventArgs^ e);
+		System::Void btnAddSource_Click(System::Object^ sender, System::EventArgs^ e);
 		System::Void btnNavDestination_Click(System::Object^ sender, System::EventArgs^ e);
 		System::Void btnCopy_Click(System::Object^ sender, System::EventArgs^ e);
 		System::Void cmbOverwrite_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e);
@@ -787,6 +818,10 @@ namespace retrycopy {
 		void OnBufferSizeChanged(System::Object^ sender, System::EventArgs^ e);
 		void OnRetryCountChanged(System::Object^ sender, System::EventArgs^ e);
 		System::Void FormMain_Load(System::Object^ sender, System::EventArgs^ e);
+		
+
+		System::Void txtSource_TextChanged(System::Object^ sender, System::EventArgs^ e);
+
 }; // FormMain
 
 	enum class USERACTION {

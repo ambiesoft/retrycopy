@@ -1,4 +1,5 @@
-﻿using Microsoft.WindowsAPICodePack.Taskbar;
+﻿using Microsoft.WindowsAPICodePack.Dialogs;
+using Microsoft.WindowsAPICodePack.Taskbar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,28 @@ namespace Ambiesoft
         public static void SetTaskProgress(int v)
         {
             TaskbarManager.Instance.SetProgressValue(v, 100);
+        }
+
+        static string[] GetMultipleCommon(string title, bool isFolder)
+        {
+            using (CommonOpenFileDialog dialog = new CommonOpenFileDialog())
+            {
+                dialog.IsFolderPicker = isFolder;
+                dialog.Multiselect = true;
+                dialog.Title = title;
+                if (dialog.ShowDialog() != CommonFileDialogResult.Ok)
+                    return null;
+
+                return dialog.FileNames.ToArray();
+            }
+        }
+        public static string[] GetMultipleFilesFromUser(string title)
+        {
+            return GetMultipleCommon(title, false);
+        }
+        public static string[] GetMultipleFoldersFromUser(string title)
+        {
+            return GetMultipleCommon(title, true);
         }
     }
 }

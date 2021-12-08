@@ -33,6 +33,7 @@ namespace retrycopy {
 		udRetry->Maximum = MAXRETRYCOUNT;
 		udRetry->TextChanged += gcnew System::EventHandler(this, &FormMain::OnRetryCountChanged);
 
+		lblSourceOrig_ = lblSource->Text;
 
 		// first, load from ini
 		int intval;
@@ -67,11 +68,8 @@ namespace retrycopy {
 			CCommandLineParser parser(CaseFlags::CaseFlags_Default,
 				I18N(L"Copy data from broken HDD"),
 				L"retrycopy");
-
-			wstring source;
-			parser.AddOption(L"-s", ArgCount::ArgCount_One, &source,
-				ArgEncodingFlags::ArgEncodingFlags_Default,
-				I18N(L"Source"));
+			
+			parser.setStrict();
 
 			wstring dest;
 			parser.AddOption(L"-d", ArgCount::ArgCount_One, &dest,
@@ -98,7 +96,7 @@ namespace retrycopy {
 				ArgEncodingFlags::ArgEncodingFlags_Default,
 				TO_LPCWSTR(String::Format(I18N(L"Operation: One of {0}"), OperationInfo::ONEOFOPERATION)));
 
-			wstring mainArg;
+			vector<wstring> mainArg;
 			parser.AddOption(L"", ArgCount::ArgCount_ZeroToInfinite,
 				&mainArg);
 
@@ -160,17 +158,19 @@ namespace retrycopy {
 					MessageBoxButtons::OK,
 					MessageBoxIcon::Exclamation);
 			}
-			if (!mainArg.empty())
-			{
-				StringBuilder message;
-				message.AppendLine(I18N(L"Unknown argument:"));
-				message.AppendLine(gcnew String(mainArg.c_str()));
-				MessageBox::Show(message.ToString(),
-					Application::ProductName,
-					MessageBoxButtons::OK,
-					MessageBoxIcon::Exclamation);
-			}
-			txtSource->Text = gcnew String(source.c_str());
+			//if (!mainArg.empty())
+			//{
+			//	StringBuilder message;
+			//	message.AppendLine(I18N(L"Unknown argument:"));
+			//	message.AppendLine(gcnew String(mainArg.c_str()));
+			//	MessageBox::Show(message.ToString(),
+			//		Application::ProductName,
+			//		MessageBoxButtons::OK,
+			//		MessageBoxIcon::Exclamation);
+			//}
+
+			SetSourceText(mainArg);
+
 			txtDestination->Text = gcnew String(dest.c_str());
 
 			if (!retryCount.empty())
@@ -270,14 +270,32 @@ namespace retrycopy {
 		ctxNavigate->Tag = btnNavSource;
 		ctxNavigate->Show(this, pos.X, pos.Y);
 	}
+	System::Void FormMain::btnAddSource_Click(System::Object^ sender, System::EventArgs^ e)
+	{
+		System::Drawing::Point pos(
+			btnNavSource->Location.X + btnNavSource->Size.Width,
+			btnNavSource->Location.Y);
+		ctxNavigate->Tag = btnAddSource;
+		ctxNavigate->Show(this, pos.X, pos.Y);
+	}
+
 	System::Void FormMain::tsmiFile_Click(System::Object^ sender, System::EventArgs^ e)
 	{
 		if (ctxNavigate->Tag == btnNavSource)
 		{
-			String^ source = AmbLib::GetOpenFileDialog(I18N(L"Select source file"));
-			if (String::IsNullOrEmpty(source))
+			cli::array<String^>^ files = 
+				RetrycopyMisc::GetMultipleFilesFromUser(I18N(L"Select source files"));
+			if (!files)
 				return;
-			txtSource->Text = source;
+			SetSourceText(files);
+		}
+		else if (ctxNavigate->Tag == btnAddSource)
+		{
+			cli::array<String^>^ files = 
+				RetrycopyMisc::GetMultipleFilesFromUser(I18N(L"Select source files (Add)"));
+			if (!files)
+				return;
+			AddSourceText(files);
 		}
 		else if (ctxNavigate->Tag == btnNavDestination)
 		{
@@ -294,12 +312,17 @@ namespace retrycopy {
 	{
 		if (ctxNavigate->Tag == btnNavSource)
 		{
-			String^ source;
-			if (!browseFolder(this, I18N(L"Select source directory"), source))
+			cli::array<String^>^ dirs = RetrycopyMisc::GetMultipleFoldersFromUser(I18N(L"Select source directory"));
+			if (!dirs)
 				return;
-			if (String::IsNullOrEmpty(source))
+			SetSourceText(dirs);
+		}
+		if (ctxNavigate->Tag == btnAddSource)
+		{
+			cli::array<String^>^ dirs = RetrycopyMisc::GetMultipleFoldersFromUser(I18N(L"Select source directory"));
+			if (!dirs)
 				return;
-			txtSource->Text = source;
+			AddSourceText(dirs);
 		}
 		else if (ctxNavigate->Tag == btnNavDestination)
 		{
@@ -583,6 +606,53 @@ namespace retrycopy {
 			aboutForm_->Visible = false;
 		}
 	}
-
+	
+	List<String^>^ FormMain::GetSourceText()
+	{
+		List<String^>^ ret = gcnew List<String^>();
+		if (String::IsNullOrEmpty(txtSource->Text))
+			return ret;
+		CCommandLineString cmd(TO_LPCWSTR(txtSource->Text));
+		for (size_t i = 0; i < cmd.getCount(); ++i)
+		{
+			ret->Add(gcnew String(cmd.getArg(i).c_str()));
+		}
+		return ret;
+	}
+	void FormMain::SetSourceText(const std::vector<std::wstring>& args)
+	{
+		wstring all;
+		for (auto&& ws : args)
+		{
+			all += stdAddDQIfNecessary(ws);
+			all += L" ";
+		}
+		all = stdTrim(all);
+		txtSource->Text = gcnew String(all.c_str());
+	}
+	System::Void FormMain::txtSource_TextChanged(System::Object^ sender, System::EventArgs^ e)
+	{
+		int count = 0;
+		if (!String::IsNullOrEmpty(txtSource->Text))
+		{
+			CCommandLineString cmd(TO_LPCWSTR(txtSource->Text));
+			count = cmd.getCount();
+		}
+		lblSource->Text = LblSrouceOrig + L" " +
+			String::Format(I18N(L"{0} file(s)"), count);
+	}
+	void FormMain::SetSourceText(cli::array<String^>^ files)
+	{
+		vector<wstring> vs;
+		for each (String ^ s in files)
+			vs.push_back(TO_LPCWSTR(s));
+		SetSourceText(vs);
+	}
+	void FormMain::AddSourceText(cli::array<String^>^ files)
+	{
+		List<String^>^ current = GetSourceText();
+		current->AddRange(files);
+		SetSourceText(current->ToArray());
+	}
 }
 
