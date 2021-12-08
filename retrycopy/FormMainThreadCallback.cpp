@@ -192,6 +192,41 @@ namespace retrycopy {
 		AppendLogNow(I18N(L"Thread Started"));
 	}
 
+	void FormMain::ThreadPathFinished(ThreadDataPath^ thPath)
+	{
+		StringBuilder sbResult;
+		if (!thPath->IsOK)
+			return;
+			
+		if (!ThreadTransitory::HasUserRemoveChanged && thPath->HasSrcDir)
+		{
+			switch (ThreadTransitory::UserOperation)
+			{
+			case OPERATION::ASK:
+				if (System::Windows::Forms::DialogResult::Yes != CppUtils::YesOrNo(
+					this,
+					String::Format(I18N(L"All Copy finished. Do you want to remove source directories \"{0}\"?"),
+						thPath->SrcDir),
+					MessageBoxDefaultButton::Button2))
+				{
+					break;
+				}
+				// fall
+			case OPERATION::MOVERECYCLE:
+				RemoveDirCommon(thPath->SrcDir, % sbResult, true);
+				break;
+			case OPERATION::MOVE:
+				RemoveDirCommon(thPath->SrcDir, % sbResult, false);
+				break;
+			case OPERATION::COPY:
+				break;
+			default:
+				DASSERT(false);
+				ExitProcess(1);
+			}
+		}
+		AppendLogNow(sbResult.ToString());
+	}
 	void FormMain::ThreadFinished(ThreadDataMaster^ thData)
 	{
 		if (thData->ThreadNumber != ThreadTransitory::ThreadNumber)
@@ -202,39 +237,36 @@ namespace retrycopy {
 		if (!thData->TaskStarted)
 			return;
 
+		StringBuilder message;
 		if (thData->IsOK)
 		{
-			StringBuilder sbResult;
-			sbResult.Append(I18N(L"All copy successfully finished"));
-			sbResult.Append(L"\t");
-			if (!ThreadTransitory::HasUserRemoveChanged && thData->HasSrcDir)
-			{
-				switch (ThreadTransitory::UserOperation)
-				{
-				case OPERATION::ASK:
-					if (System::Windows::Forms::DialogResult::Yes != CppUtils::YesOrNo(
-						this,
-						String::Format(I18N(L"All Copy finished. Do you want to remove source directories \"{0}\"?"),
-							thData->SrcDir),
-						MessageBoxDefaultButton::Button2))
-					{
-						break;
-					}
-					// fall
-				case OPERATION::MOVERECYCLE:
-					RemoveDirCommon(thData->SrcDir, % sbResult, true);
-					break;
-				case OPERATION::MOVE:
-					RemoveDirCommon(thData->SrcDir, % sbResult, false);
-					break;
-				case OPERATION::COPY:
-					break;
-				default:
-					DASSERT(false);
-					ExitProcess(1);
-				}
-			}
-			AppendLogNow(sbResult.ToString());
+			message.AppendLine(I18N(L"All copy successfully finished"));
+		}
+		else
+		{
+			message.AppendLine(thData->HasFailed ? I18N(L"Failed:") : I18N(L"Some files were skipped:"));
+
+		}
+		message.AppendLine(String::Format(
+			I18N(L"Total Input size = {0}"),
+			thData->TotalInputSize));
+		message.AppendLine(String::Format(
+			I18N(L"success = {0}"),
+			thData->TotalOKCount));
+		message.AppendLine(String::Format(
+			I18N(L"skip = {0}"),
+			thData->TotalSkipCount));
+		message.AppendLine(String::Format(
+			I18N(L"fail = {0}"),
+			thData->TotalFailCount));
+		message.AppendLine(String::Format(
+			I18N(L"Total Written size={0}"),
+			thData->TotalWrittenSize));
+
+		AppendLogNow(message.ToString());
+
+		if (thData->IsOK)
+		{
 			if(IsCloseOnFinish)
 			{
 				Close();
@@ -242,26 +274,11 @@ namespace retrycopy {
 			}
 			else
 			{
-				CppUtils::Info(this, String::Format(
-					I18N(L"success Total Input size={0}, Total Written size={1}"),
-					thData->TotalInputSize, thData->TotalWrittenSize));
+				CppUtils::Info(this, message.ToString());
 			}
 		}
 		else
 		{
-			StringBuilder message;
-			message.AppendLine(thData->HasFailed ? I18N(L"Failed:") : I18N(L"Some files were skipped:"));
-			message.AppendLine(String::Format(I18N(L"Total Input size = {0}"),
-				thData->TotalInputSize));
-			message.AppendLine(String::Format(I18N(L"success = {0}"),
-				thData->TotalOKCount));
-			message.AppendLine(String::Format(I18N(L"skip = {0}"),
-				thData->TotalSkipCount));
-			message.AppendLine(String::Format(I18N(L"fail = {0}"),
-				thData->TotalFailCount));
-			message.AppendLine(String::Format(I18N(L"Total Written size={0}"),
-				thData->TotalWrittenSize));
-
 			if (thData->HasFailed)
 				CppUtils::Alert(this, message.ToString());
 			else

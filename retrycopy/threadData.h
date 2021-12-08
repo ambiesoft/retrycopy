@@ -239,42 +239,32 @@ namespace retrycopy {
 		}
 	};
 
+	ref class ThreadDataPath;
 	ref class ThreadDataMaster
 	{
 		initonly int threadNumber_;
-		initonly String^ srces_;
+		cli::array<String^>^ srcPaths_;
 		initonly String^ dst_;
-		KVS^ sds_ = nullptr;
+		
 		bool taskStarted_ = false;
-		System::Collections::Generic::List<String^>^ dstdirs_ = nullptr;
 		LONGLONG totalInputSize_;
 		LONGLONG totalProcessed_;
-		int totalOK_;
-		int totalSkipped_;
+
+		int totalInputFilesCount_;
 	public:
-		ThreadDataMaster(int threadNumber, String^ srces, String^ dst):
-			threadNumber_(threadNumber), srces_(srces), dst_(dst)
-		{}
+		ThreadDataMaster(int threadNumber, String^ srces, String^ dst);
+
 		property int ThreadNumber
 		{
 			int get() { return threadNumber_; }
 		}
-		property String^ Srces
+		property cli::array<String^>^ SrcPaths
 		{
-			String^ get() { return srces_; }
+			cli::array<String^>^ get() { return srcPaths_; }
 		}
 		property String^ Dst
 		{
 			String^ get() { return dst_; }
-		}
-		void SetSDS(KVS^ sds, System::Collections::Generic::List<String^>^ dstdirs)
-		{
-			DASSERT(sds_ == nullptr);
-			DASSERT(dstdirs_ == nullptr);
-			DASSERT(sds);
-			DASSERT(dstdirs);
-			sds_ = sds;
-			dstdirs_ = dstdirs;
 		}
 		void SetTaskStarted() {
 			taskStarted_ = true;
@@ -283,46 +273,22 @@ namespace retrycopy {
 		{
 			bool get() { return taskStarted_; }
 		}
-		void PrepareDstDirs();
-		property bool HasSrcDir
-		{
-			// from here srces_ has many src_
-			bool get() { return System::IO::Directory::Exists(src_); }
-		}
-		property String^ SrcDir
-		{
-			String^ get() {
-				if (HasSrcDir)
-					return src_;
-				DASSERT(false);
-				return nullptr;
-			}
-		}
-		property KVS^ SDS
-		{
-			KVS^ get() { return sds_; }
-		}
-		void IncrementOK() {
-			++totalOK_;
-		}
-		void IncrementSkipCount() {
-			++totalSkipped_;
-		}
+		
 		property bool IsOK
 		{
-			bool get() { return sds_ && totalOK_ == sds_->Count; }
+			bool get() { return TotalOKCount == totalInputFilesCount_; }
 		}
 		property int TotalOKCount
 		{
-			int get() { return totalOK_; }
+			int get();
 		}
 		property int TotalSkipCount
 		{
-			int get() { return totalSkipped_; }
+			int get();
 		}
 		property int TotalFailCount
 		{
-			int get() { return sds_->Count - TotalOKCount - TotalSkipCount; }
+			int get() { return totalInputFilesCount_ - TotalOKCount - TotalSkipCount; }
 		}
 		property LONGLONG TotalWrittenSize
 		{
@@ -332,8 +298,9 @@ namespace retrycopy {
 		{
 			bool get() { return TotalFailCount != 0; }
 		}
-		void SetTotalInputSize(LONGLONG size) {
+		void SetTotalSize(LONGLONG size, int fileCount) {
 			totalInputSize_ = size;
+			totalInputFilesCount_ = fileCount;
 			ThreadTransitory::TotalSize = size;
 		}
 		property LONGLONG TotalInputSize
@@ -354,8 +321,78 @@ namespace retrycopy {
 		void AppendEnded(ThreadDataFile^ tdf) {
 			ended_.Add(tdf);
 		}
-	};
 
+	private:
+		System::Collections::Generic::List<ThreadDataPath^> pathTasks_;
+	public:
+		void AddTask(ThreadDataPath^ thPath) {
+			pathTasks_.Add(thPath);
+		}
+		property cli::array<ThreadDataPath^>^ Tasks
+		{
+			cli::array<ThreadDataPath^>^ get() {
+				return pathTasks_.ToArray();
+			}
+		}
+	};
+	ref class ThreadDataPath
+	{
+		KVS^ sds_ = nullptr;
+		System::Collections::Generic::List<String^>^ dstdirs_ = nullptr;
+		String^ src_;
+
+		int totalOK_;
+		int totalSkipped_;
+
+	public:
+		ThreadDataPath(String^ src, KVS^ sds, System::Collections::Generic::List<String^>^ dstdirs)
+		{
+			DASSERT(sds_ == nullptr);
+			DASSERT(dstdirs_ == nullptr);
+			DASSERT(sds);
+			DASSERT(dstdirs);
+			src_ = src;
+			sds_ = sds;
+			dstdirs_ = dstdirs;
+		}
+		property bool IsOK
+		{
+			bool get() { return totalOK_ == sds_->Count; }
+		}
+		void IncrementOK() {
+			totalOK_++;
+		}
+		property int ToTatalOKCount {
+			int get() { return totalOK_; }
+		}
+		property int ToTatalSkipCount {
+			int get() { return totalSkipped_; }
+		}
+		void IncrementSkipCount() {
+			++totalSkipped_;
+		}
+
+		void PrepareDstDirs();
+		property bool HasSrcDir
+		{
+			// from here srces_ has many src_
+			bool get() { return System::IO::Directory::Exists(src_); }
+		}
+		property String^ SrcDir
+		{
+			String^ get() {
+				if (HasSrcDir)
+					return src_;
+				DASSERT(false);
+				return nullptr;
+			}
+		}
+		property KVS^ SDS
+		{
+			KVS^ get() { return sds_; }
+		}
+
+	};
 	ref class ThreadDataFile
 	{
 		initonly int threadNumber_;
@@ -506,6 +543,7 @@ namespace retrycopy {
 		}
 	};
 	delegate void VTmDelegate(ThreadDataMaster^ thData);
+	delegate void VTpDelegate(ThreadDataPath^ thDataPath);
 	delegate void VTfDelegate(ThreadDataFile^ thDataFile);
 
 

@@ -6,4 +6,5 @@ namespace retrycopy {
 	ref class UserResponceOfFail;
 	ref class ThreadDataMaster;
 	ref class ThreadDataFile;
+	ref class ThreadDataPath;
 }

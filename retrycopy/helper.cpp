@@ -8,6 +8,8 @@ using namespace System::Collections::Generic;
 using namespace System::Threading;
 using namespace System::IO;
 using namespace Ambiesoft;
+using namespace std;
+
 namespace retrycopy {
 
 	String^ SizeToUser(LONGLONG size)
@@ -45,5 +47,25 @@ namespace retrycopy {
 		}
 		return ret;
 	}
-	
+	String^ V2S(const vector<wstring>& vs)
+	{
+		wstring all;
+		for (auto&& ws : vs)
+		{
+			all += stdAddDQIfNecessary(ws);
+			all += L" ";
+		}
+		all = stdTrim(all);
+		return gcnew String(all.c_str());
+	}
+	cli::array<String^>^ S2A(String^ args)
+	{
+		List<String^> ret;
+		CCommandLineString cmd(TO_LPCWSTR(args));
+		for (size_t i = 0; i < cmd.getCount(); ++i)
+		{
+			ret.Add(gcnew String(cmd.getArg(i).c_str()));
+		}
+		return ret.ToArray();
+	}
 } // namespace

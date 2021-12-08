@@ -745,6 +745,7 @@ namespace retrycopy {
 		UserResponceOfFail^ SFPFailedGetUserAction(int tn, String^ file, LONGLONG pos, LONGLONG allSize, DWORD le, int retried);
 		void ProgressWriteWithZero(int tn, LONGLONG pos, int bufferSize);
 		void ThreadFinished(ThreadDataMaster^ thData);
+		void ThreadPathFinished(ThreadDataPath^ thPath);
 		void ThreadLog(String^ logMessage) {
 			AppendLog(logMessage);
 		}

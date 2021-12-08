@@ -96,9 +96,7 @@ namespace retrycopy {
 				ArgEncodingFlags::ArgEncodingFlags_Default,
 				TO_LPCWSTR(String::Format(I18N(L"Operation: One of {0}"), OperationInfo::ONEOFOPERATION)));
 
-			vector<wstring> mainArg;
-			parser.AddOption(L"", ArgCount::ArgCount_ZeroToInfinite,
-				&mainArg);
+		
 
 			bool bStart = false;
 			parser.AddOption(L"-start", 0, &bStart,
@@ -124,6 +122,12 @@ namespace retrycopy {
 			constexpr wchar_t* pOpStringTestShowReadErrorDlg = L"--test-showreaderrordlg";
 			parser.AddOption(pOpStringTestShowReadErrorDlg, 0, &bTestShowReadErrorDialog);
 
+			vector<wstring> mainArgs;
+			parser.AddOption(L"", ArgCount::ArgCount_ZeroToInfinite,
+				&mainArgs,
+				ArgEncodingFlags::ArgEncodingFlags_Default,
+				I18N(L"Sourch path"));
+
 			parser.Parse();
 
 			bTestShowReadErrorDialog_ = bTestShowReadErrorDialog;
@@ -132,7 +136,7 @@ namespace retrycopy {
 
 			if (bShowHelp)
 			{
-				CppUtils::Info(gcnew String(parser.getHelpMessage({ L"",pOpStringTestShowReadErrorDlg }).c_str()));
+				CppUtils::Info(gcnew String(parser.getHelpMessage({ pOpStringTestShowReadErrorDlg }).c_str()));
 				bCloseNow_ = true;
 				return;
 			}
@@ -169,7 +173,7 @@ namespace retrycopy {
 			//		MessageBoxIcon::Exclamation);
 			//}
 
-			SetSourceText(mainArg);
+			SetSourceText(mainArgs);
 
 			txtDestination->Text = gcnew String(dest.c_str());
 
@@ -612,23 +616,13 @@ namespace retrycopy {
 		List<String^>^ ret = gcnew List<String^>();
 		if (String::IsNullOrEmpty(txtSource->Text))
 			return ret;
-		CCommandLineString cmd(TO_LPCWSTR(txtSource->Text));
-		for (size_t i = 0; i < cmd.getCount(); ++i)
-		{
-			ret->Add(gcnew String(cmd.getArg(i).c_str()));
-		}
+
+		ret->AddRange(S2A(txtSource->Text));
 		return ret;
 	}
 	void FormMain::SetSourceText(const std::vector<std::wstring>& args)
 	{
-		wstring all;
-		for (auto&& ws : args)
-		{
-			all += stdAddDQIfNecessary(ws);
-			all += L" ";
-		}
-		all = stdTrim(all);
-		txtSource->Text = gcnew String(all.c_str());
+		txtSource->Text = gcnew String(V2S(args));
 	}
 	System::Void FormMain::txtSource_TextChanged(System::Object^ sender, System::EventArgs^ e)
 	{

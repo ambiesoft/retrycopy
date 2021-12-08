@@ -56,15 +56,20 @@ namespace retrycopy {
 		String^ initialError;
 		do
 		{
-			if (String::IsNullOrEmpty(thDataMaster->Src))
+			if (thDataMaster->SrcPaths->Length == 0)
 			{
 				initialError = I18N(L"The source is empty.");
 				break;
 			}
-			if (!File::Exists(thDataMaster->Src) && !Directory::Exists(thDataMaster->Src))
+
+			for each (String ^ path in thDataMaster->SrcPaths)
 			{
-				initialError = I18N(L"The source path does not exist.");
-				break;
+				if (!File::Exists(path) && !Directory::Exists(path))
+				{
+					initialError = I18N(
+						String::Format(L"The source path '{0}'does not exist.",path));
+					break;
+				}
 			}
 
 			if (String::IsNullOrEmpty(thDataMaster->Dst))
@@ -73,63 +78,66 @@ namespace retrycopy {
 				break;
 			}
 
-			if (Directory::Exists(thDataMaster->Src))
+			for each (String ^ path in thDataMaster->SrcPaths)
 			{
-				if (File::Exists(thDataMaster->Dst))
+				if (Directory::Exists(path))
 				{
-					initialError = I18N(L"Source is directory but destination is a file.");
-					break;
-				}
-				if (stdIsSamePath(TO_LPCWSTR(thDataMaster->Src), TO_LPCWSTR(thDataMaster->Dst)))
-				{
-					initialError = I18N(L"The destination directory is a subdirectory of the source directory.");
-					break;
-				}
-				if (stdIsSamePath(TO_LPCWSTR(thDataMaster->Src), TO_LPCWSTR(thDataMaster->Dst)))
-				{
-					initialError = I18N(L"The destination directory is the same as the source directory.");
-					break;
-				}
-				if (!Directory::Exists(thDataMaster->Dst))
-				{
-					if (!(bool)EndInvokeWithTN(
-						thDataMaster->ThreadNumber,
-						BeginInvoke(
-						gcnew BISDelegate(this, &FormMain::OnThreadYesNo),
-						thDataMaster->ThreadNumber,
-						String::Format(
-							I18N(L"'{0}' does not exist. Do you want to create a new directory?"),
-							thDataMaster->Dst
-							) // String::Format
-						) // BeginInvoke
-					) // EndInvoke
-					) // if
+					if (File::Exists(thDataMaster->Dst))
 					{
-						return;
+						initialError = I18N(L"Source is directory but destination is a file.");
+						break;
 					}
-
-					Directory::CreateDirectory(thDataMaster->Dst);
+					if (stdIsSamePath(TO_LPCWSTR(path), TO_LPCWSTR(thDataMaster->Dst)))
+					{
+						initialError = I18N(L"The destination directory is a subdirectory of the source directory.");
+						break;
+					}
+					if (stdIsSamePath(TO_LPCWSTR(path), TO_LPCWSTR(thDataMaster->Dst)))
+					{
+						initialError = I18N(L"The destination directory is the same as the source directory.");
+						break;
+					}
 					if (!Directory::Exists(thDataMaster->Dst))
 					{
-						initialError = I18N(L"Failed to create a directory.");
-						break;
+						if (!(bool)EndInvokeWithTN(
+							thDataMaster->ThreadNumber,
+							BeginInvoke(
+								gcnew BISDelegate(this, &FormMain::OnThreadYesNo),
+								thDataMaster->ThreadNumber,
+								String::Format(
+									I18N(L"'{0}' does not exist. Do you want to create a new directory?"),
+									thDataMaster->Dst
+								) // String::Format
+							) // BeginInvoke
+						) // EndInvoke
+							) // if
+						{
+							return;
+						}
+
+						Directory::CreateDirectory(thDataMaster->Dst);
+						if (!Directory::Exists(thDataMaster->Dst))
+						{
+							initialError = I18N(L"Failed to create a directory.");
+							break;
+						}
 					}
 				}
-			}
-			else
-			{
-				DASSERT(File::Exists(thDataMaster->Src));
-				if (stdIsSamePath(TO_LPCWSTR(thDataMaster->Src), TO_LPCWSTR(thDataMaster->Dst)))
+				else
 				{
-					initialError = I18N(L"The destination file is the same as the source file.");
-					break;
-				}
-				if (thDataMaster->Dst->EndsWith("\\") || thDataMaster->Dst->EndsWith("/"))
-				{
-					if (File::Exists(thDataMaster->Dst->TrimEnd((gcnew String( L"/\\"))->ToCharArray())))
+					DASSERT(File::Exists(path));
+					if (stdIsSamePath(TO_LPCWSTR(path), TO_LPCWSTR(thDataMaster->Dst)))
 					{
-						initialError = I18N(L"The destination name ends with path separator but it exists as a file.");
+						initialError = I18N(L"The destination file is the same as the source file.");
 						break;
+					}
+					if (thDataMaster->Dst->EndsWith("\\") || thDataMaster->Dst->EndsWith("/"))
+					{
+						if (File::Exists(thDataMaster->Dst->TrimEnd((gcnew String(L"/\\"))->ToCharArray())))
+						{
+							initialError = I18N(L"The destination name ends with path separator but it exists as a file.");
+							break;
+						}
 					}
 				}
 			}
@@ -144,6 +152,7 @@ namespace retrycopy {
 			return;
 		}
 
+		for each(String^ path in thDataMaster->SrcPaths)
 		{
 			List<String^>^ dstDirs;
 			KVS^ sds;
@@ -152,7 +161,7 @@ namespace retrycopy {
 				String^ message = I18N(L"Obtaining source files and directories...");
 				BeginInvoke(gcnew VSDelegate(this, &FormMain::ThreadLog), message);
 				ThreadTransitory::SetProgress(message);
-				sds = AmbLib::GetSourceAndDestFiles(txtSource->Text, txtDestination->Text, dstDirs);
+				sds = AmbLib::GetSourceAndDestFiles(path, thDataMaster->Dst, dstDirs);
 			}
 			catch (Exception^ ex)
 			{
@@ -163,60 +172,79 @@ namespace retrycopy {
 					ex->Message));
 				return;
 			}
-			thDataMaster->SetSDS(sds, dstDirs);
+			thDataMaster->AddTask(gcnew ThreadDataPath(path, sds, dstDirs));
 		}
 
 		try
 		{
 			thDataMaster->SetTaskStarted();
 
-			// prepare target dirs
-			String^ message = I18N(L"Preparing target directories...");
-			BeginInvoke(gcnew VSDelegate(this, &FormMain::ThreadLog), message);
-			ThreadTransitory::SetProgress(message);
-			thDataMaster->PrepareDstDirs();
-			
+			String^ message;
+
 			// calc total input size
 			message = I18N(L"Calculating total size...");
 			BeginInvoke(gcnew VSDelegate(this, &FormMain::ThreadLog), message);
 			ThreadTransitory::SetProgress(message);
-			LONGLONG totalInputSize = 0;
-			for each (KV kv in thDataMaster->SDS)
-			{
-				System::IO::FileInfo fi(kv.Key);
-				totalInputSize += fi.Length;
-			}
-			
-			thDataMaster->SetTotalInputSize(totalInputSize);
-			ThreadTransitory::TotalCount = thDataMaster->SDS->Count;
-			for (int i = 0; i < thDataMaster->SDS->Count; ++i)
-			{
-				ThreadTransitory::ProcessedTotalCount = i + 1;
-				ThreadDataFile^ tdf = gcnew ThreadDataFile(
-					thDataMaster->ThreadNumber, i + 1,
-					thDataMaster->SDS[i].Key, thDataMaster->SDS[i].Value);
 
-				StartOfThreadFile(tdf);
-				if (thDataMaster->ThreadNumber != ThreadTransitory::ThreadNumber)
-					return;
-				thDataMaster->TotalProcessedSize += tdf->ProcessedSize;
-				tdf->CloseFiles();
-				if (tdf->IsSkipped)
+			LONGLONG totalInputSize = 0;
+			int totalFileCount = 0;
+			for each (ThreadDataPath ^ thDataPath in thDataMaster->Tasks)
+			{
+				for each (KV kv in thDataPath->SDS)
 				{
-					DASSERT(!tdf->IsOK);
-					thDataMaster->IncrementSkipCount();
+					System::IO::FileInfo fi(kv.Key);
+					totalInputSize += fi.Length;
+					++totalFileCount;
 				}
-				if (tdf->IsOK)
+			}
+			thDataMaster->SetTotalSize(totalInputSize, totalFileCount);
+			ThreadTransitory::TotalCount = totalFileCount;
+
+			for each (ThreadDataPath ^ thDataPath in thDataMaster->Tasks)
+			{
+				// prepare target dirs
+				message = I18N(L"Preparing target directories...");
+				BeginInvoke(gcnew VSDelegate(this, &FormMain::ThreadLog), message);
+				ThreadTransitory::SetProgress(message);
+				thDataPath->PrepareDstDirs();
+
+				
+				for (int i = 0; i < thDataPath->SDS->Count; ++i)
 				{
-					thDataMaster->IncrementOK();
-					AmbLib::CopyFileTime(tdf->SrcFile, tdf->DstFile,
-						AmbLib::CFT::Creation);
+					ThreadTransitory::ProcessedTotalCount = i + 1;
+					ThreadDataFile^ tdf = gcnew ThreadDataFile(
+						thDataMaster->ThreadNumber, i + 1,
+						thDataPath->SDS[i].Key, thDataPath->SDS[i].Value);
+
+					StartOfThreadFile(tdf);
+
+					if (thDataMaster->ThreadNumber != ThreadTransitory::ThreadNumber)
+						return;
+					thDataMaster->TotalProcessedSize += tdf->ProcessedSize;
+					tdf->CloseFiles();
+
+					if (tdf->IsSkipped)
+					{
+						DASSERT(!tdf->IsOK);
+						thDataPath->IncrementSkipCount();
+					}
+					if (tdf->IsOK)
+					{
+						thDataPath->IncrementOK();
+						AmbLib::CopyFileTime(tdf->SrcFile, tdf->DstFile,
+							AmbLib::CFT::Creation);
+					}
+					EndInvokeWithTN(
+						tdf->ThreadNumber,
+						BeginInvoke(gcnew VTfDelegate(this, &FormMain::ThreadFileEnded),
+							tdf));
+					thDataMaster->AppendEnded(tdf);
 				}
+
 				EndInvokeWithTN(
-					tdf->ThreadNumber,
-					BeginInvoke(gcnew VTfDelegate(this, &FormMain::ThreadFileEnded),
-					tdf));
-				thDataMaster->AppendEnded(tdf);
+					thDataMaster->ThreadNumber,
+					BeginInvoke(gcnew VTpDelegate(this, &FormMain::ThreadPathFinished),
+						thDataPath));
 			}
 		}
 		catch(ThreadAbortException^){}

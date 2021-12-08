@@ -64,5 +64,6 @@ static_assert(ERROR_NO_SUCH_DEVICE == 433L, "");
 // Thread::Suspend and Resume is obsolete
 #pragma warning(disable:4947)
 
+using namespace System;
 using namespace Ambiesoft;
 using namespace Ambiesoft::stdosd;
