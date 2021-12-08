@@ -45,6 +45,9 @@ ShouldBeFiles:
 - ja-JP\Ambiesoft.GetNumericTextDialog.resources.dll
 - Ambiesoft.GetNumericTextDialog.pdb
 - Ambiesoft.GetNumericTextDialog.dll
+- GetDriveInfo.exe
+- GetDriveInfo.pdb
+- GetDriveInfo.exe.config
 
 TotalFileCount: exact
 archivedir: C:\Linkout
