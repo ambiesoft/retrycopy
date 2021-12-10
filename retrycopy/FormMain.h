@@ -749,8 +749,15 @@ namespace retrycopy {
 		void ThreadLog(String^ logMessage) {
 			AppendLog(logMessage);
 		}
-		void AppendLog(String^ message);
-		void AppendLogNow(String^ message);
+		void AppendLog(String^ message, bool bNow);
+		void AppendLog(String^ message) {
+			AppendLog(message, false);
+		}
+		void AppendLog(System::Collections::Generic::List<String^>^ messages, bool bNow);
+		void AppendLog(System::Collections::Generic::List<String^>^ messages) {
+			AppendLog(messages, false);
+		}
+		void DoAppendLog(String^ message);
 
 		enum class ThreadStateType {
 			NONE,

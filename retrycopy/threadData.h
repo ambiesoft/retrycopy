@@ -278,6 +278,10 @@ namespace retrycopy {
 		{
 			bool get() { return TotalOKCount == totalInputFilesCount_; }
 		}
+		property int TotalInputFileCount
+		{
+			int get() { return totalInputFilesCount_; }
+		}
 		property int TotalOKCount
 		{
 			int get();

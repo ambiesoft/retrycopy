@@ -252,8 +252,7 @@ namespace retrycopy {
 		if (bStart_)
 			btnStart->PerformClick();
 	}
-
-	void FormMain::AppendLog(String^ message)
+	void FormMain::DoAppendLog(String^ message)
 	{
 		DASSERT(logForm_);
 		String^ line = String::Format(L"{0}\t{1}", // + Environment::NewLine,
@@ -261,10 +260,18 @@ namespace retrycopy {
 			message);
 		sbLogBuffer_.AppendLine(line);
 	}
-	void FormMain::AppendLogNow(String^ message)
+	void FormMain::AppendLog(String^ message, bool bNow)
 	{
-		AppendLog(message);
-		timerUpdate_Tick(nullptr, nullptr);
+		DoAppendLog(message);
+		if(bNow)
+			timerUpdate_Tick(nullptr, nullptr);
+	}
+	void FormMain::AppendLog(List<String^>^ messages, bool bNow)
+	{
+		for each (String ^ message in messages)
+			DoAppendLog(message);
+		if(bNow)
+			timerUpdate_Tick(nullptr, nullptr);
 	}
 	System::Void FormMain::btnNavSource_Click(System::Object^ sender, System::EventArgs^ e)
 	{
@@ -511,6 +518,7 @@ namespace retrycopy {
 				theThread_->Join();
 				delete theThread_;
 				theThread_ = nullptr;
+				AppendLog(I18N(L"Task Ended"), true);
 			}
 			txtSource->ReadOnly = false;
 			btnNavSource->Enabled = true;
@@ -534,6 +542,7 @@ namespace retrycopy {
 				cmbOperation->Enabled = false;
 				btnStart->Enabled = false;
 				btnSuspend->Enabled = true;
+				AppendLog(I18N(L"Task Started"), true);
 			}
 			else if (threadState_ == ThreadStateType::PAUSED)
 			{

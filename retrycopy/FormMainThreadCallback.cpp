@@ -4,6 +4,7 @@
 #include "ReadErrorDialog.h"
 #include "threadData.h"
 #include "FormMain.h"
+using namespace System::Collections::Generic;
 
 #pragma comment(lib, "User32.lib")
 
@@ -12,6 +13,8 @@ using namespace System::Text;
 using namespace System::Threading;
 using namespace System::IO;
 using namespace Ambiesoft;
+using namespace Ambiesoft::stdosd;
+
 namespace retrycopy {
 	bool FormMain::OnThreadYesNo(int tn, String^ question)
 	{
@@ -40,7 +43,7 @@ namespace retrycopy {
 	{
 		return l1 == l2 && l2 == l3;
 	}
-	void RemoveFileCommon(ThreadDataFile^ thData, StringBuilder^ sbResult, bool bRecycle)
+	void RemoveFileCommon(ThreadDataFile^ thData, List<String^>^ results, bool bRecycle)
 	{
 		if (File::Exists(thData->SrcFile))
 		{
@@ -51,82 +54,96 @@ namespace retrycopy {
 				FileInfo(thData->DstFile).Length,
 				thData->ProcessedSize))
 			{
-				sbResult->AppendFormat(I18N(L"{0} cancelled because size is not same"),
-					recyleORdelete);
+				results->Add(String::Format(I18N(L"{0} cancelled because size is not same"),
+					recyleORdelete));
 				return;
 			}
 			
-			// for (int i = 0; i < 10; ++i)
-			String^ error;
+			if (bRecycle)
 			{
-				if (bRecycle)
+				int err = SHDeleteFileEx(TO_LPCWSTR(thData->SrcFile), FOF_SILENT | FOF_NOCONFIRMATION | FOF_ALLOWUNDO);
+				if (err != 0)
 				{
-					//CppUtils::DeleteFile(thData->SrcFile);
-					int err = SHDeleteFileEx(TO_LPCWSTR(thData->SrcFile), FOF_SILENT | FOF_NOCONFIRMATION | FOF_ALLOWUNDO);
-					if (err != 0)
-					{
-						error = gcnew String(GetSHFileOpErrorString(err).c_str());
-					}
+					results->Add(String::Format(
+						I18N(L"Failed to delete the source file '{0}' ({1})"),
+						thData->SrcFile, gcnew String(GetSHFileOpErrorString(err).c_str())));
 				}
-				else
-				{
-					try
-					{
-						File::Delete(thData->SrcFile);
-					}
-					catch (Exception^ ex) 
-					{
-						error = ex->Message;
-					}
-				}
-				//if (!File::Exists(thData->SrcFile))
-				//	break;
-			}
-			if (File::Exists(thData->SrcFile))
-			{
-				sbResult->AppendFormat(I18N(L"Failed to {0} source file ({1})"),
-					recyleORdelete, error);
 			}
 			else
 			{
-				sbResult->AppendFormat(I18N(L"Source file {0}"),
-					recyleORdeleted);
+				try
+				{
+					File::Delete(thData->SrcFile);
+				}
+				catch (Exception^ ex) 
+				{
+					results->Add(String::Format(
+						I18N(L"Failed to delete the source file '{0}' ({1})"),
+						thData->SrcFile, ex->Message));
+				}
+			}
+
+			if (!File::Exists(thData->SrcFile))
+			{
+				results->Add(String::Format(I18N(L"The source file '{0}' {1}"),
+					thData->SrcFile, recyleORdeleted));
 			}
 		}
 		else
 		{
-			sbResult->Append(I18N(L"Source file already gone."));
+			results->Add(String::Format(I18N(L"The source file '{0}' already gone."),
+				thData->SrcFile));
 		}
 	}
-	void RemoveDirCommon(String^ dir, StringBuilder^ sbResult, bool bRecycle)
+	void RemoveDirCommon(String^ dir, List<String^>^ results, bool bRecycle)
 	{
 		if (Directory::Exists(dir))
 		{
 			String^ recyleORdelete = bRecycle ? I18N(L"recycle") : I18N(L"delete");
 			String^ recyleORdeleted = bRecycle ? I18N(L"recycled") : I18N(L"deleted");
+			
 			if (bRecycle)
 			{
-				CppUtils::DeleteFile(dir);
+				if (stdDirectoryEmpty(TO_LPCWSTR(dir)))
+				{
+					int err = CppUtils::DeleteFile(dir);
+					if (err != 0)
+					{
+						results->Add(String::Format(L"Failed to delete '{0}' ({1})",
+							dir, gcnew String(GetSHFileOpErrorString(err).c_str())));
+					}
+				}
+				else
+				{
+					results->Add(String::Format(I18N(L"The source directory '{0}' has not been recycled because it is not empty.")));
+				}
 			}
 			else
 			{
-				AmbLib::DeleteAllEmptyDirectory(dir);
+				List<KeyValuePair<String^,Exception^>> daedError;
+				AmbLib::DeleteAllEmptyDirectory(dir, %daedError);
+				for each (KeyValuePair<String^, Exception^> kv in daedError)
+				{
+					results->Add(String::Format(I18N(L"Failed to delete '{0}' ({1})"),
+						kv.Key, kv.Value->Message));
+				}
 			}
 
 			if (Directory::Exists(dir))
 			{
-				sbResult->AppendFormat(I18N(L"Failed to {0} some directories"),
-					recyleORdelete);
+				results->Add(String::Format(I18N(L"Failed to {0} some directories"),
+					recyleORdelete));
 			}
 			else
 			{
-				sbResult->AppendFormat(I18N(L"Source directory {0}"),
-					recyleORdeleted);
+				results->Add(String::Format(I18N(L"Source directory '{0}' {1}"),
+					dir, recyleORdeleted));
 			}
 		}
 		else
 		{
-			sbResult->Append(I18N(L"Source directory already gone."));
+			results->Add(String::Format(I18N(L"The source directory '{0}' already gone."),
+				dir));
 		}
 	}
 	void FormMain::ThreadFileEnded(ThreadDataFile^ thDataFile)
@@ -140,11 +157,12 @@ namespace retrycopy {
 			AppendLog(logMessage);
 		}
 
-		StringBuilder sbResult;
-		sbResult.Append(String::Format(I18N(L"{0}:Result:{1}"),
+		
+		AppendLog(String::Format(I18N(L"{0}:Result:{1}"),
 			thDataFile->TaskNo, thDataFile->IsOK ? L"OK" : L"NG"));
 		if (!thDataFile->IsOK)
 		{
+			StringBuilder sbResult;
 			sbResult.Append(L"\t");
 			sbResult.Append(I18N(L"NG Reason:"));
 			DASSERT(!String::IsNullOrEmpty(thDataFile->GetNGReason()));
@@ -154,6 +172,7 @@ namespace retrycopy {
 		}
 		DASSERT(String::IsNullOrEmpty(thDataFile->GetNGReason()));
 
+		List<String^> results;
 		switch ((OPERATION)cmbOperation->SelectedIndex)
 		{
 		case OPERATION::ASK:
@@ -167,21 +186,18 @@ namespace retrycopy {
 			}
 			// fall through
 		case OPERATION::MOVERECYCLE:
-			sbResult.Append(L"\t");
-			RemoveFileCommon(thDataFile, % sbResult, true);
+			RemoveFileCommon(thDataFile, %results, true);
 			break;
 		case OPERATION::MOVE:
-			sbResult.Append(L"\t");
-			RemoveFileCommon(thDataFile, % sbResult, false);
+			RemoveFileCommon(thDataFile, %results, false);
 			break;
 		case OPERATION::COPY:
-			sbResult.Append(L"\t");
-			sbResult.Append(I18N(L"copying (file not removed"));
+			// results.Add(I18N(L"copying (file not removed)"));
 			break;
 		default:
 			DASSERT(false);
 		}
-		AppendLog(sbResult.ToString());
+		AppendLog(%results);
 	}
 
 	void FormMain::ThreadStarted(int tn)
@@ -189,15 +205,14 @@ namespace retrycopy {
 		if (tn != ThreadTransitory::ThreadNumber)
 			return;
 		ThreadState = ThreadStateType::RUNNING;
-		AppendLogNow(I18N(L"Thread Started"));
 	}
 
 	void FormMain::ThreadPathFinished(ThreadDataPath^ thPath)
 	{
-		StringBuilder sbResult;
 		if (!thPath->IsOK)
 			return;
-			
+
+		List<String^> results;
 		if (!ThreadTransitory::HasUserRemoveChanged && thPath->HasSrcDir)
 		{
 			switch (ThreadTransitory::UserOperation)
@@ -213,10 +228,10 @@ namespace retrycopy {
 				}
 				// fall
 			case OPERATION::MOVERECYCLE:
-				RemoveDirCommon(thPath->SrcDir, % sbResult, true);
+				RemoveDirCommon(thPath->SrcDir, %results, true);
 				break;
 			case OPERATION::MOVE:
-				RemoveDirCommon(thPath->SrcDir, % sbResult, false);
+				RemoveDirCommon(thPath->SrcDir, %results, false);
 				break;
 			case OPERATION::COPY:
 				break;
@@ -225,64 +240,75 @@ namespace retrycopy {
 				ExitProcess(1);
 			}
 		}
-		AppendLogNow(sbResult.ToString());
+		AppendLog(%results, true);
 	}
 	void FormMain::ThreadFinished(ThreadDataMaster^ thData)
 	{
-		if (thData->ThreadNumber != ThreadTransitory::ThreadNumber)
-			return;
-
-		ThreadState = ThreadStateType::NONE;
-
-		if (!thData->TaskStarted)
-			return;
-
-		StringBuilder message;
-		if (thData->IsOK)
+		bool bClose = false;
+		try
 		{
-			message.AppendLine(I18N(L"All copy successfully finished"));
-		}
-		else
-		{
-			message.AppendLine(thData->HasFailed ? I18N(L"Failed:") : I18N(L"Some files were skipped:"));
-
-		}
-		message.AppendLine(String::Format(
-			I18N(L"Total Input size = {0}"),
-			thData->TotalInputSize));
-		message.AppendLine(String::Format(
-			I18N(L"success = {0}"),
-			thData->TotalOKCount));
-		message.AppendLine(String::Format(
-			I18N(L"skip = {0}"),
-			thData->TotalSkipCount));
-		message.AppendLine(String::Format(
-			I18N(L"fail = {0}"),
-			thData->TotalFailCount));
-		message.AppendLine(String::Format(
-			I18N(L"Total Written size={0}"),
-			thData->TotalWrittenSize));
-
-		AppendLogNow(message.ToString());
-
-		if (thData->IsOK)
-		{
-			if(IsCloseOnFinish)
-			{
-				Close();
+			if (thData->ThreadNumber != ThreadTransitory::ThreadNumber)
 				return;
+
+			if (!thData->TaskStarted)
+				return;
+
+			List<String^> messages;
+			if (thData->IsOK)
+			{
+				messages.Add(I18N(L"All copy successfully finished"));
 			}
 			else
 			{
-				CppUtils::Info(this, message.ToString());
+				messages.Add(thData->HasFailed ? I18N(L"Failed:") : I18N(L"Some files were skipped:"));
+
+			}
+			messages.Add(String::Format(
+				I18N(L"Total Input Files = {0}"),
+				thData->TotalInputFileCount));
+			messages.Add(String::Format(
+				I18N(L"success = {0}"),
+				thData->TotalOKCount));
+			messages.Add(String::Format(
+				I18N(L"skip = {0}"),
+				thData->TotalSkipCount));
+			messages.Add(String::Format(
+				I18N(L"fail = {0}"),
+				thData->TotalFailCount));
+			messages.Add(String::Format(
+				I18N(L"Total Input size = {0}"),
+				thData->TotalInputSize));
+			messages.Add(String::Format(
+				I18N(L"Total Written size = {0}"),
+				thData->TotalWrittenSize));
+
+			AppendLog(% messages, true);
+
+			if (thData->IsOK)
+			{
+				if (IsCloseOnFinish)
+				{
+					bClose = true;
+					return;
+				}
+				else
+				{
+					CppUtils::Info(this, String::Join(Environment::NewLine, messages.ToArray()));
+				}
+			}
+			else
+			{
+				if (thData->HasFailed)
+					CppUtils::Alert(this, String::Join(Environment::NewLine, messages.ToArray()));
+				else
+					CppUtils::Info(this, String::Join(Environment::NewLine, messages.ToArray()));
 			}
 		}
-		else
+		finally
 		{
-			if (thData->HasFailed)
-				CppUtils::Alert(this, message.ToString());
-			else
-				CppUtils::Info(this, message.ToString());
+			ThreadState = ThreadStateType::NONE;
+			if (bClose)
+				Close();
 		}
 	}
 	bool FormMain::AskOverwrite(int tn, String^ fileTobeOverwritten)
