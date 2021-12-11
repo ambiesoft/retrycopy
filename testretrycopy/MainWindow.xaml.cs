@@ -261,7 +261,8 @@ namespace testretrycopy
             string outdir = ".\\outdir\\vvv";
             CppUtils.DeleteFile(outdir);
 
-            StartRetryCopy(string.Format("\"{0}\" -d {1}\\ -ov Ask -op " + (copy ? "copy" : "move"),
+            StartRetryCopy(string.Format("\"{0}\" -d {1}\\ -ov Ask -op " + 
+                (copy ? "copy" : (chkRecycle.IsChecked.GetValueOrDefault() ? "moverecycle":"move" )),
                 Path.GetFullPath(dir1), Path.GetFullPath(outdir)));
 
             if (copy)
@@ -298,7 +299,8 @@ namespace testretrycopy
             string outdir = ".\\outdir\\vvv";
             CppUtils.DeleteFile(outdir);
 
-            StartRetryCopy(string.Format("\"{0}\" \"{1}\" -d {2}\\ -ov Ask -op " + (bCopy ? "copy" : "move"),
+            StartRetryCopy(string.Format("\"{0}\" \"{1}\" -d {2}\\ -ov Ask -op " +
+                (bCopy ? "copy" : (chkRecycle.IsChecked.GetValueOrDefault() ? "moverecycle" : "move")),
                 Path.GetFullPath(path1.ThePath),
                 Path.GetFullPath(path2.ThePath),
                 Path.GetFullPath(outdir)));

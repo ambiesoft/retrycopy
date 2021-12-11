@@ -104,7 +104,7 @@ namespace retrycopy {
 			
 			if (bRecycle)
 			{
-				if (stdDirectoryEmpty(TO_LPCWSTR(dir)))
+				if (0==stdGetFileCount(TO_LPCWSTR(dir)))
 				{
 					int err = CppUtils::DeleteFile(dir);
 					if (err != 0)
@@ -242,6 +242,16 @@ namespace retrycopy {
 		}
 		AppendLog(%results, true);
 	}
+
+	List<String^>^ AppendResultToList(List<String^>^ list)
+	{
+		List<String^>^ ret = gcnew List<String^>();
+		for each (String ^ s in list)
+		{
+			ret->Add(I18N(L"Result:\t") + s);
+		}
+		return ret;
+	}
 	void FormMain::ThreadFinished(ThreadDataMaster^ thData)
 	{
 		bool bClose = false;
@@ -253,36 +263,36 @@ namespace retrycopy {
 			if (!thData->TaskStarted)
 				return;
 
-			List<String^> messages;
+			List<String^>^ messages = gcnew List<String^>();
 			if (thData->IsOK)
 			{
-				messages.Add(I18N(L"All copy successfully finished"));
+				messages->Add(I18N(L"All copy successfully finished"));
 			}
 			else
 			{
-				messages.Add(thData->HasFailed ? I18N(L"Failed:") : I18N(L"Some files were skipped:"));
+				messages->Add(thData->HasFailed ? I18N(L"Failed:") : I18N(L"Some files were skipped:"));
 
 			}
-			messages.Add(String::Format(
+			messages->Add(String::Format(
 				I18N(L"Total Input Files = {0}"),
 				thData->TotalInputFileCount));
-			messages.Add(String::Format(
+			messages->Add(String::Format(
 				I18N(L"success = {0}"),
 				thData->TotalOKCount));
-			messages.Add(String::Format(
+			messages->Add(String::Format(
 				I18N(L"skip = {0}"),
 				thData->TotalSkipCount));
-			messages.Add(String::Format(
+			messages->Add(String::Format(
 				I18N(L"fail = {0}"),
 				thData->TotalFailCount));
-			messages.Add(String::Format(
+			messages->Add(String::Format(
 				I18N(L"Total Input size = {0}"),
 				thData->TotalInputSize));
-			messages.Add(String::Format(
+			messages->Add(String::Format(
 				I18N(L"Total Written size = {0}"),
 				thData->TotalWrittenSize));
 
-			AppendLog(% messages, true);
+			AppendLog(AppendResultToList(messages), true);
 
 			if (thData->IsOK)
 			{
@@ -293,15 +303,15 @@ namespace retrycopy {
 				}
 				else
 				{
-					CppUtils::Info(this, String::Join(Environment::NewLine, messages.ToArray()));
+					CppUtils::Info(this, String::Join(Environment::NewLine, messages->ToArray()));
 				}
 			}
 			else
 			{
 				if (thData->HasFailed)
-					CppUtils::Alert(this, String::Join(Environment::NewLine, messages.ToArray()));
+					CppUtils::Alert(this, String::Join(Environment::NewLine, messages->ToArray()));
 				else
-					CppUtils::Info(this, String::Join(Environment::NewLine, messages.ToArray()));
+					CppUtils::Info(this, String::Join(Environment::NewLine, messages->ToArray()));
 			}
 		}
 		finally
