@@ -45,13 +45,15 @@ namespace testretrycopy
             InitializeComponent();
         }
 
+        int _logIndex = 0;
         void AppendLog(string message)
         {
-            txtLog.AppendText(message);
+            txtLog.AppendText( (++_logIndex).ToString() + ":" + message);
             txtLog.AppendText(Environment.NewLine);
             txtLog.SelectionStart = txtLog.Text.Length;
             txtLog.SelectionLength = 0;
             txtLog.CaretIndex = txtLog.Text.Length;
+            txtLog.ScrollToEnd();
         }
         void StartRetryCopy(string arg)
         {
@@ -122,7 +124,7 @@ namespace testretrycopy
 
         enum PathType
         {
-            Dir,File,
+            Dir,File,None,
         }
 
         class PathInfo
@@ -147,8 +149,14 @@ namespace testretrycopy
             }
             public string ThePath { get { return _path; } }
             public bool IsFile { get { return _type == PathType.File; } }
+            public bool IsNone { get { return _type == PathType.None; } }
             void prepareDirStructure()
             {
+                if (IsNone)
+                {
+                    SafeDeleteFile(ThePath);
+                    return;
+                }
                 DirectoryInfo di = new DirectoryInfo(IsFile ? Path.GetDirectoryName(ThePath) : ThePath);
                 di.Create();
                 if (IsFile)
@@ -325,6 +333,75 @@ namespace testretrycopy
         private void btnMove2Files_Click(object sender, RoutedEventArgs e)
         {
             multiCommon(false);
+        }
+
+        private void btnSrcDstSame_Click(object sender, RoutedEventArgs e)
+        {
+            bool bCopy = true;
+            StartRetryCopy(string.Format("\"{0}\" \"{1}\" -d {2}\\ -ov Ask -op " +
+             (bCopy ? "copy" : (chkRecycle.IsChecked.GetValueOrDefault() ? "moverecycle" : "move")),
+             ".", ".", "."));
+        }
+
+        private void btnSameLevelDir_Click(object sender, RoutedEventArgs e)
+        {
+            bool bCopy = true;
+
+            string dir1 = ".\\dir1";
+            CppUtils.DeleteFile(dir1);
+
+            var path11 = new PathInfo(".\\dir1\\file1", PathType.File, GetRandomByte(1000));
+            var path12 = new PathInfo(".\\dir1\\file2", PathType.File, GetRandomByte(1000));
+
+            string dir2 = ".\\dir2";
+            CppUtils.DeleteFile(dir2);
+
+            var path21 = new PathInfo(".\\dir2\\file1", PathType.None);
+            var path22 = new PathInfo(".\\dir2\\file2", PathType.None);
+
+            StartRetryCopy(string.Format("\"{0}\" -d {1}\\ -ov Ask -op " +
+                (bCopy ? "copy" : (chkRecycle.IsChecked.GetValueOrDefault() ? "moverecycle" : "move")),
+                dir1, dir2));
+
+            if (bCopy)
+            {
+                AppendLog(IsSameDirContent(dir1, dir2) ? "OK" : "NG");
+            }
+            else
+            {
+                AppendLog(!File.Exists(path21.ThePath) ? "OK" : "NG");
+                AppendLog(!File.Exists(path22.ThePath) ? "OK" : "NG");
+                AppendLog(IsFileMoved(
+                    new PathInfo[] { path11, path12, },
+                    dir2) ? "OK" : "NG");
+            }
+        }
+
+        private void btnHasSamePathInSrc_Click(object sender, RoutedEventArgs e)
+        {
+            bool bCopy = true;
+
+            string dir1 = ".\\dir1";
+            CppUtils.DeleteFile(dir1);
+
+            var path11 = new PathInfo(".\\dir1\\file1", PathType.File, GetRandomByte(1000));
+            var path12 = new PathInfo(".\\dir1\\file2", PathType.File, GetRandomByte(1000));
+
+            string dir2 = ".\\dir2";
+            CppUtils.DeleteFile(dir2);
+
+            var path21 = new PathInfo(".\\dir2\\file1", PathType.None);
+            var path22 = new PathInfo(".\\dir2\\file2", PathType.None);
+
+            StartRetryCopy(string.Format("\"{0}\" \"{1}\" -d {2}\\ -ov Ask -op " +
+                (bCopy ? "copy" : (chkRecycle.IsChecked.GetValueOrDefault() ? "moverecycle" : "move")),
+                dir1, dir1, dir2));
+
+            StartRetryCopy(string.Format("C:\\T K:\\T \"{0}\" C:\\Windows\\ \"{1}\" -d {2}\\ -ov Ask -op " +
+                (bCopy ? "copy" : (chkRecycle.IsChecked.GetValueOrDefault() ? "moverecycle" : "move")),
+                dir1, dir1, dir2));
+
+
         }
     }
 }

@@ -56,7 +56,8 @@ namespace retrycopy {
 		String^ initialError;
 		do
 		{
-			if (thDataMaster->SrcPaths->Length == 0)
+			bool isSrcDir = false;
+			if (thDataMaster->IsSrcPathsEmpty)
 			{
 				initialError = I18N(L"The source is empty.");
 				break;
@@ -64,6 +65,8 @@ namespace retrycopy {
 
 			for each (String ^ path in thDataMaster->SrcPaths)
 			{
+				if (Directory::Exists(path))
+					isSrcDir = true;
 				if (!File::Exists(path) && !Directory::Exists(path))
 				{
 					initialError = I18N(
@@ -71,6 +74,8 @@ namespace retrycopy {
 					break;
 				}
 			}
+			if (!String::IsNullOrEmpty(initialError))
+				break;
 
 			if (String::IsNullOrEmpty(thDataMaster->Dst))
 			{
@@ -78,60 +83,57 @@ namespace retrycopy {
 				break;
 			}
 
-			for each (String ^ path in thDataMaster->SrcPaths)
+			bool bDstIsDir = thDataMaster->SrcPaths->Length > 1 ||
+				isSrcDir ||
+				thDataMaster->Dst->EndsWith("\\") || thDataMaster->Dst->EndsWith("/");
+
+			List<String^> processedSrcPath;
+			for each (String ^ srcpath in thDataMaster->SrcPaths)
 			{
-				if (Directory::Exists(path))
+				// duplicate src check
+				for each (String ^ s in processedSrcPath)
+				{
+					if (stdIsSamePath(TO_LPCWSTR(s), TO_LPCWSTR(srcpath)))
+					{
+						initialError = String::Format(I18N(L"The source paths '{0}' and '{1}' are same path."),
+							s, srcpath);
+						DASSERT(!String::IsNullOrEmpty(initialError));
+						break;
+					}
+				}
+				if (!String::IsNullOrEmpty(initialError))
+					break;
+				processedSrcPath.Add(srcpath);
+
+				if (stdIsSamePath(TO_LPCWSTR(srcpath), TO_LPCWSTR(thDataMaster->Dst)))
+				{
+					initialError = String::Format(
+						I18N(L"The source path '{0}' and destination directory '{1}' is same."),
+						srcpath, thDataMaster->Dst);
+					break;
+				}
+
+
+				if (Directory::Exists(srcpath))
 				{
 					if (File::Exists(thDataMaster->Dst))
 					{
 						initialError = I18N(L"Source is directory but destination is a file.");
 						break;
 					}
-					if (stdIsSamePath(TO_LPCWSTR(path), TO_LPCWSTR(thDataMaster->Dst)))
+					if (stdIsSubDirectory(TO_LPCWSTR(srcpath), TO_LPCWSTR(thDataMaster->Dst)))
 					{
-						initialError = I18N(L"The destination directory is a subdirectory of the source directory.");
+						initialError = String::Format(
+							I18N(L"The destination directory is a subdirectory of the source path '{0}'."),
+							srcpath);
 						break;
 					}
-					if (stdIsSamePath(TO_LPCWSTR(path), TO_LPCWSTR(thDataMaster->Dst)))
-					{
-						initialError = I18N(L"The destination directory is the same as the source directory.");
-						break;
-					}
-					if (!Directory::Exists(thDataMaster->Dst))
-					{
-						if (!(bool)EndInvokeWithTN(
-							thDataMaster->ThreadNumber,
-							BeginInvoke(
-								gcnew BISDelegate(this, &FormMain::OnThreadYesNo),
-								thDataMaster->ThreadNumber,
-								String::Format(
-									I18N(L"'{0}' does not exist. Do you want to create a new directory?"),
-									thDataMaster->Dst
-								) // String::Format
-							) // BeginInvoke
-						) // EndInvoke
-							) // if
-						{
-							return;
-						}
-
-						Directory::CreateDirectory(thDataMaster->Dst);
-						if (!Directory::Exists(thDataMaster->Dst))
-						{
-							initialError = I18N(L"Failed to create a directory.");
-							break;
-						}
-					}
-				}
+				} // if (Directory::Exists(srcpath))
 				else
 				{
-					DASSERT(File::Exists(path));
-					if (stdIsSamePath(TO_LPCWSTR(path), TO_LPCWSTR(thDataMaster->Dst)))
-					{
-						initialError = I18N(L"The destination file is the same as the source file.");
-						break;
-					}
-					if (thDataMaster->Dst->EndsWith("\\") || thDataMaster->Dst->EndsWith("/"))
+					DASSERT(File::Exists(srcpath));
+					DASSERT(!stdIsSamePath(TO_LPCWSTR(srcpath), TO_LPCWSTR(thDataMaster->Dst)));
+					if (bDstIsDir)
 					{
 						if (File::Exists(thDataMaster->Dst->TrimEnd((gcnew String(L"/\\"))->ToCharArray())))
 						{
@@ -141,6 +143,34 @@ namespace retrycopy {
 					}
 				}
 			}
+
+			if (String::IsNullOrEmpty(initialError) &&
+				bDstIsDir && !Directory::Exists(thDataMaster->Dst))
+			{
+				if (!(bool)EndInvokeWithTN(
+					thDataMaster->ThreadNumber,
+					BeginInvoke(
+						gcnew BISDelegate(this, &FormMain::OnThreadYesNo),
+						thDataMaster->ThreadNumber,
+						String::Format(
+							I18N(L"'{0}' does not exist. Do you want to create a new directory?"),
+							thDataMaster->Dst
+						) // String::Format
+					) // BeginInvoke
+				) // EndInvoke
+					) // if
+				{
+					return;
+				}
+
+				stdCreateCompleteDirectory(TO_LPCWSTR(thDataMaster->Dst));
+				if (!Directory::Exists(thDataMaster->Dst))
+				{
+					initialError = I18N(L"Failed to create a directory.");
+					break;
+				}
+			}
+
 		} while (false);
 		if (!String::IsNullOrEmpty(initialError))
 		{

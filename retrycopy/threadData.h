@@ -254,6 +254,21 @@ namespace retrycopy {
 	public:
 		ThreadDataMaster(int threadNumber, String^ srces, String^ dst);
 
+		property bool IsSrcPathsEmpty
+		{
+			bool get() {
+				if (!srcPaths_)
+					return true;
+				if (srcPaths_->Length == 0)
+					return true;
+				bool has = false;
+				for each (String ^ s in SrcPaths) {
+					if (!String::IsNullOrEmpty(s))
+						has = true;
+				}
+				return !has;
+			}
+		}
 		property int ThreadNumber
 		{
 			int get() { return threadNumber_; }

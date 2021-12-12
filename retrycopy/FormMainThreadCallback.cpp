@@ -115,7 +115,9 @@ namespace retrycopy {
 				}
 				else
 				{
-					results->Add(String::Format(I18N(L"The source directory '{0}' has not been recycled because it is not empty.")));
+					results->Add(String::Format(
+						I18N(L"The source directory '{0}' has not been recycled because it is not empty."),
+						dir));
 				}
 			}
 			else
@@ -266,7 +268,7 @@ namespace retrycopy {
 			List<String^>^ messages = gcnew List<String^>();
 			if (thData->IsOK)
 			{
-				messages->Add(I18N(L"All copy successfully finished"));
+				messages->Add(I18N(L"All operation successfully finished"));
 			}
 			else
 			{

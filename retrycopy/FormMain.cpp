@@ -635,7 +635,7 @@ namespace retrycopy {
 	}
 	System::Void FormMain::txtSource_TextChanged(System::Object^ sender, System::EventArgs^ e)
 	{
-		int count = 0;
+		size_t count = 0;
 		if (!String::IsNullOrEmpty(txtSource->Text))
 		{
 			CCommandLineString cmd(TO_LPCWSTR(txtSource->Text));
