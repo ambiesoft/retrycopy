@@ -10,62 +10,64 @@ using namespace System::IO;
 using namespace Ambiesoft;
 using namespace std;
 
-namespace retrycopy {
+namespace Ambiesoft {
+	namespace retrycopy {
 
-	String^ SizeToUser(LONGLONG size)
-	{
-		return String::Format(I18N(L"{0} ({1})"),
-			size,
-			AmbLib::FormatSize(size));
-	}
+		String^ SizeToUser(LONGLONG size)
+		{
+			return String::Format(L"{0} ({1})",
+				size,
+				AmbLib::FormatSize(size));
+		}
 
-	bool ShouldReopenError(DWORD le)
-	{
-		return le == ERROR_NOT_READY || le == ERROR_DEV_NOT_EXIST || le == ERROR_NO_SUCH_DEVICE;
-	}
-	void EnsureDirectory(String^ path)
-	{
-		try
+		bool ShouldReopenError(DWORD le)
 		{
-			Directory::CreateDirectory(
-				Path::GetDirectoryName(path)
-			);
+			return le == ERROR_NOT_READY || le == ERROR_DEV_NOT_EXIST || le == ERROR_NO_SUCH_DEVICE;
 		}
-		catch (Exception^) {}
-	}
-	List<String^>^ GetDirsFromDstFiles(KVS ^ sds)
-	{
-		List<String^>^ ret = gcnew List<String^>();
-		System::Collections::Generic::SortedSet<String^> chkDup;
-		for each (KV ^ kv in sds)
+		void EnsureDirectory(String^ path)
 		{
-			String^ dir = Path::GetDirectoryName(kv->Value);
-			if (chkDup.Contains(dir))
-				continue;
-			chkDup.Add(dir);
-			ret->Add(dir);
+			try
+			{
+				Directory::CreateDirectory(
+					Path::GetDirectoryName(path)
+				);
+			}
+			catch (Exception^) {}
 		}
-		return ret;
-	}
-	String^ V2S(const vector<wstring>& vs)
-	{
-		wstring all;
-		for (auto&& ws : vs)
+		List<String^>^ GetDirsFromDstFiles(KVS^ sds)
 		{
-			all += stdAddDQIfNecessary(ws);
-			all += L" ";
+			List<String^>^ ret = gcnew List<String^>();
+			System::Collections::Generic::SortedSet<String^> chkDup;
+			for each (KV ^ kv in sds)
+			{
+				String^ dir = Path::GetDirectoryName(kv->Value);
+				if (chkDup.Contains(dir))
+					continue;
+				chkDup.Add(dir);
+				ret->Add(dir);
+			}
+			return ret;
 		}
-		all = stdTrim(all);
-		return gcnew String(all.c_str());
-	}
-	cli::array<String^>^ S2A(String^ args)
-	{
-		List<String^> ret;
-		CCommandLineString cmd(TO_LPCWSTR(args));
-		for (size_t i = 0; i < cmd.getCount(); ++i)
+		String^ V2S(const vector<wstring>& vs)
 		{
-			ret.Add(gcnew String(cmd.getArg(i).c_str()));
+			wstring all;
+			for (auto&& ws : vs)
+			{
+				all += stdAddDQIfNecessary(ws);
+				all += L" ";
+			}
+			all = stdTrim(all);
+			return gcnew String(all.c_str());
 		}
-		return ret.ToArray();
-	}
-} // namespace
+		cli::array<String^>^ S2A(String^ args)
+		{
+			List<String^> ret;
+			CCommandLineString cmd(TO_LPCWSTR(args));
+			for (size_t i = 0; i < cmd.getCount(); ++i)
+			{
+				ret.Add(gcnew String(cmd.getArg(i).c_str()));
+			}
+			return ret.ToArray();
+		}
+	} // namespace
+}

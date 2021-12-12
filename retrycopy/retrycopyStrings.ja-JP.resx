@@ -1,0 +1,450 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="&amp;Ask" xml:space="preserve">
+    <value>尋ねる(&amp;A)</value>
+  </data>
+  <data name="&amp;Copy" xml:space="preserve">
+    <value>コピー(&amp;C)</value>
+  </data>
+  <data name="&amp;Move" xml:space="preserve">
+    <value>移動(&amp;M)</value>
+  </data>
+  <data name="'copy', 'move', 'moverecycle', or 'ask'" xml:space="preserve">
+    <value>'copy', 'move', 'moverecycle', 'ask'</value>
+  </data>
+  <data name="'yes', 'no', or 'ask'" xml:space="preserve">
+    <value>'yes', 'no', または 'ask'</value>
+  </data>
+  <data name="'{0}' does not exist. Do you want to create a new directory?" xml:space="preserve">
+    <value>'{0}' は存在しません。新しいディレクトリを作成しますか？</value>
+  </data>
+  <data name="'{0}' is already exists. Do you want to overwrite?" xml:space="preserve">
+    <value>'{0}' はすでに存在します。上書きしますか？</value>
+  </data>
+  <data name="-b value must be between {0} and {1}." xml:space="preserve">
+    <value>-b の値は{0}と{1}の間である必要があります。</value>
+  </data>
+  <data name="-b value must be int" xml:space="preserve">
+    <value>-b の値はintである必要があります</value>
+  </data>
+  <data name="-op must be one of {0}" xml:space="preserve">
+    <value>-op は {0} のどれかである必要があります</value>
+  </data>
+  <data name="-ov must be one of 'Yes', 'No' or 'Ask'" xml:space="preserve">
+    <value>-ov は 'Yes', 'No', 'Ask'のどれかである必要があります</value>
+  </data>
+  <data name="-r value must be between {0} and {1}." xml:space="preserve">
+    <value>-r の値は{0}と{1}の間である必要があります。</value>
+  </data>
+  <data name="-r value must be int" xml:space="preserve">
+    <value>-r の値はintである必要があります</value>
+  </data>
+  <data name="About {0}" xml:space="preserve">
+    <value>{0}について</value>
+  </data>
+  <data name="All Copy finished. Do you want to recycle source directories '{0}'?" xml:space="preserve">
+    <value>すべてのコピーが終了しました。コピー元のディレクトリ '{0}' をリサイクルしますか？</value>
+  </data>
+  <data name="All operation successfully finished" xml:space="preserve">
+    <value>すべての作業が正常に終了しました。</value>
+  </data>
+  <data name="Are you sure to give up on reading any more bytes, and read one byte at a time, writing zero for each one that fails {0} times?" xml:space="preserve">
+    <value>読み込みを諦めて１バイトずつ読み込み {0} 回失敗した場合はゼロを書き込みますか？</value>
+  </data>
+  <data name="Are you sure to give up reading {0} bytes from the file and write {0} bytes of zeros?" xml:space="preserve">
+    <value>ファイルから {0} バイト読み込むことを諦めて {0} バイトのゼロを書き込みますか？</value>
+  </data>
+  <data name="Ask" xml:space="preserve">
+    <value>尋ねる</value>
+  </data>
+  <data name="Buffer size" xml:space="preserve">
+    <value>バッファサイズ</value>
+  </data>
+  <data name="Buffer sizes" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Calculating total size..." xml:space="preserve">
+    <value>サイズを計算しています・・・</value>
+  </data>
+  <data name="Close when finished" xml:space="preserve">
+    <value>終了したら閉じる</value>
+  </data>
+  <data name="Copy" xml:space="preserve">
+    <value>コピー</value>
+  </data>
+  <data name="Copy data from broken HDD" xml:space="preserve">
+    <value>こわれたハードディスクからデータをコピー</value>
+  </data>
+  <data name="Copy finished. Do you want to recycle source file '{0}'?" xml:space="preserve">
+    <value>コピーが終了しました。コピー元のファイル '{0}' をリサイクルしますか？</value>
+  </data>
+  <data name="Copying" xml:space="preserve">
+    <value>コピー中</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>削除</value>
+  </data>
+  <data name="deleted" xml:space="preserve">
+    <value>削除されました</value>
+  </data>
+  <data name="Destination" xml:space="preserve">
+    <value>コピー先</value>
+  </data>
+  <data name="Disk Information:" xml:space="preserve">
+    <value>ディスク情報：</value>
+  </data>
+  <data name="Enter new buffer size" xml:space="preserve">
+    <value>新しいバッファサイズを入力</value>
+  </data>
+  <data name="Fail = {0}" xml:space="preserve">
+    <value>失敗　＝　{0}</value>
+  </data>
+  <data name="Failed to create a directory." xml:space="preserve">
+    <value>ディレクトリの作成に失敗しました。</value>
+  </data>
+  <data name="Failed to delete directory '{0}' ({1})" xml:space="preserve">
+    <value>コピー元ディレクトリ '{0}' の削除に失敗しました</value>
+  </data>
+  <data name="Failed to delete the source file '{0}' ({1})" xml:space="preserve">
+    <value>コピー元ファイル '{0}' の削除に失敗しました　（{1}）</value>
+  </data>
+  <data name="Failed to get Disk Infomation" xml:space="preserve">
+    <value>ディスク情報の取得に失敗しました</value>
+  </data>
+  <data name="Failed to open file. ({0})" xml:space="preserve">
+    <value>ファイルのオープンに失敗しました。　（{0}）</value>
+  </data>
+  <data name="Failed to read {0} bytes from {1} on the file '{2}' {3} times." xml:space="preserve">
+    <value>読み込みに {3} 回失敗しました。位置＝{1}　サイズ＝{0}　ファイル＝{2}</value>
+  </data>
+  <data name="Failed to ReadFile at {1} ({2}) {0} times" xml:space="preserve">
+    <value>位置 {1} でReadFileが {0} 回失敗しました （{2}）</value>
+  </data>
+  <data name="Failed to save ini." xml:space="preserve">
+    <value>iniの保存に失敗しました。</value>
+  </data>
+  <data name="Failed to SetFilePointer at {0} on the file '{1}' {2} times." xml:space="preserve">
+    <value>SetFilePointerに {2} 回失敗しました。位置＝{0}　ファイル＝{1}</value>
+  </data>
+  <data name="Failed to {0} some directories" xml:space="preserve">
+    <value>いくつかのディレクトリの{0}に失敗しました</value>
+  </data>
+  <data name="Failed:" xml:space="preserve">
+    <value>失敗：</value>
+  </data>
+  <data name="File copy ended:&quot;{0}&quot; -&gt; &quot;{1}&quot;" xml:space="preserve">
+    <value>ファイルコピー終了："{0}" → "{1}"</value>
+  </data>
+  <data name="File copy started:&quot;{0}&quot; -&gt; &quot;{1}&quot;" xml:space="preserve">
+    <value>ファイルコピー開始："{0}" → "{1}"</value>
+  </data>
+  <data name="Log" xml:space="preserve">
+    <value>ログ</value>
+  </data>
+  <data name="Move" xml:space="preserve">
+    <value>移動</value>
+  </data>
+  <data name="Move (&amp;Recyle)" xml:space="preserve">
+    <value>移動（リサイクル）(&amp;R)</value>
+  </data>
+  <data name="Move (Recycle)" xml:space="preserve">
+    <value>移動（リサイクル）</value>
+  </data>
+  <data name="NG Reason:" xml:space="preserve">
+    <value>NGの理由：</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>いいえ</value>
+  </data>
+  <data name="Not Done" xml:space="preserve">
+    <value>未終了</value>
+  </data>
+  <data name="Obtaining source files and directories..." xml:space="preserve">
+    <value>コピーするファイルの一覧を作成しています・・・</value>
+  </data>
+  <data name="Only available when 1-byte read fails. Please set the buffer size to 1 and Retry." xml:space="preserve">
+    <value>１バイト読み込みでのみ利用できます。バッファサイズを１にして再試行してください。</value>
+  </data>
+  <data name="Operation is still active. Are you sure to quit?" xml:space="preserve">
+    <value>作業が実行中です。終了しますか？</value>
+  </data>
+  <data name="Operation is still active. Do you want to cancel it?" xml:space="preserve">
+    <value>作業が実行中です。キャンセルしますか？</value>
+  </data>
+  <data name="Operation: One of {0}" xml:space="preserve">
+    <value>動作：{0}のどれか</value>
+  </data>
+  <data name="Overwrite: One of {0}" xml:space="preserve">
+    <value>上書き：{0}のどれか</value>
+  </data>
+  <data name="Pause" xml:space="preserve">
+    <value>一時停止</value>
+  </data>
+  <data name="Paused" xml:space="preserve">
+    <value>一時停止中</value>
+  </data>
+  <data name="Preparing target directories..." xml:space="preserve">
+    <value>コピー先ディレクトリを準備しています。</value>
+  </data>
+  <data name="Reading at {0} with size {1} {2} times..." xml:space="preserve">
+    <value>位置 {0} からサイズ {1} で {2} 回目の読み込み中・・・</value>
+  </data>
+  <data name="recycle" xml:space="preserve">
+    <value>リサイクル</value>
+  </data>
+  <data name="recycled" xml:space="preserve">
+    <value>リサイクルされました</value>
+  </data>
+  <data name="Result:" xml:space="preserve">
+    <value>結果：</value>
+  </data>
+  <data name="Result:{0}" xml:space="preserve">
+    <value>結果：{0}</value>
+  </data>
+  <data name="Resume" xml:space="preserve">
+    <value>再開</value>
+  </data>
+  <data name="Retry count" xml:space="preserve">
+    <value>再試行回数</value>
+  </data>
+  <data name="Select destination file" xml:space="preserve">
+    <value>コピー先のファイルを選択</value>
+  </data>
+  <data name="Select source directory" xml:space="preserve">
+    <value>コピー元のディレクトリを選択</value>
+  </data>
+  <data name="Select source files" xml:space="preserve">
+    <value>コピー元のファイルを選択</value>
+  </data>
+  <data name="Select source files (Add)" xml:space="preserve">
+    <value>コピー元のファイルを選択　（追加）</value>
+  </data>
+  <data name="Show Gitrev" xml:space="preserve">
+    <value>Gitrev表示</value>
+  </data>
+  <data name="Show Help" xml:space="preserve">
+    <value>ヘルプを表示</value>
+  </data>
+  <data name="Skip = {0}" xml:space="preserve">
+    <value>スキップ　＝　{0}</value>
+  </data>
+  <data name="Some files were skipped:" xml:space="preserve">
+    <value>いくつかのファイルはスキップされました：</value>
+  </data>
+  <data name="Source is directory but destination is a file." xml:space="preserve">
+    <value>コピー元はディレクトリですがコピー先がファイルです。</value>
+  </data>
+  <data name="Source path" xml:space="preserve">
+    <value>コピー元</value>
+  </data>
+  <data name="Source size is not obtained" xml:space="preserve">
+    <value>コピー元のサイズが取得されていません。</value>
+  </data>
+  <data name="Source size not equal to written size {0} != {1}" xml:space="preserve">
+    <value>コピー元サイズと書き込まれたサイズが一致していません {0} != {1}</value>
+  </data>
+  <data name="Start operation" xml:space="preserve">
+    <value>動作を開始</value>
+  </data>
+  <data name="Success = {0}" xml:space="preserve">
+    <value>成功　＝　{0}</value>
+  </data>
+  <data name="Task Ended" xml:space="preserve">
+    <value>タスク終了</value>
+  </data>
+  <data name="Task Started" xml:space="preserve">
+    <value>タスク開始</value>
+  </data>
+  <data name="The destination directory is a subdirectory of the source path '{0}'." xml:space="preserve">
+    <value>コピー先がコピー元 '{0}' のサブディレクトリです。</value>
+  </data>
+  <data name="The destination name ends with path separator but it exists as a file." xml:space="preserve">
+    <value>コピー先の名前がパスセパレーターで終わっていますが、ファイルとして存在しています。</value>
+  </data>
+  <data name="The destination path is empty" xml:space="preserve">
+    <value>コピー先が空です。</value>
+  </data>
+  <data name="The number of free clusters of the dirve '{0}' is {1}." xml:space="preserve">
+    <value>ドライブ '{0}' のフリークラスタ数は {1} です。</value>
+  </data>
+  <data name="The number of sectors per cluster of the dirve '{0}' is {1}." xml:space="preserve">
+    <value>ドライブ '{0}' のクラスタごとのセクタ数は {1} です。</value>
+  </data>
+  <data name="The sector size of the dirve '{0}' is {1} bytes." xml:space="preserve">
+    <value>ドライブ '{0}' のセクタサイズは {1} バイトです。</value>
+  </data>
+  <data name="The source directory '{0}' already gone." xml:space="preserve">
+    <value>コピー元ディレクトリ '{0}' はすでに存在しません</value>
+  </data>
+  <data name="The source directory '{0}' {1}" xml:space="preserve">
+    <value>コピー元ディレクトリ '{0}' は{1}</value>
+  </data>
+  <data name="The source file '{0}' already gone." xml:space="preserve">
+    <value>コピー元ファイル '{0}' はすでに存在しません。</value>
+  </data>
+  <data name="The source file '{0}' {1}" xml:space="preserve">
+    <value>コピー元ファイル '{0}' は {1}</value>
+  </data>
+  <data name="The source is empty." xml:space="preserve">
+    <value>コピー元が空です。</value>
+  </data>
+  <data name="The source path '{0}' and destination directory '{1}' is same." xml:space="preserve">
+    <value>コピー元 '{0}' とコピー先 '{1}' が同じです。</value>
+  </data>
+  <data name="The source path '{0}' does not exist." xml:space="preserve">
+    <value>コピー元 '{0}' が存在しません。</value>
+  </data>
+  <data name="The source paths '{0}' and '{1}' are same path." xml:space="preserve">
+    <value>コピー元 '{0}' と '{1}' が同じです。</value>
+  </data>
+  <data name="The total number of clusters of the dirve '{0}' is {1}." xml:space="preserve">
+    <value>ドライブ '{0}' の全クラスタ数は {1} です。</value>
+  </data>
+  <data name="Total file size = {0}" xml:space="preserve">
+    <value>すべてのファイルサイズ　＝　{0}</value>
+  </data>
+  <data name="Total number of files = {0}" xml:space="preserve">
+    <value>すべてのファイルの個数　＝　{0}</value>
+  </data>
+  <data name="Total written size = {0}" xml:space="preserve">
+    <value>すべての書き込まれたサイズ　＝　{0}</value>
+  </data>
+  <data name="Unknown option(s):" xml:space="preserve">
+    <value>未知のオプション：</value>
+  </data>
+  <data name="Written zero from position {0} with size {1}." xml:space="preserve">
+    <value>位置 {0} から {1}バイト、ゼロが書き込まれました。</value>
+  </data>
+  <data name="Writting at {0} with size {1}..." xml:space="preserve">
+    <value>位置 {0} からサイズ {1} で書き込み中・・・</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>はい</value>
+  </data>
+  <data name="{0} bytes of zero was written" xml:space="preserve">
+    <value>{0} バイトのゼロが書き込まれました</value>
+  </data>
+  <data name="{0} cancelled because size is not same" xml:space="preserve">
+    <value>サイズが同じでないため、{0}がキャンセルされました</value>
+  </data>
+  <data name="{0} file(s)" xml:space="preserve">
+    <value>{0} 個のファイル</value>
+  </data>
+</root>

@@ -29,7 +29,8 @@ delegate void VILLIDelegate(int, LONGLONG, int);
 delegate void VLLLLDwIDelegate(LONGLONG,LONGLONG,DWORD,int);
 delegate bool BIDwDelegate(int, DWORD);
 
-#define I18N(s) (s)
+#define I18N(q) Ambiesoft::retrycopy::ResUtil::getString(q)
+
 using KV = System::Collections::Generic::KeyValuePair<System::String^, System::String^>;
 using KVS = System::Collections::Generic::List<KV>;
 #define TO_LPCWSTR(s) (getStdWstring(s).c_str())
@@ -63,6 +64,8 @@ static_assert(ERROR_NO_SUCH_DEVICE == 433L, "");
 
 // Thread::Suspend and Resume is obsolete
 #pragma warning(disable:4947)
+
+#include "ResUtil.h"
 
 using namespace System;
 using namespace Ambiesoft;

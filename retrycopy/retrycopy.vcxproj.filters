@@ -97,7 +97,7 @@
       <Filter>02 Source Files\lsMisc</Filter>
     </ClCompile>
     <ClCompile Include="..\..\lsMisc\HighDPI.cpp">
-      <Filter>02 Source Files</Filter>
+      <Filter>02 Source Files\lsMisc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -167,14 +167,17 @@
     <ClInclude Include="Ref.h">
       <Filter>01 Header Files\refclass</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lsMisc\HighDPI.h">
-      <Filter>01 Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lsMisc\stdosd\stdosd_exception.h">
+    <ClInclude Include="ResUtil.h">
       <Filter>01 Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lsMisc\CommandLineString.h">
-      <Filter>01 Header Files</Filter>
+      <Filter>01 Header Files\lsMisc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lsMisc\HighDPI.h">
+      <Filter>01 Header Files\lsMisc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lsMisc\stdosd\stdosd_exception.h">
+      <Filter>01 Header Files\lsMisc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -191,5 +194,15 @@
     <Text Include="history.txt">
       <Filter>04 dists</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="retrycopyStrings.ja-JP.resx">
+      <Filter>03 Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="retrycopyStrings.resx">
+      <Filter>03 Resource Files</Filter>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>
