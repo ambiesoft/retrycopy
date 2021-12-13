@@ -92,16 +92,16 @@ namespace Ambiesoft {
 				this->txtMessage->Name = L"txtMessage";
 				this->txtMessage->ReadOnly = true;
 				this->txtMessage->ScrollBars = System::Windows::Forms::ScrollBars::Both;
-				this->txtMessage->Size = System::Drawing::Size(603, 132);
-				this->txtMessage->TabIndex = 0;
+				this->txtMessage->Size = System::Drawing::Size(581, 128);
+				this->txtMessage->TabIndex = 100;
 				// 
 				// btnRetry
 				// 
-				this->btnRetry->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-				this->btnRetry->Location = System::Drawing::Point(12, 281);
+				this->btnRetry->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Right));
+				this->btnRetry->Location = System::Drawing::Point(413, 276);
 				this->btnRetry->Name = L"btnRetry";
-				this->btnRetry->Size = System::Drawing::Size(94, 62);
-				this->btnRetry->TabIndex = 1;
+				this->btnRetry->Size = System::Drawing::Size(94, 67);
+				this->btnRetry->TabIndex = 700;
 				this->btnRetry->Text = L"&Retry";
 				this->btnRetry->UseVisualStyleBackColor = true;
 				this->btnRetry->Click += gcnew System::EventHandler(this, &ReadErrorDialog::btnRetry_Click);
@@ -111,10 +111,10 @@ namespace Ambiesoft {
 				// btnChangeBufferSize
 				// 
 				this->btnChangeBufferSize->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-				this->btnChangeBufferSize->Location = System::Drawing::Point(112, 281);
+				this->btnChangeBufferSize->Location = System::Drawing::Point(12, 275);
 				this->btnChangeBufferSize->Name = L"btnChangeBufferSize";
-				this->btnChangeBufferSize->Size = System::Drawing::Size(94, 62);
-				this->btnChangeBufferSize->TabIndex = 2;
+				this->btnChangeBufferSize->Size = System::Drawing::Size(94, 67);
+				this->btnChangeBufferSize->TabIndex = 300;
 				this->btnChangeBufferSize->Text = L"Change Buffer size";
 				this->btnChangeBufferSize->UseVisualStyleBackColor = true;
 				this->btnChangeBufferSize->Click += gcnew System::EventHandler(this, &ReadErrorDialog::btnChangeBufferSize_Click);
@@ -122,10 +122,10 @@ namespace Ambiesoft {
 				// btnGiveupAndWriteZero
 				// 
 				this->btnGiveupAndWriteZero->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-				this->btnGiveupAndWriteZero->Location = System::Drawing::Point(212, 281);
+				this->btnGiveupAndWriteZero->Location = System::Drawing::Point(112, 276);
 				this->btnGiveupAndWriteZero->Name = L"btnGiveupAndWriteZero";
-				this->btnGiveupAndWriteZero->Size = System::Drawing::Size(94, 62);
-				this->btnGiveupAndWriteZero->TabIndex = 3;
+				this->btnGiveupAndWriteZero->Size = System::Drawing::Size(94, 67);
+				this->btnGiveupAndWriteZero->TabIndex = 400;
 				this->btnGiveupAndWriteZero->Text = L"Give up to read and write zero";
 				this->btnGiveupAndWriteZero->UseVisualStyleBackColor = true;
 				this->btnGiveupAndWriteZero->Click += gcnew System::EventHandler(this, &ReadErrorDialog::btnGiveupAndWriteZero_Click);
@@ -134,21 +134,21 @@ namespace Ambiesoft {
 				// 
 				this->btnCancel->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Right));
 				this->btnCancel->DialogResult = System::Windows::Forms::DialogResult::Cancel;
-				this->btnCancel->Location = System::Drawing::Point(535, 281);
+				this->btnCancel->Location = System::Drawing::Point(513, 276);
 				this->btnCancel->Name = L"btnCancel";
-				this->btnCancel->Size = System::Drawing::Size(80, 62);
-				this->btnCancel->TabIndex = 4;
+				this->btnCancel->Size = System::Drawing::Size(80, 67);
+				this->btnCancel->TabIndex = 800;
 				this->btnCancel->Text = L"Cancel";
 				this->btnCancel->UseVisualStyleBackColor = true;
 				// 
 				// btnGiveUpAndWZOmode
 				// 
 				this->btnGiveUpAndWZOmode->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-				this->btnGiveUpAndWZOmode->Location = System::Drawing::Point(312, 281);
+				this->btnGiveUpAndWZOmode->Location = System::Drawing::Point(212, 276);
 				this->btnGiveUpAndWZOmode->Name = L"btnGiveUpAndWZOmode";
-				this->btnGiveUpAndWZOmode->Size = System::Drawing::Size(94, 62);
-				this->btnGiveUpAndWZOmode->TabIndex = 3;
-				this->btnGiveUpAndWZOmode->Text = L"Give up to read 1 byte and write zero until it succeed";
+				this->btnGiveUpAndWZOmode->Size = System::Drawing::Size(94, 67);
+				this->btnGiveUpAndWZOmode->TabIndex = 500;
+				this->btnGiveUpAndWZOmode->Text = L"Give up to read and write zero until it succeed";
 				this->btnGiveUpAndWZOmode->UseVisualStyleBackColor = true;
 				this->btnGiveUpAndWZOmode->Click += gcnew System::EventHandler(this, &ReadErrorDialog::btnGiveUpAndWZOmode_Click);
 				// 
@@ -157,7 +157,7 @@ namespace Ambiesoft {
 				this->spMain->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
 					| System::Windows::Forms::AnchorStyles::Left)
 					| System::Windows::Forms::AnchorStyles::Right));
-				this->spMain->Location = System::Drawing::Point(12, 11);
+				this->spMain->Location = System::Drawing::Point(12, 12);
 				this->spMain->Name = L"spMain";
 				this->spMain->Orientation = System::Windows::Forms::Orientation::Horizontal;
 				// 
@@ -168,8 +168,8 @@ namespace Ambiesoft {
 				// spMain.Panel2
 				// 
 				this->spMain->Panel2->Controls->Add(this->txtInfo);
-				this->spMain->Size = System::Drawing::Size(603, 264);
-				this->spMain->SplitterDistance = 132;
+				this->spMain->Size = System::Drawing::Size(581, 257);
+				this->spMain->SplitterDistance = 128;
 				this->spMain->TabIndex = 5;
 				// 
 				// txtInfo
@@ -179,26 +179,26 @@ namespace Ambiesoft {
 				this->txtInfo->Multiline = true;
 				this->txtInfo->Name = L"txtInfo";
 				this->txtInfo->ReadOnly = true;
-				this->txtInfo->Size = System::Drawing::Size(603, 128);
-				this->txtInfo->TabIndex = 6;
+				this->txtInfo->Size = System::Drawing::Size(581, 125);
+				this->txtInfo->TabIndex = 200;
 				// 
 				// btnShowDriveInfo
 				// 
 				this->btnShowDriveInfo->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-				this->btnShowDriveInfo->Location = System::Drawing::Point(412, 280);
+				this->btnShowDriveInfo->Location = System::Drawing::Point(312, 276);
 				this->btnShowDriveInfo->Name = L"btnShowDriveInfo";
-				this->btnShowDriveInfo->Size = System::Drawing::Size(94, 62);
-				this->btnShowDriveInfo->TabIndex = 6;
+				this->btnShowDriveInfo->Size = System::Drawing::Size(94, 67);
+				this->btnShowDriveInfo->TabIndex = 600;
 				this->btnShowDriveInfo->Text = L"&Show Drive Info";
 				this->btnShowDriveInfo->UseVisualStyleBackColor = true;
 				this->btnShowDriveInfo->Click += gcnew System::EventHandler(this, &ReadErrorDialog::btnShowDriveInfo_Click);
 				// 
 				// ReadErrorDialog
 				// 
-				this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
+				this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 				this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 				this->CancelButton = this->btnCancel;
-				this->ClientSize = System::Drawing::Size(627, 354);
+				this->ClientSize = System::Drawing::Size(605, 355);
 				this->Controls->Add(this->btnShowDriveInfo);
 				this->Controls->Add(this->spMain);
 				this->Controls->Add(this->btnCancel);
@@ -208,6 +208,7 @@ namespace Ambiesoft {
 				this->Controls->Add(this->btnRetry);
 				this->MaximizeBox = false;
 				this->MinimizeBox = false;
+				this->MinimumSize = System::Drawing::Size(621, 394);
 				this->Name = L"ReadErrorDialog";
 				this->ShowIcon = false;
 				this->ShowInTaskbar = false;

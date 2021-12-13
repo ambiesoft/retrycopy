@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "gitrev.h"
-#include "threadData.h"
+#include "ThreadDataPath.h"
 #include "helper.h"
 #include "FormLog.h"
 #include "FormAbout.h"

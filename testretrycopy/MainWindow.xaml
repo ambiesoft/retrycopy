@@ -20,7 +20,7 @@
         <Button x:Name="btnCopyFileToNonExistentPathDeepYen" HorizontalAlignment="Left" Margin="325,86,0,0" VerticalAlignment="Top" Height="61" Click="btnCopyFileToNonExistentPathDeepYen_Click" Width="143">
             <TextBlock TextWrapping="WrapWithOverflow" >CopyFile to nonexistent path deep \</TextBlock>
         </Button>
-        <Button HorizontalAlignment="Left" Margin="473,97,0,0" VerticalAlignment="Top" Height="50" Width="125" RenderTransformOrigin="-0.259,0.627" Click="btnDstFileExistButEndWithSep_Click">
+        <Button HorizontalAlignment="Left" Margin="473,97,0,0" VerticalAlignment="Top" Height="50" Width="125" RenderTransformOrigin="-0.259,0.627" Click="btnDstFileExistButEndWithSep_Click" Cursor="" Background="#FFF91515" Foreground="#FFFDFDFD">
             <TextBlock x:Name="btnDstFileExistButEndWithSep">dst file exists<LineBreak/>but endwith \</TextBlock>
         </Button>
         <Button x:Name="btnCopyDir" Content="CopyDir" HorizontalAlignment="Left" Margin="26,152,0,0" VerticalAlignment="Top" Height="48" Width="122" Click="btnCopyDir_Click"/>
@@ -33,6 +33,6 @@
         <CheckBox x:Name="chkRecycle" Content="recycle" HorizontalAlignment="Left" Margin="593,168,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.55,-0.16"/>
         <Button x:Name="btnSrcDstSame" Content="Src and Dst is same" HorizontalAlignment="Left" Margin="536,34,0,0" VerticalAlignment="Top" Click="btnSrcDstSame_Click"/>
         <Button x:Name="btnSameLevelDir" Content="SameLevelDir" HorizontalAlignment="Left" Margin="621,97,0,0" VerticalAlignment="Top" Height="33" Width="62" Click="btnSameLevelDir_Click"/>
-        <Button x:Name="btnHasSamePathInSrc" Content="Has Same Paht In Src" HorizontalAlignment="Left" Margin="705,110,0,0" VerticalAlignment="Top" Click="btnHasSamePathInSrc_Click"/>
+        <Button x:Name="btnHasSamePathInSrc" Content="Has Same Paht In Src" HorizontalAlignment="Left" Margin="705,110,0,0" VerticalAlignment="Top" Click="btnHasSamePathInSrc_Click" Foreground="#FFF1ECEC" Background="#FFDE3737"/>
     </Grid>
 </Window>

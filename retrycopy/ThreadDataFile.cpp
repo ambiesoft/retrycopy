@@ -4,62 +4,23 @@
 
 #include "FormMain.h"
 #include "helper.h"
-#include "threadData.h"
+#include "ThreadDataFile.h"
+
 
 using namespace System::IO;
 namespace Ambiesoft {
 	namespace retrycopy {
 
-		ThreadDataMaster::ThreadDataMaster(int threadNumber, String^ srces, String^ dst) :
-			threadNumber_(threadNumber), dst_(dst)
-		{
-			srcPaths_ = S2A(srces);
-		}
-
-
-		int ThreadDataMaster::TotalOKCount::get()
-		{
-			int ret = 0;
-			for each (ThreadDataPath ^ thPath in Tasks) {
-				ret += thPath->ToTatalOKCount;
-			}
-			return ret;
-		}
-
-		int ThreadDataMaster::TotalSkipCount::get()
-		{
-			int ret = 0;
-			for each (ThreadDataPath ^ thPath in Tasks) {
-				ret += thPath->ToTatalSkipCount;
-			}
-			return ret;
-		}
-
-		void ThreadDataPath::PrepareDstDirs()
-		{
-			for each (String ^ dir in dstdirs_)
-			{
-				try
-				{
-					Directory::CreateDirectory(dir);
-				}
-				catch (Exception^) {}
-			}
-		}
 		bool ThreadDataFile::FirstCheck()
 		{
-			DASSERT(hSrc_ == nullptr);
-			HANDLE hTmp = HSrc;
-			if (hTmp == nullptr || hTmp == INVALID_HANDLE_VALUE ||
-				SrcSize == -1)
+			DASSERT(!readingFile_->isValid());
+			if (!readingFile_->Open() || readingFile_->FileSize==-1)
 			{
-				setReadError(srcLE_);
+				setReadError(readingFile_->LastError);
 				return false;
 			}
-			CloseHandle(hTmp);
-			srcLE_ = 0;
-			hSrc_ = nullptr;
-			srcSize_ = -1;
+
+			readingFile_->Close();
 
 			if (!File::Exists(dstFile_))
 			{
@@ -100,32 +61,6 @@ namespace Ambiesoft {
 			return true;
 		}
 
-		HANDLE ThreadDataFile::HSrc::get()
-		{
-			if (hSrc_ != nullptr && hSrc_ != INVALID_HANDLE_VALUE)
-				return hSrc_;
-			hSrc_ = CreateFile(
-				TO_LPCWSTR(srcFile_),
-				GENERIC_READ,
-				FILE_SHARE_READ,
-				NULL,
-				OPEN_EXISTING,
-				FILE_ATTRIBUTE_NORMAL |
-				// FILE_FLAG_NO_BUFFERING|
-				FILE_FLAG_RANDOM_ACCESS |
-				0,
-				NULL);
-			if (!(hSrc_ != nullptr && hSrc_ != INVALID_HANDLE_VALUE))
-				srcLE_ = GetLastError();
-
-			LARGE_INTEGER li;
-			if (GetFileSizeEx(hSrc_, &li))
-			{
-				SrcSize = li.QuadPart;
-			}
-
-			return hSrc_;
-		}
 
 		HANDLE ThreadDataFile::HDst::get()
 		{
@@ -174,28 +109,6 @@ namespace Ambiesoft {
 					SrcSize, allProcessed_));
 			}
 			return String::Join(L",", % lst);
-		}
-
-		// static
-		void ThreadTransitory::SetLastErrorDisp(LONGLONG pos, LONGLONG allSize, DWORD le, int retried)
-		{
-			lastErrorDisp_ = (
-				String::Format(I18N(L"Failed to ReadFile at {1} ({2}) {0} times"),
-					retried,
-					pos,
-					gcnew String(GetLastErrorString(le).c_str())));
-		}
-		void ThreadTransitory::SetReadingProgress(LONGLONG pos, LONGLONG allSize, int retried)
-		{
-			progressDisp_ =
-				String::Format(I18N(L"Reading at {0} with size {1} {2} times..."),
-					pos, allSize, retried + 1);
-		}
-		void ThreadTransitory::SetWrittingProgress(LONGLONG pos, LONGLONG allSize)
-		{
-			progressDisp_ =
-				String::Format(I18N(L"Writting at {0} with size {1}..."),
-					pos, allSize);
 		}
 
 	}

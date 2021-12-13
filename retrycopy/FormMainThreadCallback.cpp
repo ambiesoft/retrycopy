@@ -2,7 +2,7 @@
 
 #include "helper.h"
 #include "ReadErrorDialog.h"
-#include "threadData.h"
+#include "ThreadDataPath.h"
 #include "FormMain.h"
 using namespace System::Collections::Generic;
 

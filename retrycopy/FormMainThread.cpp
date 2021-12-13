@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "helper.h"
-#include "threadData.h"
+#include "ThreadDataPath.h"
 #include "FormMain.h"
 using namespace System::Collections::Generic;
 
@@ -357,9 +357,7 @@ namespace Ambiesoft {
 						break;
 					}
 				}
-				LARGE_INTEGER li;
-				li.QuadPart = thFileData->ProcessedSize;
-				if (!SetFilePointerEx(thFileData->HSrc, li, NULL, FILE_BEGIN))
+				if (!thFileData->SetReadingPos(thFileData->ProcessedSize))
 				{
 					RETURNIFTHREADNUMBER;
 					const DWORD le = GetLastError();
@@ -411,11 +409,7 @@ namespace Ambiesoft {
 					bufferSize,
 					retried);
 				DWORD dwRead;
-				if (!ReadFile(thFileData->HSrc,
-					bb.get(),
-					bufferSize,
-					&dwRead,
-					NULL))
+				if (!thFileData->ReadFromFile(bufferSize, bb.get(), &dwRead))
 				{
 					RETURNIFTHREADNUMBER;
 					const DWORD le = GetLastError();

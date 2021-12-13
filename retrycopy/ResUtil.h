@@ -12,6 +12,7 @@ namespace Ambiesoft {
 				gcnew System::Resources::ResourceManager(L"Ambiesoft.retrycopy.retrycopyStrings", 
 					System::Reflection::Assembly::GetExecutingAssembly());
 		public:
+#ifdef _DEBUG
 			static ResUtil()
 			{
 				AppDomain::CurrentDomain->ProcessExit += gcnew System::EventHandler(&OnProcessExit);
@@ -20,10 +21,7 @@ namespace Ambiesoft {
 			{
 				showUnI18Ned();
 			}
-
-#ifdef _DEBUG
 			static System::Collections::ArrayList^ da_ = gcnew System::Collections::ArrayList;
-
 			static void showUnI18Ned()
 			{
 				DTRACE(L"IIIIIIIIIIIIIIIIIIIIIIIIIIIIIII18NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN");
@@ -38,7 +36,6 @@ namespace Ambiesoft {
 			static String^ getString(String^ s)
 			{
 				String^ ret = theResource_->GetString(s, ci_);
-
 #ifdef _DEBUG
 				if (String::IsNullOrEmpty(ret) && !da_->Contains(s))
 				{

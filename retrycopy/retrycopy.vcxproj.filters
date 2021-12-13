@@ -42,7 +42,7 @@
     <ClCompile Include="FormMainThread.cpp">
       <Filter>02 Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="threadData.cpp">
+    <ClCompile Include="ThreadTransitory.cpp">
       <Filter>02 Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FormMainThreadCallback.cpp">
@@ -99,6 +99,18 @@
     <ClCompile Include="..\..\lsMisc\HighDPI.cpp">
       <Filter>02 Source Files\lsMisc</Filter>
     </ClCompile>
+    <ClCompile Include="ThreadDataMaster.cpp">
+      <Filter>02 Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadDataPath.cpp">
+      <Filter>02 Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadDataFile.cpp">
+      <Filter>02 Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CReadingFile.cpp">
+      <Filter>02 Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FormMain.h">
@@ -110,7 +122,7 @@
     <ClInclude Include="stdafx.h">
       <Filter>01 Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="threadData.h">
+    <ClInclude Include="ThreadDataPath.h">
       <Filter>01 Header Files</Filter>
     </ClInclude>
     <ClInclude Include="helper.h">
@@ -179,6 +191,18 @@
     <ClInclude Include="..\..\lsMisc\stdosd\stdosd_exception.h">
       <Filter>01 Header Files\lsMisc</Filter>
     </ClInclude>
+    <ClInclude Include="CReadingFile.h">
+      <Filter>01 Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadTransitory.h">
+      <Filter>01 Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadDataFile.h">
+      <Filter>01 Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadDataMaster.h">
+      <Filter>01 Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico">
@@ -196,12 +220,10 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <None Include="retrycopyStrings.ja-JP.resx">
-      <Filter>03 Resource Files</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="retrycopyStrings.resx">
+      <Filter>03 Resource Files</Filter>
+    </EmbeddedResource>
+    <EmbeddedResource Include="retrycopyStrings.ja-JP.resx">
       <Filter>03 Resource Files</Filter>
     </EmbeddedResource>
   </ItemGroup>
