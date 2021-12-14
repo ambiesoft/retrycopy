@@ -66,8 +66,35 @@ namespace Ambiesoft {
 				return PathType::Directory;
 			return PathType::NonExsitent;
 		}
+		bool GetCultureStringFor_setlocale(std::string& ret)
+		{
+			try
+			{
+				System::Globalization::CultureInfo^ ci = System::Threading::Thread::CurrentThread->CurrentCulture;
+				if (!ci)
+					return false;
+
+				String^ t3 = ci->ThreeLetterISOLanguageName;
+				if (!t3)
+					return false;
+
+				ret = toStdAcpString(TO_LPCWSTR(t3));
+				return true;
+			}
+			catch (Exception^)
+			{
+
+			}
+
+			return false;
+		}
 		String^ GetCErrorString(int err)
 		{
+			//std::string loc;
+			//if (GetCultureStringFor_setlocale(loc))
+			//	setlocale(LC_ALL, "");// loc.c_str());
+			//char b[1024];
+			//char* pp = strerror(err);
 			wchar_t buff[1024];
 			if (0 != _wcserror_s(buff, err))
 				return I18N(L"Unknown error");

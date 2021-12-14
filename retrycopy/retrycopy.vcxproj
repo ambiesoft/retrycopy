@@ -274,7 +274,7 @@
     <ClCompile Include="helper.cpp" />
     <ClCompile Include="OverwriteInfo.cpp" />
     <ClCompile Include="ReadErrorDialog.cpp" />
-    <ClCompile Include="RemoveInfo.cpp" />
+    <ClCompile Include="OperationInfo.cpp" />
     <ClCompile Include="retrycopy.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -320,7 +320,7 @@
     <ClInclude Include="ReadErrorDialog.h">
       <FileType>CppForm</FileType>
     </ClInclude>
-    <ClInclude Include="RemoveInfo.h" />
+    <ClInclude Include="OperationInfo.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ResUtil.h" />
     <ClInclude Include="stdafx.h" />

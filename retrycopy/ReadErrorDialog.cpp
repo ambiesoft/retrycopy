@@ -24,7 +24,8 @@ namespace Ambiesoft {
 			System::Decimal ret = bufferSize_;
 			if (!NumericTextDialog::UIGetNumeric(
 				I18N(L"Enter new buffer size"),
-				I18N(L"Buffer size") + L":",
+				I18N(L"Buffer size")
+					+ L":",
 				1, MAXREADBUFFERSIZE,
 				ret))
 			{

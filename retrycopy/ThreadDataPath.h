@@ -2,7 +2,7 @@
 
 #include <Windows.h>
 #include "OverwriteInfo.h"
-#include "RemoveInfo.h"
+#include "OperationInfo.h"
 #include "CReadingFile.h"
 #include "ThreadDataFile.h"
 #include "ThreadTransitory.h"

@@ -181,7 +181,7 @@
     <value>バッファサイズ</value>
   </data>
   <data name="Buffer sizes" xml:space="preserve">
-    <value />
+    <value>バッファサイズ</value>
   </data>
   <data name="Calculating total size..." xml:space="preserve">
     <value>サイズを計算しています・・・</value>
@@ -201,6 +201,9 @@
   <data name="Copying" xml:space="preserve">
     <value>コピー中</value>
   </data>
+  <data name="copying (file not removed)" xml:space="preserve">
+    <value>コピー中 （ファイルは削除されません）</value>
+  </data>
   <data name="delete" xml:space="preserve">
     <value>削除</value>
   </data>
@@ -218,6 +221,9 @@
   </data>
   <data name="Fail = {0}" xml:space="preserve">
     <value>失敗　＝　{0}</value>
+  </data>
+  <data name="Failed to create a directory '{0}' ({1})." xml:space="preserve">
+    <value>ディレクトリ '{0}' の作成に失敗しました。 ({1}).</value>
   </data>
   <data name="Failed to create a directory." xml:space="preserve">
     <value>ディレクトリの作成に失敗しました。</value>
@@ -269,6 +275,15 @@
   </data>
   <data name="Move (Recycle)" xml:space="preserve">
     <value>移動（リサイクル）</value>
+  </data>
+  <data name="Moving" xml:space="preserve">
+    <value>移動中</value>
+  </data>
+  <data name="Moving (ask)" xml:space="preserve">
+    <value>移動中 （尋ねる）</value>
+  </data>
+  <data name="Moving (recycle)" xml:space="preserve">
+    <value>移動中 （リサイクル）</value>
   </data>
   <data name="NG Reason:" xml:space="preserve">
     <value>NGの理由：</value>
@@ -384,6 +399,12 @@
   <data name="The destination path is empty" xml:space="preserve">
     <value>コピー先が空です。</value>
   </data>
+  <data name="The destination path is empty." xml:space="preserve">
+    <value>コピー先のパスが空です。</value>
+  </data>
+  <data name="The destination path must be a directory, but it exists as a file." xml:space="preserve">
+    <value>コピー先のパスはディレクトリである必要がありますが存在するファイルです。</value>
+  </data>
   <data name="The number of free clusters of the dirve '{0}' is {1}." xml:space="preserve">
     <value>ドライブ '{0}' のフリークラスタ数は {1} です。</value>
   </data>
@@ -408,6 +429,9 @@
   <data name="The source is empty." xml:space="preserve">
     <value>コピー元が空です。</value>
   </data>
+  <data name="The source path '{0}' and '{1}' have a same name." xml:space="preserve">
+    <value>コピー元のパス '{0}' と '{1}' は同じファイル名です。</value>
+  </data>
   <data name="The source path '{0}' and destination directory '{1}' is same." xml:space="preserve">
     <value>コピー元 '{0}' とコピー先 '{1}' が同じです。</value>
   </data>
@@ -421,13 +445,19 @@
     <value>ドライブ '{0}' の全クラスタ数は {1} です。</value>
   </data>
   <data name="Total file size = {0}" xml:space="preserve">
-    <value>すべてのファイルサイズ　＝　{0}</value>
+    <value>すべてのファイルサイズ={0}</value>
   </data>
   <data name="Total number of files = {0}" xml:space="preserve">
-    <value>すべてのファイルの個数　＝　{0}</value>
+    <value>すべてのファイルの個数＝{0}</value>
   </data>
   <data name="Total written size = {0}" xml:space="preserve">
-    <value>すべての書き込まれたサイズ　＝　{0}</value>
+    <value>すべての書き込まれたサイズ＝{0}</value>
+  </data>
+  <data name="Unknown argument:" xml:space="preserve">
+    <value>未知の引数：</value>
+  </data>
+  <data name="Unknown error" xml:space="preserve">
+    <value>未知のエラー</value>
   </data>
   <data name="Unknown option(s):" xml:space="preserve">
     <value>未知のオプション：</value>

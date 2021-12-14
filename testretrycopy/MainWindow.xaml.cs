@@ -102,24 +102,40 @@ namespace testretrycopy
 
         private bool IsSameFileContent(string path1, string path2)
         {
-            byte[] ba1 = File.ReadAllBytes(path1);
-            byte[] ba2 = File.ReadAllBytes(path2);
-            return ba1.SequenceEqual(ba2);
+            try
+            {
+                byte[] ba1 = File.ReadAllBytes(path1);
+                byte[] ba2 = File.ReadAllBytes(path2);
+                return ba1.SequenceEqual(ba2);
+            }
+            catch (Exception ex)
+            {
+                AppendLog(ex.Message);
+                return false;
+            }
         }
         bool IsSameDirContent(string dir1, string dir2)
         {
-            string[] f1 = Directory.GetFiles(dir1, "*.*", SearchOption.AllDirectories);
-            string[] f2 = Directory.GetFiles(dir2, "*.*", SearchOption.AllDirectories);
-
-            if (f1.Length != f2.Length)
-                return false;
-
-            for (int i = 0; i < f1.Length; ++i)
+            try
             {
-                if (!IsSameFileContent(f1[i], f2[i]))
+                string[] f1 = Directory.GetFiles(dir1, "*.*", SearchOption.AllDirectories);
+                string[] f2 = Directory.GetFiles(dir2, "*.*", SearchOption.AllDirectories);
+
+                if (f1.Length != f2.Length)
                     return false;
+
+                for (int i = 0; i < f1.Length; ++i)
+                {
+                    if (!IsSameFileContent(f1[i], f2[i]))
+                        return false;
+                }
+                return true;
             }
-            return true;
+            catch(Exception ex)
+            {
+                AppendLog(ex.Message);
+                return false;
+            }
         }
 
         enum PathType
@@ -232,21 +248,29 @@ namespace testretrycopy
 
         bool IsDirMoved(PathInfo[] paths, string destRoot)
         {
-            if (paths.Length != Directory.GetFiles(destRoot, "*", SearchOption.AllDirectories).Length)
-                return false;
-            foreach (var path in paths)
+            try
             {
-                string origFile = path.ThePath;
-                if (File.Exists(origFile))
+                if (paths.Length != Directory.GetFiles(destRoot, "*", SearchOption.AllDirectories).Length)
                     return false;
-                string destFile = Path.Combine(destRoot, path.ThePath);
-                if (!File.Exists(destFile))
-                    return false;
-                byte[] ba2 = File.ReadAllBytes(destFile);
-                if (!path.B.SequenceEqual(ba2))
-                    return false;
+                foreach (var path in paths)
+                {
+                    string origFile = path.ThePath;
+                    if (File.Exists(origFile))
+                        return false;
+                    string destFile = Path.Combine(destRoot, path.ThePath);
+                    if (!File.Exists(destFile))
+                        return false;
+                    byte[] ba2 = File.ReadAllBytes(destFile);
+                    if (!path.B.SequenceEqual(ba2))
+                        return false;
+                }
+                return true;
             }
-            return true;
+            catch(Exception ex)
+            {
+                AppendLog(ex.Message);
+                return false;
+            }
         }
         bool IsFileMoved(PathInfo[] paths, string destRoot)
         {

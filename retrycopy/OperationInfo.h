@@ -16,10 +16,11 @@ namespace Ambiesoft {
 			initonly OPERATION kind_;
 			initonly String^ text_;
 			initonly String^ btnText_;
+			initonly String^ mainTitle_;
 			initonly String^ clValue_;
 		public:
-			OperationItem(OPERATION kind, String^ text, String^ btnText, String^ clValue) :
-				kind_(kind), text_(text), btnText_(btnText), clValue_(clValue) {}
+			OperationItem(OPERATION kind, String^ text, String^ btnText, String^ mainTitle, String^ clValue) :
+				kind_(kind), text_(text), btnText_(btnText), mainTitle_(mainTitle), clValue_(clValue) {}
 			property OPERATION Kind {
 				OPERATION get() { return kind_; }
 			}
@@ -28,6 +29,9 @@ namespace Ambiesoft {
 			}
 			property String^ ButtonText {
 				String^ get() { return btnText_; }
+			}
+			property String^ MainTitle {
+				String^ get() { return mainTitle_; }
 			}
 			String^ ToString() override {
 				return text_;
@@ -39,10 +43,30 @@ namespace Ambiesoft {
 		public:
 			initonly static String^ ONEOFOPERATION = I18N(L"'copy', 'move', 'moverecycle', or 'ask'");
 			initonly static cli::array<OperationItem^>^ itemInfos_ = {
-				gcnew OperationItem(OPERATION::COPY, I18N(L"Copy"), I18N(L"&Copy"), "copy"),
-				gcnew OperationItem(OPERATION::MOVE, I18N(L"Move"), I18N(L"&Move"), "move"),
-				gcnew OperationItem(OPERATION::MOVERECYCLE, I18N(L"Move (Recycle)"), I18N(L"Move (&Recyle)"), "moverecycle"),
-				gcnew OperationItem(OPERATION::ASK, I18N("Ask"), I18N(L"&Ask"), "ask"),
+				gcnew OperationItem(
+					OPERATION::COPY, 
+					I18N(L"Copy"), 
+					I18N(L"&Copy"), 
+					I18N("Copying"), 
+					"copy"),
+				gcnew OperationItem(
+					OPERATION::MOVE,
+					I18N(L"Move"),
+					I18N(L"&Move"),
+					I18N("Moving"),
+					"move"),
+				gcnew OperationItem(
+					OPERATION::MOVERECYCLE, 
+					I18N(L"Move (Recycle)"),
+					I18N("Moving (recycle)"),
+					I18N(L"Move (&Recyle)"),
+					"moverecycle"),
+				gcnew OperationItem(
+					OPERATION::ASK,
+					I18N("Ask"), 
+					I18N(L"&Ask"), 
+					I18N("Moving (ask)"),
+					"ask"),
 			};
 			initonly static OPERATION DefaultItem = OPERATION::COPY;
 			static OperationInfo() {
@@ -65,6 +89,7 @@ namespace Ambiesoft {
 			static void AddComboItem(System::Windows::Forms::ComboBox^ cmb);
 			static void SetComboItemFromCL(System::Windows::Forms::ComboBox^ cmb, LPCWSTR pCLValue);
 			static String^ GetButtonTitle(System::Windows::Forms::ComboBox^ cmb);
+			static String^ GetMainTitle(System::Windows::Forms::ComboBox^ cmb);
 		};
 	}
 }

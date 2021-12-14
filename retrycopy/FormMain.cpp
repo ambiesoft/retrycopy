@@ -6,7 +6,7 @@
 #include "FormLog.h"
 #include "FormAbout.h"
 #include "OverwriteInfo.h"
-#include "RemoveInfo.h"
+#include "OperationInfo.h"
 #include "ReadErrorDialog.h"
 #include "FormMain.h"
 #include "CDebug.h"
@@ -589,9 +589,13 @@ namespace Ambiesoft {
 			case ThreadStateType::RUNNING:
 			case ThreadStateType::PAUSED:
 				if (ThreadState == ThreadStateType::RUNNING)
-					title.Append(I18N(L"Copying"));
+				{
+					title.Append(OperationInfo::GetMainTitle(this->cmbOperation));
+				}
 				else
+				{
 					title.Append(I18N(L"Paused"));
+				}
 				title.Append(L" ");
 				title.Append(ThreadTransitory::TotalPercent);
 				title.Append(L"%");

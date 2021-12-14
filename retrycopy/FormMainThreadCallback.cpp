@@ -261,7 +261,8 @@ namespace Ambiesoft {
 			List<String^>^ ret = gcnew List<String^>();
 			for each (String ^ s in list)
 			{
-				ret->Add(I18N(L"Result:") + L"\t" + s);
+				ret->Add(I18N(L"Result:") + 
+					L"\t" + s);
 			}
 			return ret;
 		}

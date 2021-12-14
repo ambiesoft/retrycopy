@@ -35,9 +35,18 @@ namespace Ambiesoft {
 		public:
 			initonly static String^ ONEOFOPERATION = I18N("'yes', 'no', or 'ask'");
 			initonly static cli::array<OverwriteItem^>^ itemInfos_ = {
-				gcnew OverwriteItem(OVERWRITE_TYPE::OVERWRITE_YES, I18N("Yes"), "yes"),
-				gcnew OverwriteItem(OVERWRITE_TYPE::OVERWRITE_NO, I18N("No"), "no"),
-				gcnew OverwriteItem(OVERWRITE_TYPE::OVERWRITE_ASK, I18N("Ask"), "ask"),
+				gcnew OverwriteItem(
+					OVERWRITE_TYPE::OVERWRITE_YES,
+					I18N("Yes"), 
+					"yes"),
+				gcnew OverwriteItem(
+					OVERWRITE_TYPE::OVERWRITE_NO, 
+					I18N("No"),
+					"no"),
+				gcnew OverwriteItem(
+					OVERWRITE_TYPE::OVERWRITE_ASK, 
+					I18N("Ask"),
+					"ask"),
 			};
 			initonly static OVERWRITE_TYPE DefaultItem = OVERWRITE_TYPE::OVERWRITE_NO;
 			static OverwriteInfo() {

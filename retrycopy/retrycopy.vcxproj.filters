@@ -57,7 +57,7 @@
     <ClCompile Include="FormAbout.cpp">
       <Filter>02 Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RemoveInfo.cpp">
+    <ClCompile Include="OperationInfo.cpp">
       <Filter>02 Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OverwriteInfo.cpp">
@@ -137,7 +137,7 @@
     <ClInclude Include="FormAbout.h">
       <Filter>01 Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RemoveInfo.h">
+    <ClInclude Include="OperationInfo.h">
       <Filter>01 Header Files</Filter>
     </ClInclude>
     <ClInclude Include="OverwriteInfo.h">

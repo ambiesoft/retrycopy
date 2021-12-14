@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "RemoveInfo.h"
+#include "OperationInfo.h"
 
 using namespace System;
 
@@ -40,6 +40,18 @@ namespace Ambiesoft {
 				if (i == cmb->SelectedIndex)
 				{
 					return itemInfos_[i]->ButtonText;
+				}
+			}
+			DASSERT(false);
+			return nullptr;
+		}
+		String^ OperationInfo::GetMainTitle(System::Windows::Forms::ComboBox^ cmb)
+		{
+			for (int i = 0; i < itemInfos_->Length; ++i)
+			{
+				if (i == cmb->SelectedIndex)
+				{
+					return itemInfos_[i]->MainTitle;
 				}
 			}
 			DASSERT(false);
