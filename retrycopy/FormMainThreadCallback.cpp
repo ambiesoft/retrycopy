@@ -24,11 +24,18 @@ namespace Ambiesoft {
 			return System::Windows::Forms::DialogResult::Yes == CppUtils::YesOrNo(this, question,
 				MessageBoxDefaultButton::Button2);
 		}
-		void FormMain::OnThreadError(int tn, String^ error)
+		void FormMain::OnThreadAlert(int tn, String^ error)
 		{
 			if (tn != ThreadTransitory::ThreadNumber)
 				return;
 			CppUtils::Alert(this, error);
+		}
+		void FormMain::OnThreadError(int tn, String^ error)
+		{
+			if (tn != ThreadTransitory::ThreadNumber)
+				return;
+			CppUtils::Fatal(this, error);
+			ThreadState = ThreadStateType::NONE;
 		}
 		void FormMain::ThreadFileStarted(ThreadDataFile^ thData)
 		{

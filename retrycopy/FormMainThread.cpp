@@ -48,13 +48,35 @@ namespace Ambiesoft {
 				BeginInvoke(gcnew VIDelegate(this, &FormMain::ThreadStarted),
 					thDataMaster->ThreadNumber));
 
-			StartOfThreadMaster2(thDataMaster);
+			if (!StartOfThreadMaster2(thDataMaster))
+				return;
 
 			BeginInvoke(gcnew VTmDelegate(this, &FormMain::ThreadFinished), thDataMaster);
 		}
-		void FormMain::StartOfThreadMaster2(ThreadDataMaster^ thDataMaster)
+
+		enum class PathType
+		{
+			NonExsitent, File, Directory
+		};
+		PathType GetPathType(String^ path)
+		{
+			if (File::Exists(path))
+				return PathType::File;
+			if (Directory::Exists(path))
+				return PathType::Directory;
+			return PathType::NonExsitent;
+		}
+		String^ GetCErrorString(int err)
+		{
+			wchar_t buff[1024];
+			if (0 != _wcserror_s(buff, err))
+				return I18N(L"Unknown error");
+			return gcnew String(buff);
+		}
+		String^ FormMain::CheckFiles(ThreadDataMaster^ thDataMaster, bool% bCancel)
 		{
 			String^ initialError;
+			PathType ptDst = GetPathType(thDataMaster->Dst);
 			do
 			{
 				bool isSrcDir = false;
@@ -66,11 +88,12 @@ namespace Ambiesoft {
 
 				for each (String ^ path in thDataMaster->SrcPaths)
 				{
-					if (Directory::Exists(path))
+					PathType ptSrc = GetPathType(path);
+					if (ptSrc == PathType::Directory)
 						isSrcDir = true;
-					if (!File::Exists(path) && !Directory::Exists(path))
+					if (ptSrc == PathType::NonExsitent)
 					{
-						initialError = 
+						initialError =
 							String::Format(I18N(L"The source path '{0}' does not exist."),
 								path);
 						break;
@@ -79,17 +102,18 @@ namespace Ambiesoft {
 				if (!String::IsNullOrEmpty(initialError))
 					break;
 
-				if (String::IsNullOrEmpty(thDataMaster->Dst))
+				if (String::IsNullOrWhiteSpace(thDataMaster->Dst))
 				{
 					initialError = I18N(L"The destination path is empty.");
 					break;
 				}
 
-				bool bDstIsDir = thDataMaster->SrcPaths->Length > 1 ||
-					isSrcDir ||
-					thDataMaster->Dst->EndsWith("\\") || thDataMaster->Dst->EndsWith("/");
+				//bool bDstIsDir = thDataMaster->SrcPaths->Length > 1 ||
+				//	isSrcDir ||
+				//	thDataMaster->Dst->EndsWith("\\") || thDataMaster->Dst->EndsWith("/");
 
 				List<String^> processedSrcPath;
+				List<KeyValuePair<String^,String^>> processedSrcName;
 				for each (String ^ srcpath in thDataMaster->SrcPaths)
 				{
 					// duplicate src check
@@ -107,6 +131,22 @@ namespace Ambiesoft {
 						break;
 					processedSrcPath.Add(srcpath);
 
+					// duplicate src name
+					String^ srcName = Path::GetFileName(srcpath);
+					for each (KeyValuePair<String^,String^> kv in processedSrcName)
+					{
+						if (String::Compare(kv.Value, srcName, true) == 0)
+						{
+							initialError = String::Format(I18N(L"The source path '{0}' and '{1}' have a same name."),
+								kv.Key, srcpath);
+							DASSERT(!String::IsNullOrEmpty(initialError));
+							break;
+						}
+					}
+					if (!String::IsNullOrEmpty(initialError))
+						break;
+					processedSrcName.Add(KeyValuePair<String^, String^>(srcpath, srcName));
+
 					if (stdIsSamePath(TO_LPCWSTR(srcpath), TO_LPCWSTR(thDataMaster->Dst)))
 					{
 						initialError = String::Format(
@@ -115,14 +155,14 @@ namespace Ambiesoft {
 						break;
 					}
 
+					if (File::Exists(thDataMaster->Dst))
+					{
+						initialError = I18N(L"The destination path must be a directory, but it exists as a file.");
+						break;
+					}
 
 					if (Directory::Exists(srcpath))
 					{
-						if (File::Exists(thDataMaster->Dst))
-						{
-							initialError = I18N(L"Source is directory but destination is a file.");
-							break;
-						}
 						if (stdIsSubDirectory(TO_LPCWSTR(srcpath), TO_LPCWSTR(thDataMaster->Dst)))
 						{
 							initialError = String::Format(
@@ -130,24 +170,24 @@ namespace Ambiesoft {
 								srcpath);
 							break;
 						}
-					} // if (Directory::Exists(srcpath))
+					}
 					else
 					{
 						DASSERT(File::Exists(srcpath));
 						DASSERT(!stdIsSamePath(TO_LPCWSTR(srcpath), TO_LPCWSTR(thDataMaster->Dst)));
-						if (bDstIsDir)
-						{
-							if (File::Exists(thDataMaster->Dst->TrimEnd((gcnew String(L"/\\"))->ToCharArray())))
-							{
-								initialError = I18N(L"The destination name ends with path separator but it exists as a file.");
-								break;
-							}
-						}
+						//if (bDstIsDir)
+						//{
+						//	if (File::Exists(thDataMaster->Dst->TrimEnd((gcnew String(L"/\\"))->ToCharArray())))
+						//	{
+						//		initialError = I18N(L"The destination name ends with path separator but it exists as a file.");
+						//		break;
+						//	}
+						//}
 					}
 				}
 
 				if (String::IsNullOrEmpty(initialError) &&
-					bDstIsDir && !Directory::Exists(thDataMaster->Dst))
+					!Directory::Exists(thDataMaster->Dst))
 				{
 					if (!(bool)EndInvokeWithTN(
 						thDataMaster->ThreadNumber,
@@ -162,49 +202,87 @@ namespace Ambiesoft {
 					) // EndInvoke
 						) // if
 					{
-						return;
+						bCancel = true;
+						return nullptr;
 					}
 
 					stdCreateCompleteDirectory(TO_LPCWSTR(thDataMaster->Dst));
+					int errorn = errno;
 					if (!Directory::Exists(thDataMaster->Dst))
 					{
-						initialError = I18N(L"Failed to create a directory.");
+						initialError = String::Format(I18N(L"Failed to create a directory '{0}' ({1})."),
+							thDataMaster->Dst, GetCErrorString(errorn));
 						break;
 					}
 				}
-
 			} while (false);
+			return initialError;
+		}
+		String^ AppendBackSlash(String^ s)
+		{
+			DASSERT(!String::IsNullOrEmpty(s));
+			if (s->EndsWith(L"\\") || s->EndsWith(L"/"))
+				return s;
+			return s + L"\\";
+		}
+		bool FormMain::StartOfThreadMaster2(ThreadDataMaster^ thDataMaster)
+		{
+			String^ initialError;
+			if (!CDebug::IsMockReadFile)
+			{
+				bool bCancel = false;
+				initialError = CheckFiles(thDataMaster, bCancel);
+				if (bCancel)
+					return true;
+			}
 			if (!String::IsNullOrEmpty(initialError))
 			{
 				EndInvokeWithTN(
 					thDataMaster->ThreadNumber,
-					BeginInvoke(gcnew VISDelegate(this, &FormMain::OnThreadError),
+					BeginInvoke(gcnew VISDelegate(this, &FormMain::OnThreadAlert),
 						thDataMaster->ThreadNumber,
 						initialError));
-				return;
+				return true;
 			}
 
-			for each (String ^ path in thDataMaster->SrcPaths)
+			if (CDebug::IsMockReadFile)
 			{
-				List<String^>^ dstDirs;
-				KVS^ sds;
-				try
+				KVS^ sds = gcnew KVS();
+				sds->Add(KV(nullptr, Path::Combine(thDataMaster->Dst, L"mofile")));
+				List<String^> dstDirs;
+				thDataMaster->AddTask(gcnew ThreadDataPath(L"dummy", sds, %dstDirs));
+			}
+			else
+			{
+				for each (String ^ path in thDataMaster->SrcPaths)
 				{
-					String^ message = I18N(L"Obtaining source files and directories...");
-					BeginInvoke(gcnew VSDelegate(this, &FormMain::ThreadLog), message);
-					ThreadTransitory::SetProgress(message);
-					sds = AmbLib::GetSourceAndDestFiles(path, thDataMaster->Dst, dstDirs);
-				}
-				catch (Exception^ ex)
-				{
-					EndInvokeWithTN(
-						thDataMaster->ThreadNumber,
+					List<String^>^ dstDirs;
+					KVS^ sds;
+					try
+					{
+						String^ message = I18N(L"Obtaining source files and directories...");
+						BeginInvoke(gcnew VSDelegate(this, &FormMain::ThreadLog), message);
+						ThreadTransitory::SetProgress(message);
+						sds = AmbLib::GetSourceAndDestFiles(path, 
+							AppendBackSlash(thDataMaster->Dst),
+							dstDirs);
+#ifdef _DEBUG
+						// check sds is all same filename
+						for each(KV kv in sds)
+						{
+							DASSERT(Path::GetFileName(kv.Key) == Path::GetFileName(kv.Value));
+						}
+#endif
+					}
+					catch (Exception^ ex)
+					{
 						BeginInvoke(gcnew VISDelegate(this, &FormMain::OnThreadError),
 							thDataMaster->ThreadNumber,
-							ex->Message));
-					return;
+							ex->Message);
+						return false;
+					}
+					thDataMaster->AddTask(gcnew ThreadDataPath(path, sds, dstDirs));
 				}
-				thDataMaster->AddTask(gcnew ThreadDataPath(path, sds, dstDirs));
 			}
 
 			try
@@ -220,13 +298,21 @@ namespace Ambiesoft {
 
 				LONGLONG totalInputSize = 0;
 				int totalFileCount = 0;
-				for each (ThreadDataPath ^ thDataPath in thDataMaster->Tasks)
+				if (CDebug::IsMockReadFile)
 				{
-					for each (KV kv in thDataPath->SDS)
+					totalInputSize = CReadingFileMock::FILESIZE;
+					totalFileCount = 1;
+				}
+				else
+				{
+					for each (ThreadDataPath ^ thDataPath in thDataMaster->Tasks)
 					{
-						System::IO::FileInfo fi(kv.Key);
-						totalInputSize += fi.Length;
-						++totalFileCount;
+						for each (KV kv in thDataPath->SDS)
+						{
+							System::IO::FileInfo fi(kv.Key);
+							totalInputSize += fi.Length;
+							++totalFileCount;
+						}
 					}
 				}
 				thDataMaster->SetTotalSize(totalInputSize, totalFileCount);
@@ -252,7 +338,7 @@ namespace Ambiesoft {
 						ThreadTransitory::SetProgress(String::Empty);
 
 						if (thDataMaster->ThreadNumber != ThreadTransitory::ThreadNumber)
-							return;
+							return false;
 						thDataMaster->TotalProcessedSize += tdf->ProcessedSize;
 						tdf->CloseFiles();
 
@@ -283,13 +369,12 @@ namespace Ambiesoft {
 			catch (ThreadAbortException^) {}
 			catch (Exception^ ex)
 			{
-				EndInvokeWithTN(
+				BeginInvoke(gcnew VISDelegate(this, &FormMain::OnThreadError),
 					thDataMaster->ThreadNumber,
-					BeginInvoke(gcnew VISDelegate(this, &FormMain::OnThreadError),
-						thDataMaster->ThreadNumber,
-						ex->Message));
+					ex->Message);
+				return false;
 			}
-
+			return true;
 		}
 
 #define RETURNIFTHREADNUMBER do { if(thFileData->ThreadNumber != ThreadTransitory::ThreadNumber) { return; } }while(false)
@@ -320,6 +405,7 @@ namespace Ambiesoft {
 
 			RETURNIFTHREADNUMBER;
 
+			thFileData->SetTransferStarted();
 			do
 			{
 				if (bufferSize != ThreadTransitory::UserBuffer)
@@ -426,7 +512,7 @@ namespace Ambiesoft {
 						thFileData->setReadError(le);
 						return;
 					}
-					Thread::Sleep(Math::Min(consecutiveErrorCount, 100u));
+					//Thread::Sleep(Math::Min(consecutiveErrorCount, 100u));
 					if (!bWZOMode)
 					{
 						if (retried++ < ThreadTransitory::UserRetry ||
@@ -510,6 +596,8 @@ namespace Ambiesoft {
 							}
 							continue;
 						}
+						sameErrorCount = 0;
+						consecutiveErrorCount = 0;
 						retried = 0;
 					}
 					EndInvokeWithTN(

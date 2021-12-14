@@ -132,7 +132,7 @@ namespace testretrycopy
             string _path;
             PathType _type;
             byte[] _b;
-            public PathInfo(string path, PathType type, byte[] b)
+            public PathInfo(string path, PathType type, byte[] b, bool bNoCreate)
             {
                 if (path.StartsWith("\\"))
                     throw new Exception("should not start with \\");
@@ -141,13 +141,14 @@ namespace testretrycopy
                 _b = b;
                 prepareDirStructure();
             }
-            public PathInfo(string path, PathType type)
-            {
-                _path = path;
-                _type = type;
-                prepareDirStructure();
-            }
+            public PathInfo(string path, PathType type, byte[] b):
+                this(path, type, b, false)
+            { }
+            public PathInfo(string path, PathType type):
+                this(path, type, null, false)
+            { }
             public string ThePath { get { return _path; } }
+            public string ParentDir { get { return Path.GetDirectoryName(ThePath); } }
             public bool IsFile { get { return _type == PathType.File; } }
             public bool IsNone { get { return _type == PathType.None; } }
             void prepareDirStructure()
@@ -168,16 +169,26 @@ namespace testretrycopy
                 }
             }
             public byte[] B { get { return _b; } }
+
+            public string FileName {  get {  return Path.GetFileName(ThePath); } }
+            public string AddFile(string file)
+            {
+                return Path.Combine(_path, file);
+            }
         }
         private void btnCopyFileToNonexistentPath_Click(object sender, RoutedEventArgs e)
         {
+            CppUtils.DeleteFile(".\\targetdir");
+
             var path1 = new PathInfo(".\\testdir\\testfile", PathType.File, GetRandomByte(111));
-            var path2 = new PathInfo(".\\targetdir\\targetfile", PathType.File);
+            var path2 = new PathInfo(".\\targetdir\\targetfile\\testfile", PathType.File);
 
             StartRetryCopy(string.Format("\"{0}\" -d \"{1}\" -ov no -op copy",
-                path1.ThePath, path2.ThePath));
+                path1.ThePath, path2.ParentDir));
 
-            AppendLog(IsSameFileContent(path1.ThePath, path2.ThePath) ? "OK" : "NG");
+            AppendLog(IsSameFileContent(
+                path1.ThePath, 
+                path2.ThePath) ? "OK" : "NG");
         }
 
         void deepCommon(bool yen)
@@ -190,8 +201,8 @@ namespace testretrycopy
             StartRetryCopy(string.Format("{0} -d {1} -ov Yes -op copy",
                 path1.ThePath, path2));
 
-            string result = yen ? Path.Combine(path2, Path.GetFileName(path1.ThePath)) :
-                path2;
+            string result = Path.Combine(path2, Path.GetFileName(path1.ThePath));
+
             AppendLog(IsSameFileContent(
                 path1.ThePath,
                 result)
@@ -402,6 +413,46 @@ namespace testretrycopy
                 dir1, dir1, dir2));
 
 
+        }
+
+        private void btnMockRead_Click(object sender, RoutedEventArgs e)
+        {
+            string target = "./mockout";
+            CppUtils.DeleteFile(target);
+            StartRetryCopy(
+                string.Format("--use-mockread -d {0}", target));
+        }
+
+        private void btnUnexistantDirve_Click(object sender, RoutedEventArgs e)
+        {
+            var src = new PathInfo("./dir1/mysrc", PathType.File, GetRandomByte(100));
+            string target = "X:\\T";
+            StartRetryCopy(
+                string.Format("{0} -d {1}", src.ThePath, target));
+        }
+
+        private void btnCopy2FilesWithSameName_Click(object sender, RoutedEventArgs e)
+        {
+            bool bCopy = true;
+
+            CppUtils.DeleteFile(".\\dir1");
+            CppUtils.DeleteFile(".\\dir2");
+
+            var path1 = new PathInfo(".\\dir1\\samefile", PathType.File, GetRandomByte(10));
+            var path2 = new PathInfo(".\\dir2\\samefile432432", PathType.File, GetRandomByte(12));
+            var path3 = new PathInfo(".\\dir1\\samefile333", PathType.File, GetRandomByte(14));
+            var path4 = new PathInfo(".\\dir2\\samefile", PathType.File, GetRandomByte(155));
+
+            string outdir = ".\\outdir\\vvv";
+            CppUtils.DeleteFile(outdir);
+
+            StartRetryCopy(string.Format("\"{0}\" \"{1}\" {2} {3} -d {4}\\ -ov Ask -op " +
+                (bCopy ? "copy" : (chkRecycle.IsChecked.GetValueOrDefault() ? "moverecycle" : "move")),
+                Path.GetFullPath(path1.ThePath),
+                Path.GetFullPath(path2.ThePath),
+                Path.GetFullPath(path3.ThePath),
+                Path.GetFullPath(path4.ThePath),
+                Path.GetFullPath(outdir)));
         }
     }
 }

@@ -265,6 +265,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="CDebug.cpp" />
     <ClCompile Include="CReadingFile.cpp" />
     <ClCompile Include="FormAbout.cpp" />
     <ClCompile Include="FormLog.cpp" />
@@ -301,6 +302,7 @@
     <ClInclude Include="..\..\lsMisc\UrlEncode.h" />
     <ClInclude Include="..\..\lsMisc\UTF16toUTF8.h" />
     <ClInclude Include="..\..\lsMisc\WaitCursor.h" />
+    <ClInclude Include="CDebug.h" />
     <ClInclude Include="CReadingFile.h" />
     <ClInclude Include="FormAbout.h">
       <FileType>CppForm</FileType>

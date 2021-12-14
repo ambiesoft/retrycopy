@@ -9,6 +9,7 @@
 #include "RemoveInfo.h"
 #include "ReadErrorDialog.h"
 #include "FormMain.h"
+#include "CDebug.h"
 
 using namespace System::Collections::Generic;
 using namespace System::Text;
@@ -131,8 +132,17 @@ namespace Ambiesoft {
 					ArgEncodingFlags::ArgEncodingFlags_Default,
 					TO_LPCWSTR(I18N(L"Source path")));
 
+#ifdef _DEBUG
+				bool bMockReadFile = false;
+				parser.AddOption(L"--use-mockread", 0, &bMockReadFile,
+					ArgEncodingFlags::ArgEncodingFlags_Default,
+					L"Use MockFile for test");
+#endif
 				parser.Parse();
 
+#ifdef _DEBUG
+				CDebug::IsMockReadFile = bMockReadFile;
+#endif
 				bTestShowReadErrorDialog_ = bTestShowReadErrorDialog;
 				bStart_ = bStart;
 				IsCloseOnFinish = bIsCloseOnFinish;

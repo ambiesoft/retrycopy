@@ -27,12 +27,15 @@
         <Button x:Name="btnMoveDir" Content="MoveDir" HorizontalAlignment="Left" Margin="174,152,0,0" VerticalAlignment="Top" Height="48" Width="122" Click="btnMoveDir_Click" Grid.ColumnSpan="2"/>
         <TextBox  x:Name="txtLog" TextWrapping="NoWrap" Margin="26,263,30,10"   />
         <Button x:Name="btnShowReadError" Content="Show Read Error Dailog" HorizontalAlignment="Left" Margin="311,11,0,0" VerticalAlignment="Top" Height="47" Width="104" Click="btnShowReadError_Click"/>
-        <CheckBox x:Name="chkClose" Content="Close" HorizontalAlignment="Left" Margin="597,191,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="chkClose" Content="Close" HorizontalAlignment="Left" Margin="713,191,0,0" VerticalAlignment="Top"/>
         <Button x:Name="btnCopy2Files" Content="Copy2Files" HorizontalAlignment="Left" Margin="325,152,0,0" VerticalAlignment="Top" Height="48" Width="122" Click="btnCopy2Files_Click" />
-        <Button x:Name="btnMove2Files" Content="Move2Files" Margin="452,152,0,0" Click="btnMove2Files_Click" HorizontalAlignment="Left" Width="116" Height="48" VerticalAlignment="Top" />
-        <CheckBox x:Name="chkRecycle" Content="recycle" HorizontalAlignment="Left" Margin="593,168,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.55,-0.16"/>
-        <Button x:Name="btnSrcDstSame" Content="Src and Dst is same" HorizontalAlignment="Left" Margin="536,34,0,0" VerticalAlignment="Top" Click="btnSrcDstSame_Click"/>
+        <Button x:Name="btnMove2Files" Content="Move2Files" Margin="568,152,0,0" Click="btnMove2Files_Click" HorizontalAlignment="Left" Width="116" Height="48" VerticalAlignment="Top" />
+        <CheckBox x:Name="chkRecycle" Content="recycle" HorizontalAlignment="Left" Margin="709,168,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.55,-0.16"/>
+        <Button x:Name="btnSrcDstSame" Content="Src and Dst is same" HorizontalAlignment="Left" Margin="536,34,0,0" VerticalAlignment="Top" Click="btnSrcDstSame_Click" Background="#FFEAF580"/>
         <Button x:Name="btnSameLevelDir" Content="SameLevelDir" HorizontalAlignment="Left" Margin="621,97,0,0" VerticalAlignment="Top" Height="33" Width="62" Click="btnSameLevelDir_Click"/>
         <Button x:Name="btnHasSamePathInSrc" Content="Has Same Paht In Src" HorizontalAlignment="Left" Margin="705,110,0,0" VerticalAlignment="Top" Click="btnHasSamePathInSrc_Click" Foreground="#FFF1ECEC" Background="#FFDE3737"/>
+        <Button x:Name="btnMockRead" Content="MockRead" HorizontalAlignment="Left" Margin="26,205,0,0" VerticalAlignment="Top" Height="43" Width="101" Click="btnMockRead_Click"/>
+        <Button x:Name="btnUnexistantDirve" Content="ToUnExsitentDrive" HorizontalAlignment="Left" Margin="680,30,0,0" VerticalAlignment="Top" Height="47" Width="115" Background="#FFEA4737" Foreground="#FFF0E3E3" Click="btnUnexistantDirve_Click"/>
+        <Button x:Name="btnCopy2FilesWithSameName" Content="Copy2SameNameFile" HorizontalAlignment="Left" Margin="464,160,0,0" VerticalAlignment="Top" Height="36" Width="99" Background="#FFDA5050" Foreground="#FFF9ECEC" Click="btnCopy2FilesWithSameName_Click"/>
     </Grid>
 </Window>

@@ -79,5 +79,17 @@ namespace Ambiesoft {
 				CppUtils::Alert(ex);
 			}
 		}
+		System::Void ReadErrorDialog::ReadErrorDialog_FormClosing(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e)
+		{
+			if (this->DialogResult != System::Windows::Forms::DialogResult::OK)
+			{
+				if (System::Windows::Forms::DialogResult::Yes !=
+					CppUtils::YesOrNo(this, I18N("Are you sure to quit?"), MessageBoxDefaultButton::Button2))
+				{
+					e->Cancel = true;
+					return;
+				}
+			}
+		}
 	}
 }

@@ -171,6 +171,9 @@
   <data name="Are you sure to give up reading {0} bytes from the file and write {0} bytes of zeros?" xml:space="preserve">
     <value>ファイルから {0} バイト読み込むことを諦めて {0} バイトのゼロを書き込みますか？</value>
   </data>
+  <data name="Are you sure to quit?" xml:space="preserve">
+    <value>本当に終了しますか？</value>
+  </data>
   <data name="Ask" xml:space="preserve">
     <value>尋ねる</value>
   </data>

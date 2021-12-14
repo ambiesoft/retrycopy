@@ -111,6 +111,9 @@
     <ClCompile Include="CReadingFile.cpp">
       <Filter>02 Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CDebug.cpp">
+      <Filter>02 Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FormMain.h">
@@ -201,6 +204,9 @@
       <Filter>01 Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ThreadDataMaster.h">
+      <Filter>01 Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CDebug.h">
       <Filter>01 Header Files</Filter>
     </ClInclude>
   </ItemGroup>

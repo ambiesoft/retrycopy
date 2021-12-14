@@ -62,6 +62,8 @@ namespace Ambiesoft {
 		cli::array<String^>^ S2A(String^ args)
 		{
 			List<String^> ret;
+			if (String::IsNullOrWhiteSpace(args))
+				return ret.ToArray();
 			CCommandLineString cmd(TO_LPCWSTR(args));
 			for (size_t i = 0; i < cmd.getCount(); ++i)
 			{

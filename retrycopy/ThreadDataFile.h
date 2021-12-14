@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include "ThreadTransitory.h"
 #include "CReadingFile.h"
+#include "CDebug.h"
 using namespace System;
 
 namespace Ambiesoft {
@@ -18,6 +19,7 @@ namespace Ambiesoft {
 
 			LONGLONG allProcessed_;
 
+			bool bTransferStarted_;
 			DWORD leRead_ = 0;
 			DWORD leWrite_ = 0;
 			bool done_ = false;
@@ -29,9 +31,16 @@ namespace Ambiesoft {
 			ThreadDataFile(int threadNumber, int taskNo, String^ srcFile, String^ dstFile) :
 				threadNumber_(threadNumber), taskNo_(taskNo), srcFile_(srcFile), dstFile_(dstFile)
 			{
-				readingFile_ = gcnew CReadingFile(srcFile);
+				if (CDebug::IsMockReadFile)
+					readingFile_ = gcnew CReadingFileMock();
+				else
+					readingFile_ = gcnew CReadingFile(srcFile);
 			}
 
+			void SetTransferStarted() {
+				DASSERT(!bTransferStarted_);
+				bTransferStarted_ = true;
+			}
 			property int ThreadNumber
 			{
 				int get() { return threadNumber_; }

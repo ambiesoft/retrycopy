@@ -101,12 +101,16 @@ namespace Ambiesoft {
 				lst.Add(gcnew String(GetLastErrorString(leRead_).c_str()));
 			if (leWrite_ != 0)
 				lst.Add(gcnew String(GetLastErrorString(leWrite_).c_str()));
-			if (SrcSize == -1)
-				lst.Add(I18N(L"Source size is not obtained"));
-			if (SrcSize != allProcessed_)
+			if (bTransferStarted_)
 			{
-				lst.Add(String::Format(I18N(L"Source size not equal to written size {0} != {1}"),
-					SrcSize, allProcessed_));
+
+				if (SrcSize == -1)
+					lst.Add(I18N(L"Source size is not obtained"));
+				if (SrcSize != allProcessed_)
+				{
+					lst.Add(String::Format(I18N(L"Source size not equal to written size {0} != {1}"),
+						SrcSize, allProcessed_));
+				}
 			}
 			return String::Join(L",", % lst);
 		}

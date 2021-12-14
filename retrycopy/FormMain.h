@@ -555,10 +555,12 @@ namespace Ambiesoft {
 			//HANDLE hSource_;
 			//HANDLE hDestination_;
 			void StartOfThreadMaster(Object^ obj);
-			void StartOfThreadMaster2(ThreadDataMaster^);
+			String^ CheckFiles(ThreadDataMaster^ thDataMaster, bool% bCancel);
+			bool StartOfThreadMaster2(ThreadDataMaster^);
 			void StartOfThreadFile(ThreadDataFile^ thData);
 			void ThreadStarted(int tn);
 			bool OnThreadYesNo(int tn, String^ question);
+			void OnThreadAlert(int tn, String^ error);
 			void OnThreadError(int tn, String^ error);
 			void ThreadFileStarted(ThreadDataFile^ thData);
 			void ThreadFileEnded(ThreadDataFile^ thData);

@@ -50,7 +50,7 @@ namespace Ambiesoft {
 		private: System::Windows::Forms::Button^ btnChangeBufferSize;
 		private: System::Windows::Forms::Button^ btnGiveupAndWriteZero;
 
-		private: System::Windows::Forms::Button^ btnCancel;
+
 		private: System::Windows::Forms::Button^ btnGiveUpAndWZOmode;
 		private: System::Windows::Forms::SplitContainer^ spMain;
 		private: System::Windows::Forms::TextBox^ txtInfo;
@@ -73,7 +73,6 @@ namespace Ambiesoft {
 				this->btnRetry = (gcnew System::Windows::Forms::Button());
 				this->btnChangeBufferSize = (gcnew System::Windows::Forms::Button());
 				this->btnGiveupAndWriteZero = (gcnew System::Windows::Forms::Button());
-				this->btnCancel = (gcnew System::Windows::Forms::Button());
 				this->btnGiveUpAndWZOmode = (gcnew System::Windows::Forms::Button());
 				this->spMain = (gcnew System::Windows::Forms::SplitContainer());
 				this->txtInfo = (gcnew System::Windows::Forms::TextBox());
@@ -98,7 +97,7 @@ namespace Ambiesoft {
 				// btnRetry
 				// 
 				this->btnRetry->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Right));
-				this->btnRetry->Location = System::Drawing::Point(413, 276);
+				this->btnRetry->Location = System::Drawing::Point(499, 275);
 				this->btnRetry->Name = L"btnRetry";
 				this->btnRetry->Size = System::Drawing::Size(94, 67);
 				this->btnRetry->TabIndex = 700;
@@ -129,17 +128,6 @@ namespace Ambiesoft {
 				this->btnGiveupAndWriteZero->Text = L"Give up to read and write zero";
 				this->btnGiveupAndWriteZero->UseVisualStyleBackColor = true;
 				this->btnGiveupAndWriteZero->Click += gcnew System::EventHandler(this, &ReadErrorDialog::btnGiveupAndWriteZero_Click);
-				// 
-				// btnCancel
-				// 
-				this->btnCancel->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Right));
-				this->btnCancel->DialogResult = System::Windows::Forms::DialogResult::Cancel;
-				this->btnCancel->Location = System::Drawing::Point(513, 276);
-				this->btnCancel->Name = L"btnCancel";
-				this->btnCancel->Size = System::Drawing::Size(80, 67);
-				this->btnCancel->TabIndex = 800;
-				this->btnCancel->Text = L"Cancel";
-				this->btnCancel->UseVisualStyleBackColor = true;
 				// 
 				// btnGiveUpAndWZOmode
 				// 
@@ -197,11 +185,9 @@ namespace Ambiesoft {
 				// 
 				this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 				this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-				this->CancelButton = this->btnCancel;
 				this->ClientSize = System::Drawing::Size(605, 355);
 				this->Controls->Add(this->btnShowDriveInfo);
 				this->Controls->Add(this->spMain);
-				this->Controls->Add(this->btnCancel);
 				this->Controls->Add(this->btnGiveUpAndWZOmode);
 				this->Controls->Add(this->btnGiveupAndWriteZero);
 				this->Controls->Add(this->btnChangeBufferSize);
@@ -214,6 +200,7 @@ namespace Ambiesoft {
 				this->ShowInTaskbar = false;
 				this->StartPosition = System::Windows::Forms::FormStartPosition::CenterParent;
 				this->Text = L"ReadErrorDialog";
+				this->FormClosing += gcnew System::Windows::Forms::FormClosingEventHandler(this, &ReadErrorDialog::ReadErrorDialog_FormClosing);
 				this->spMain->Panel1->ResumeLayout(false);
 				this->spMain->Panel1->PerformLayout();
 				this->spMain->Panel2->ResumeLayout(false);
@@ -246,14 +233,17 @@ namespace Ambiesoft {
 			System::Void btnGiveupAndWriteZero_Click(System::Object^ sender, System::EventArgs^ e);
 			System::Void btnGiveUpAndWZOmode_Click(System::Object^ sender, System::EventArgs^ e);
 
-		private: System::Void btnRetry_MouseMove(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
-			txtInfo->Text = "1";
-		}
-		private: System::Void btnRetry_Enter(System::Object^ sender, System::EventArgs^ e) {
-			txtInfo->Text = "2";
-		}
-			   System::Void btnShowDriveInfo_Click(System::Object^ sender, System::EventArgs^ e);
-
+			System::Void btnRetry_MouseMove(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e)
+			{
+				txtInfo->Text = "1";
+			}
+			System::Void btnRetry_Enter(System::Object^ sender, System::EventArgs^ e)
+			{
+				txtInfo->Text = "2";
+			}
+			System::Void btnShowDriveInfo_Click(System::Object^ sender, System::EventArgs^ e);
+			System::Void ReadErrorDialog_FormClosing(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e);
+		
 		};
 	}
 }
