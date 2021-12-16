@@ -108,7 +108,8 @@ namespace Ambiesoft {
 			//	return;
 			//}
 			String^ message = String::Format(
-				I18N(L"Are you sure to give up on reading and write zero automatically that fails {0} times?"),
+				I18N(L"Are you sure to give up on reading {0} bytes and write {0} zeroes automatically that fails {1} times?"),
+				BufferSize,
 				RetryCount + 1);
 			if (System::Windows::Forms::DialogResult::Yes !=
 				CppUtils::YesOrNo(this, message, MessageBoxDefaultButton::Button2))

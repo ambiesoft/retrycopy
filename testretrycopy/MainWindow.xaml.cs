@@ -35,7 +35,7 @@ namespace testretrycopy
 #else
                     "Release",
 #endif
-                    @"v142\retrycopy\",
+                    @"v143\retrycopy\",
                     "x86",
                     "retrycopy.exe"));
             }
