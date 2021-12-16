@@ -33,22 +33,43 @@ namespace Ambiesoft {
 			// bat-end = OK
 			// all good part will filled with 0xFF
 			static initonly LONGLONG FILESIZE = 10 * 1024 * 1024;
-			static initonly LONGLONG badStartPos = 100 * 1024;
-			static initonly int badSize = 4096;
-			static bool isGoodPos(const LONGLONG% pos, int buffSize) {
-				LONGLONG endPos = pos + buffSize;
-				if (0 <= pos && pos <= (badStartPos - 1))
-				{
-					if (endPos < badStartPos)
-						return true;
-					return false;
-				}
-				if (badStartPos <= pos && pos <= (badStartPos + badSize - 1))
-					return false;
-				if ((badStartPos + badSize) <= pos && pos <= FILESIZE - 1)
-					return true;
-				DASSERT(false);
-				return false;
+			static initonly LONGLONG BADSTARTPOS = (100 * 1024);
+			static initonly int BADSIZE = 4096;
+			enum class WHERE{
+				NONE,
+				TOPGOOD,
+				BAD,
+				BOTTOMGOOD
+			};
+			static WHERE whereis(LONGLONG pos)
+			{
+				if (0 <= pos && pos < BADSTARTPOS)
+					return WHERE::TOPGOOD;
+				if (BADSTARTPOS <= pos && pos < (BADSTARTPOS + BADSIZE))
+					return WHERE::BAD;
+				if ((BADSTARTPOS + BADSIZE) < pos && pos <= FILESIZE)
+					return WHERE::BOTTOMGOOD;
+				
+				return WHERE::BOTTOMGOOD;
+			}
+			static bool isGoodPos(LONGLONG pos, int buffSize) {
+				DASSERT(0 <= pos);
+				DASSERT(pos <= FILESIZE);
+				WHERE w1 = whereis(pos);
+				WHERE w2 = whereis(pos + buffSize - 1);
+				//if (0 <= pos && pos <= BADSTARTPOS)
+				//{
+				//	if (endPos < BADSTARTPOS)
+				//		return true;
+				//	return false;
+				//}
+				//if (BADSTARTPOS <= pos && pos < (BADSTARTPOS + BADSIZE - 1))
+				//	return false;
+				//if ((BADSTARTPOS + BADSIZE) < pos && pos <= FILESIZE )
+				//	return true;
+				//
+				//return true;
+				return w1 == w2 && w1 != WHERE::BAD;
 			}
 		private:
 			LONGLONG pos_ = -1;
@@ -70,19 +91,28 @@ namespace Ambiesoft {
 				return true; 
 			}
 			virtual bool SetPointer(const LONGLONG& pos) {
-				DASSERT(0 <= pos && pos < FILESIZE);
+				DASSERT(0 <= pos && pos <= FILESIZE);
 				pos_ = pos;
 				return true;
 			}
 			virtual bool Read(int buffSize, LPVOID pBuff, DWORD* pdwRead) {
 				if (!isGoodPos(pos_, buffSize))
 				{
-					SetLastError(3);
-					return false;
+					buffSize = 1;
+					if (!isGoodPos(pos_, 1))
+					{
+						SetLastError(3);
+						return false;
+					}
 				}
-				memset(pBuff, 0xFF, buffSize);
-				*pdwRead = buffSize;
-				pos_ += buffSize;
+				DASSERT(FILESIZE - pos_ >= 0);
+				int writeSize = buffSize;
+				if (FILESIZE - pos_ < buffSize)
+					writeSize = (int)(FILESIZE - pos_);
+
+				memset(pBuff, 0xFF, writeSize);
+				*pdwRead = writeSize;
+				pos_ += writeSize;
 				return true;
 			}
 			virtual void Close(){

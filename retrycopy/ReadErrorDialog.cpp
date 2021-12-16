@@ -13,6 +13,45 @@ namespace Ambiesoft {
 				return READERROR_RESPONSE::RR_CANCEL;
 			return responce_;
 		}
+		void ReadErrorDialog::SetInfoText(Object^ sender)
+		{
+			DASSERT_IS_CLASS(sender, System::Windows::Forms::Button);
+			String^ text;
+			if (false)
+			{
+			}
+			else if (sender == btnChangeRetryCount)
+			{
+				text = String::Format(I18N(L"Change Retry Count. Current value={0}."),
+					RetryCount);
+			}
+			else if (sender == btnChangeBufferSize)
+			{
+				text = String::Format(I18N(L"Change Buffer Size. Current value={0}."),
+					BufferSize);
+			}
+			else if (sender == btnShowDriveInfo)
+			{
+				text = I18N(L"Show Drive Info. It requires administration priviledge.");
+			}
+			else if (sender == btnGiveupAndWriteZero)
+			{
+				text = I18N(L"ggg");
+			}
+			else if (sender == btnGiveUpAndWZOmode)
+			{
+				text = I18N(L"www");
+			}
+			else if (sender == btnRetry)
+			{
+				text = String::Empty;
+			}
+			else
+			{
+				DASSERT(false);
+			}
+			txtInfo->Text = text;
+		}
 		System::Void ReadErrorDialog::btnRetry_Click(System::Object^ sender, System::EventArgs^ e)
 		{
 			responce_ = READERROR_RESPONSE::RR_RETRY;
@@ -21,17 +60,31 @@ namespace Ambiesoft {
 		}
 		System::Void ReadErrorDialog::btnChangeBufferSize_Click(System::Object^ sender, System::EventArgs^ e)
 		{
-			System::Decimal ret = bufferSize_;
+			System::Decimal ret = BufferSize;
 			if (!NumericTextDialog::UIGetNumeric(
 				I18N(L"Enter new buffer size"),
 				I18N(L"Buffer size")
-					+ L":",
-				1, MAXREADBUFFERSIZE,
+				+ L":",
+				MINREADBUFFERSIZE, MAXREADBUFFERSIZE,
 				ret))
 			{
 				return;
 			}
-			bufferSize_ = Decimal::ToInt32(ret);
+			BufferSize = Decimal::ToInt32(ret);
+		}
+		System::Void ReadErrorDialog::btnChangeRetryCount_Click(System::Object^ sender, System::EventArgs^ e)
+		{
+			System::Decimal ret = RetryCount;
+			if (!NumericTextDialog::UIGetNumeric(
+				I18N(L"Enter new retry count"),
+				I18N(L"Retry count")
+				+ L":",
+				MINRETRYCOUNT, MAXRETRYCOUNT,
+				ret))
+			{
+				return;
+			}
+			RetryCount = Decimal::ToInt32(ret);
 		}
 		System::Void ReadErrorDialog::btnGiveupAndWriteZero_Click(System::Object^ sender, System::EventArgs^ e)
 		{
@@ -49,13 +102,13 @@ namespace Ambiesoft {
 		}
 		System::Void ReadErrorDialog::btnGiveUpAndWZOmode_Click(System::Object^ sender, System::EventArgs^ e)
 		{
-			if (initialBufferSize_ != 1)
-			{
-				CppUtils::Info(this, I18N(L"Only available when 1-byte read fails. Please set the buffer size to 1 and Retry."));
-				return;
-			}
+			//if (initialBufferSize_ != 1)
+			//{
+			//	CppUtils::Info(this, I18N(L"Only available when 1-byte read fails. Please set the buffer size to 1 and Retry."));
+			//	return;
+			//}
 			String^ message = String::Format(
-				I18N(L"Are you sure to give up on reading any more bytes, and read one byte at a time, writing zero for each one that fails {0} times?"),
+				I18N(L"Are you sure to give up on reading and write zero automatically that fails {0} times?"),
 				RetryCount + 1);
 			if (System::Windows::Forms::DialogResult::Yes !=
 				CppUtils::YesOrNo(this, message, MessageBoxDefaultButton::Button2))

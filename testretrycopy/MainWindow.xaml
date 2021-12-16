@@ -34,8 +34,10 @@
         <Button x:Name="btnSrcDstSame" Content="Src and Dst is same" HorizontalAlignment="Left" Margin="536,34,0,0" VerticalAlignment="Top" Click="btnSrcDstSame_Click" Background="#FFEAF580"/>
         <Button x:Name="btnSameLevelDir" Content="SameLevelDir" HorizontalAlignment="Left" Margin="621,97,0,0" VerticalAlignment="Top" Height="33" Width="62" Click="btnSameLevelDir_Click"/>
         <Button x:Name="btnHasSamePathInSrc" Content="Has Same Paht In Src" HorizontalAlignment="Left" Margin="705,110,0,0" VerticalAlignment="Top" Click="btnHasSamePathInSrc_Click" Foreground="#FFF1ECEC" Background="#FFDE3737"/>
-        <Button x:Name="btnMockRead" Content="MockRead" HorizontalAlignment="Left" Margin="26,205,0,0" VerticalAlignment="Top" Height="43" Width="101" Click="btnMockRead_Click"/>
+        <Button x:Name="btnMockRead" Content="MockRead 1byte" HorizontalAlignment="Left" Margin="26,205,0,0" VerticalAlignment="Top" Height="43" Width="101" Click="btnMockRead_Click"/>
         <Button x:Name="btnUnexistantDirve" Content="ToUnExsitentDrive" HorizontalAlignment="Left" Margin="680,30,0,0" VerticalAlignment="Top" Height="47" Width="115" Background="#FFEA4737" Foreground="#FFF0E3E3" Click="btnUnexistantDirve_Click"/>
         <Button x:Name="btnCopy2FilesWithSameName" Content="Copy2SameNameFile" HorizontalAlignment="Left" Margin="464,160,0,0" VerticalAlignment="Top" Height="36" Width="99" Background="#FFDA5050" Foreground="#FFF9ECEC" Click="btnCopy2FilesWithSameName_Click"/>
+        <Button x:Name="btnMockRead_2byte" Content="MockRead 2byte" HorizontalAlignment="Left" Margin="168,205,0,0" VerticalAlignment="Top" Height="43" Width="101" Click="btnMockRead_2byte_Click"/>
+        <Button x:Name="btnMockRead_1024byte" Content="MockRead 1024byte" HorizontalAlignment="Left" Margin="296,205,0,0" VerticalAlignment="Top" Height="43" Width="100" Click="btnMockRead_1024byte_Click"/>
     </Grid>
 </Window>

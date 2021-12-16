@@ -444,7 +444,84 @@ namespace testretrycopy
             string target = "./mockout";
             CppUtils.DeleteFile(target);
             StartRetryCopy(
-                string.Format("--use-mockread -d {0}", target));
+                string.Format("--use-mockread -d {0} -b 1", target));
+
+            checkMockFile();
+        }
+        private void btnMockRead_2byte_Click(object sender, RoutedEventArgs e)
+        {
+            string target = "./mockout";
+            CppUtils.DeleteFile(target);
+            StartRetryCopy(
+                string.Format("--use-mockread -d {0} -b 2", target));
+
+            checkMockFile();
+        }
+        private void btnMockRead_1024byte_Click(object sender, RoutedEventArgs e)
+        {
+            string target = "./mockout";
+            CppUtils.DeleteFile(target);
+            StartRetryCopy(
+                string.Format("--use-mockread -d {0} -b 1024", target));
+
+            checkMockFile();
+        }
+        void checkMockFile()
+        { 
+            // 10Mb file = 10 * 1024 * 1024;
+            // 0-100k=OK (100*1024)
+            // (100*1024) + 1024 => bad
+            // bat-end = OK
+            // all good part will filled with 0xFF
+            long FILESIZE = 10 * 1024 * 1024;
+            long BADSTARTPOS = (100 * 1024) ;
+            int BADSIZE = 4096;
+
+            byte[] fileBytes = File.ReadAllBytes("./mockout/mofile");
+            string ret = "";
+            ret += "FileSize is ";
+            if (fileBytes.Length == FILESIZE)
+                ret += "OK";
+            else
+                ret += "NG";
+            ret += " ";
+
+            ret += "top good pos = ";
+            bool good = true;
+            for(int i=0; i < BADSTARTPOS ;++i)
+            {
+                if (fileBytes[i] != 0xff)
+                    good = false;
+            }
+            if (good)
+                ret += "OK";
+            else
+                ret += "NG";
+            ret += " bad sector=";
+            good = true;
+            for (long i = BADSTARTPOS; i < BADSTARTPOS + BADSIZE; ++i)
+            {
+                if (fileBytes[i] != 0x00)
+                    good = false;
+            }
+            if (good)
+                ret += "OK";
+            else
+                ret += "NG";
+
+            ret += " bottom good sector=";
+            good = true;
+            for (long i = BADSTARTPOS + BADSIZE; i < FILESIZE; ++i)
+            {
+                if (fileBytes[i] != 0xff)
+                    good = false;
+            }
+            if (good)
+                ret += "OK";
+            else
+                ret += "NG";
+            
+            AppendLog(ret);
         }
 
         private void btnUnexistantDirve_Click(object sender, RoutedEventArgs e)

@@ -521,7 +521,7 @@ namespace Ambiesoft {
 					thFileData->ProcessedSize,
 					bufferSize,
 					retried);
-				DWORD dwRead;
+				DWORD dwRead = 0;
 				if (!thFileData->ReadFromFile(bufferSize, bb.get(), &dwRead))
 				{
 					RETURNIFTHREADNUMBER;
@@ -594,8 +594,6 @@ namespace Ambiesoft {
 						if (rfd->IsWZOMode)
 						{
 							bWZOMode = true;
-							DASSERT(ThreadTransitory::UserBuffer == 1);
-							ThreadTransitory::UserBuffer = 1;
 							retried = 0;
 							continue;
 						}
@@ -609,6 +607,8 @@ namespace Ambiesoft {
 					else
 					{
 						// WZOMode
+						sameErrorCount = 0;
+						consecutiveErrorCount = 0;
 						if (retried++ < ThreadTransitory::UserRetry ||
 							ThreadTransitory::UserRetry < 0)
 						{
@@ -623,8 +623,6 @@ namespace Ambiesoft {
 							}
 							continue;
 						}
-						sameErrorCount = 0;
-						consecutiveErrorCount = 0;
 						retried = 0;
 					}
 					EndInvokeWithTN(
@@ -633,6 +631,10 @@ namespace Ambiesoft {
 							thFileData->ThreadNumber,
 							thFileData->ProcessedSize,
 							bufferSize));
+					
+					int writeZeroSize = bufferSize;
+					if (thFileData->SrcSize - thFileData->ProcessedSize < bufferSize)
+						bufferSize = (int)(thFileData->SrcSize - thFileData->ProcessedSize);
 					ZeroMemory(bb.get(), bufferSize);
 					dwRead = bufferSize;
 					thFileData->AddZeroWritten(bufferSize);
@@ -648,11 +650,11 @@ namespace Ambiesoft {
 				lastError = 0;
 				ThreadTransitory::SetWrittingProgress(
 					thFileData->ProcessedSize,
-					bufferSize);
+					dwRead);
 
 				RETURNIFTHREADNUMBER;
 
-				DWORD dwWritten;
+				DWORD dwWritten = 0;
 				if (!(WriteFile(thFileData->HDst,
 					bb.get(),
 					dwRead,
@@ -668,6 +670,7 @@ namespace Ambiesoft {
 
 				if (dwRead == 0)
 				{
+					DASSERT(dwWritten == 0);
 					thFileData->SetDone();
 					return;
 				}
