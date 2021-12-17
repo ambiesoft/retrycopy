@@ -21,6 +21,7 @@ namespace Ambiesoft {
 			System::Collections::Generic::List<String^>^ dstdirs_ = nullptr;
 			String^ src_;
 
+			LONGLONG processedSize_;
 			int totalOK_;
 			int totalSkipped_;
 
@@ -31,6 +32,13 @@ namespace Ambiesoft {
 				DASSERT(dstdirs_ == nullptr);
 				DASSERT(sds);
 				DASSERT(dstdirs);
+
+#ifdef _DEBUG
+				if (System::IO::File::Exists(src))
+				{
+					DASSERT(sds->Count == 1);
+				}
+#endif
 				src_ = src;
 				sds_ = sds;
 				dstdirs_ = dstdirs;
@@ -53,18 +61,39 @@ namespace Ambiesoft {
 			}
 
 			void PrepareDstDirs();
-			property bool HasSrcDir
+			property bool IsSrcDirectory
 			{
 				// from here srces_ has many src_
 				bool get() { return System::IO::Directory::Exists(src_); }
 			}
-			property String^ SrcDir
+			property String^ SrcDirectory
 			{
 				String^ get() {
-					if (HasSrcDir)
+					if (IsSrcDirectory)
 						return src_;
 					DASSERT(false);
 					return nullptr;
+				}
+			}
+			property String^ SrcPath
+			{
+				String^ get() {
+					return src_;
+				}
+			}
+			property String^ SrcFile
+			{
+				String^ get() {
+					DASSERT(System::IO::File::Exists(src_));
+					DASSERT(sds_->Count == 1);
+					return src_;
+				}
+			}
+			property String^ DstFile
+			{
+				String^ get() {
+					DASSERT(sds_->Count == 1);
+					return sds_[0].Value;
 				}
 			}
 			property KVS^ SDS
@@ -72,6 +101,14 @@ namespace Ambiesoft {
 				KVS^ get() { return sds_; }
 			}
 
+			void IncrementProcessedSize(LONGLONG size)
+			{
+				processedSize_ += size;
+			}
+			property LONGLONG ProcessedSize
+			{
+				LONGLONG get() { return processedSize_; }
+			}
 		};
 		delegate void VTmDelegate(ThreadDataMaster^ thData);
 		delegate void VTpDelegate(ThreadDataPath^ thDataPath);

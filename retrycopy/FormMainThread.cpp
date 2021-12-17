@@ -376,6 +376,7 @@ namespace Ambiesoft {
 						}
 						if (tdf->IsOK)
 						{
+							thDataPath->IncrementProcessedSize(tdf->ProcessedSize);
 							thDataPath->IncrementOK();
 							AmbLib::CopyFileTime(tdf->SrcFile, tdf->DstFile,
 								AmbLib::CFT::Creation);

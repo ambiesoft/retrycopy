@@ -52,16 +52,23 @@ namespace Ambiesoft {
 		{
 			return l1 == l2 && l2 == l3;
 		}
-		void RemoveFileCommon(ThreadDataFile^ thData, List<String^>^ results, bool bRecycle)
+		void RemoveFileCommon(
+			String^ srcfile, 
+			String^ dstfile,
+			LONGLONG processedSize,
+			List<String^>^ results,
+			bool bRecycle)
 		{
-			if (File::Exists(thData->SrcFile))
+			if (File::Exists(srcfile))
 			{
 				String^ recyleORdelete = bRecycle ? I18N(L"recycle") : I18N(L"delete");
 				String^ recyleORdeleted = bRecycle ? I18N(L"recycled") : I18N(L"deleted");
+				DASSERT(File::Exists(dstfile));
+				DASSERT(!stdIsSamePath(TO_LPCWSTR(srcfile), TO_LPCWSTR(dstfile)));
 				if (!ThreeEqual(
-					FileInfo(thData->SrcFile).Length,
-					FileInfo(thData->DstFile).Length,
-					thData->ProcessedSize))
+					FileInfo(srcfile).Length,
+					FileInfo(dstfile).Length,
+					processedSize))
 				{
 					results->Add(String::Format(I18N(L"{0} cancelled because size is not same"),
 						recyleORdelete));
@@ -70,38 +77,38 @@ namespace Ambiesoft {
 
 				if (bRecycle)
 				{
-					int err = SHDeleteFileEx(TO_LPCWSTR(thData->SrcFile), FOF_SILENT | FOF_NOCONFIRMATION | FOF_ALLOWUNDO);
+					int err = SHDeleteFileEx(TO_LPCWSTR(srcfile), FOF_SILENT | FOF_NOCONFIRMATION | FOF_ALLOWUNDO);
 					if (err != 0)
 					{
 						results->Add(String::Format(
 							I18N(L"Failed to delete the source file '{0}' ({1})"),
-							thData->SrcFile, gcnew String(GetSHFileOpErrorString(err).c_str())));
+							srcfile, gcnew String(GetSHFileOpErrorString(err).c_str())));
 					}
 				}
 				else
 				{
 					try
 					{
-						File::Delete(thData->SrcFile);
+						File::Delete(srcfile);
 					}
 					catch (Exception^ ex)
 					{
 						results->Add(String::Format(
 							I18N(L"Failed to delete the source file '{0}' ({1})"),
-							thData->SrcFile, ex->Message));
+							srcfile, ex->Message));
 					}
 				}
 
-				if (!File::Exists(thData->SrcFile))
+				if (!File::Exists(srcfile))
 				{
 					results->Add(String::Format(I18N(L"The source file '{0}' {1}"),
-						thData->SrcFile, recyleORdeleted));
+						srcfile, recyleORdeleted));
 				}
 			}
 			else
 			{
 				results->Add(String::Format(I18N(L"The source file '{0}' already gone."),
-					thData->SrcFile));
+					srcfile));
 			}
 		}
 		void RemoveDirCommon(String^ dir, List<String^>^ results, bool bRecycle)
@@ -113,9 +120,9 @@ namespace Ambiesoft {
 
 				if (bRecycle)
 				{
-					if (0 == stdGetFileCount(TO_LPCWSTR(dir)))
+					if (true) // 0 == stdGetFileCount(TO_LPCWSTR(dir)))
 					{
-						int err = CppUtils::DeleteFile(dir);
+						int err = SHDeleteFileEx(TO_LPCWSTR(dir), FOF_SILENT | FOF_NOCONFIRMATION | FOF_ALLOWUNDO);
 						if (err != 0)
 						{
 							results->Add(String::Format(L"Failed to delete '{0}' ({1})",
@@ -199,10 +206,15 @@ namespace Ambiesoft {
 				}
 				// fall through
 			case OPERATION::MOVERECYCLE:
-				RemoveFileCommon(thDataFile, % results, true);
+				// RemoveFileCommon(thDataFile, % results, true);
 				break;
 			case OPERATION::MOVE:
-				RemoveFileCommon(thDataFile, % results, false);
+				RemoveFileCommon(
+					thDataFile->SrcFile,
+					thDataFile->DstFile,
+					thDataFile->ProcessedSize,
+					%results,
+					false);
 				break;
 			case OPERATION::COPY:
 				// results.Add(I18N(L"copying (file not removed)"));
@@ -226,7 +238,7 @@ namespace Ambiesoft {
 				return;
 
 			List<String^> results;
-			if (!ThreadTransitory::HasUserRemoveChanged && thPath->HasSrcDir)
+			if (!ThreadTransitory::HasUserRemoveChanged)
 			{
 				switch (ThreadTransitory::UserOperation)
 				{
@@ -234,17 +246,26 @@ namespace Ambiesoft {
 					if (System::Windows::Forms::DialogResult::Yes != CppUtils::YesOrNo(
 						this,
 						String::Format(I18N(L"All Copy finished. Do you want to recycle source directories '{0}'?"),
-							thPath->SrcDir),
+							thPath->SrcPath),
 						MessageBoxDefaultButton::Button2))
 					{
 						break;
 					}
 					// fall
 				case OPERATION::MOVERECYCLE:
-					RemoveDirCommon(thPath->SrcDir, % results, true);
+					if (thPath->IsSrcDirectory)
+						RemoveDirCommon(thPath->SrcDirectory, % results, true);
+					else
+						RemoveFileCommon(
+							thPath->SrcFile,
+							thPath->DstFile,
+							thPath->ProcessedSize, 
+							%results,
+							true);
 					break;
 				case OPERATION::MOVE:
-					RemoveDirCommon(thPath->SrcDir, % results, false);
+					if(thPath->IsSrcDirectory)
+						RemoveDirCommon(thPath->SrcPath, % results, false);
 					break;
 				case OPERATION::COPY:
 					break;
