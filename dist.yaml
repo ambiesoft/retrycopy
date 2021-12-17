@@ -4,10 +4,10 @@ targetproject: zzzDist
 configuration: Release
 targets:
 - setoutdirforbuild: false
-  outdir: Release\v142\retrycopy\x86
+  outdir: Release\v143\retrycopy\x86
   platform: x86
 - setoutdirforbuild: false
-  outdir: Release\v142\retrycopy\x64
+  outdir: Release\v143\retrycopy\x64
   platform: x64
 
 gitrev:
@@ -22,7 +22,7 @@ gitrev:
   outtxt: retrycopy/gitrev
   char: wchar
 
-archivingdir: Release\v142\retrycopy
+archivingdir: Release\v143\retrycopy
 ShouldBeFiles:
 - Acknowledgements.txt
 - Ambiesoft.AmbLib.dll
@@ -43,6 +43,7 @@ ShouldBeFiles:
 - retrycopymisc.dll
 - retrycopymisc.pdb
 - ja-JP\Ambiesoft.GetNumericTextDialog.resources.dll
+- ja-JP\retrycopy.resources.dll
 - Ambiesoft.GetNumericTextDialog.pdb
 - Ambiesoft.GetNumericTextDialog.dll
 - GetDriveInfo.exe
