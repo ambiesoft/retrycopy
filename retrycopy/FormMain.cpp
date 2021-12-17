@@ -132,24 +132,24 @@ namespace Ambiesoft {
 					ArgEncodingFlags::ArgEncodingFlags_Default,
 					TO_LPCWSTR(I18N(L"Source path")));
 
-#ifdef _DEBUG
 				bool bMockReadFile = false;
-				parser.AddOption(L"--use-mockread", 0, &bMockReadFile,
+				constexpr wchar_t* pOpStringUseMockRead = L"--use-mockread";
+				parser.AddOption(pOpStringUseMockRead, 0, &bMockReadFile,
 					ArgEncodingFlags::ArgEncodingFlags_Default,
 					L"Use MockFile for test");
-#endif
+
 				parser.Parse();
 
-#ifdef _DEBUG
 				CDebug::IsMockReadFile = bMockReadFile;
-#endif
+
 				bTestShowReadErrorDialog_ = bTestShowReadErrorDialog;
 				bStart_ = bStart;
 				IsCloseOnFinish = bIsCloseOnFinish;
 
 				if (bShowHelp)
 				{
-					CppUtils::Info(gcnew String(parser.getHelpMessage({ pOpStringTestShowReadErrorDlg }).c_str()));
+					CppUtils::Info(gcnew String(parser.getHelpMessage(
+						{ pOpStringTestShowReadErrorDlg, pOpStringUseMockRead }).c_str()));
 					bCloseNow_ = true;
 					return;
 				}
@@ -535,6 +535,7 @@ namespace Ambiesoft {
 				}
 				txtSource->ReadOnly = false;
 				btnNavSource->Enabled = true;
+				btnAddSource->Enabled = true;
 				txtDestination->ReadOnly = false;
 				btnNavDestination->Enabled = true;
 				cmbOperation->Enabled = true;
@@ -550,6 +551,7 @@ namespace Ambiesoft {
 					ThreadTransitory::init();
 					txtSource->ReadOnly = true;
 					btnNavSource->Enabled = false;
+					btnAddSource->Enabled = false;
 					txtDestination->ReadOnly = true;
 					btnNavDestination->Enabled = false;
 					cmbOperation->Enabled = false;

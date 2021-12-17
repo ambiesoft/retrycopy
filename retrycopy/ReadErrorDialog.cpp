@@ -13,6 +13,10 @@ namespace Ambiesoft {
 				return READERROR_RESPONSE::RR_CANCEL;
 			return responce_;
 		}
+		System::Void ReadErrorDialog::ReadErrorDialog_Load(System::Object^ sender, System::EventArgs^ e)
+		{
+			txtMessage->Select(txtMessage->TextLength, 0);
+		}
 		void ReadErrorDialog::SetInfoText(Object^ sender)
 		{
 			DASSERT_IS_CLASS(sender, System::Windows::Forms::Button);
@@ -22,25 +26,25 @@ namespace Ambiesoft {
 			}
 			else if (sender == btnChangeRetryCount)
 			{
-				text = String::Format(I18N(L"Change Retry Count. Current value={0}."),
+				text = String::Format(I18N(L"Changes Retry Count. Current value={0}."),
 					RetryCount);
 			}
 			else if (sender == btnChangeBufferSize)
 			{
-				text = String::Format(I18N(L"Change Buffer Size. Current value={0}."),
+				text = String::Format(I18N(L"Changes Buffer Size. Current value={0}."),
 					BufferSize);
 			}
 			else if (sender == btnShowDriveInfo)
 			{
-				text = I18N(L"Show Drive Info. It requires administration priviledge.");
+				text = I18N(L"Shows Drive Info. It requires administration priviledge.");
 			}
 			else if (sender == btnGiveupAndWriteZero)
 			{
-				text = I18N(L"ggg");
+				text = I18N(L"Gives up reading from the file and write zeroes.");
 			}
 			else if (sender == btnGiveUpAndWZOmode)
 			{
-				text = I18N(L"www");
+				text = I18N(L"Gives up on reading from the file and write zeroes automatically that fails until it succeeds to read.");
 			}
 			else if (sender == btnRetry)
 			{
@@ -89,7 +93,7 @@ namespace Ambiesoft {
 		System::Void ReadErrorDialog::btnGiveupAndWriteZero_Click(System::Object^ sender, System::EventArgs^ e)
 		{
 			String^ message = String::Format(
-				I18N(L"Are you sure to give up reading {0} bytes from the file and write {0} bytes of zeros?"),
+				I18N(L"Are you sure to give up reading {0} bytes from the file and write {0} bytes of zeroes?"),
 				BufferSize);
 			if (System::Windows::Forms::DialogResult::Yes !=
 				CppUtils::YesOrNo(this, message, MessageBoxDefaultButton::Button2))

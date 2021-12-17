@@ -168,7 +168,10 @@
   <data name="Are you sure to give up on reading any more bytes, and read one byte at a time, writing zero for each one that fails {0} times?" xml:space="preserve">
     <value>読み込みを諦めて１バイトずつ読み込み {0} 回失敗した場合はゼロを書き込みますか？</value>
   </data>
-  <data name="Are you sure to give up reading {0} bytes from the file and write {0} bytes of zeros?" xml:space="preserve">
+  <data name="Are you sure to give up on reading {0} bytes and write {0} zeroes automatically that fails {1} times?" xml:space="preserve">
+    <value>{0} バイトの読み込みを {1} 回読み込みに失敗した場合、諦めてゼロを書き込みます。読み込みが成功するまでこの処理を続けます。続行しますか？</value>
+  </data>
+  <data name="Are you sure to give up reading {0} bytes from the file and write {0} bytes of zeroes?" xml:space="preserve">
     <value>ファイルから {0} バイト読み込むことを諦めて {0} バイトのゼロを書き込みますか？</value>
   </data>
   <data name="Are you sure to quit?" xml:space="preserve">
@@ -185,6 +188,12 @@
   </data>
   <data name="Calculating total size..." xml:space="preserve">
     <value>サイズを計算しています・・・</value>
+  </data>
+  <data name="Changes Buffer Size. Current value={0}." xml:space="preserve">
+    <value>バッファサイズを変更します。現在の値は {0} です。</value>
+  </data>
+  <data name="Changes Retry Count. Current value={0}." xml:space="preserve">
+    <value>再試行回数を変更します。現在の値は {0} です。</value>
   </data>
   <data name="Close when finished" xml:space="preserve">
     <value>終了したら閉じる</value>
@@ -263,6 +272,12 @@
   </data>
   <data name="File copy started:&quot;{0}&quot; -&gt; &quot;{1}&quot;" xml:space="preserve">
     <value>ファイルコピー開始："{0}" → "{1}"</value>
+  </data>
+  <data name="Gives up on reading from the file and write zeroes automatically that fails until it succeeds to read." xml:space="preserve">
+    <value>ファイルからの読み込みを諦めて、成功するまでゼロを書き込みます。</value>
+  </data>
+  <data name="Gives up reading from the file and write zeroes." xml:space="preserve">
+    <value>ファイルからの読み込みを諦めてゼロを書き込みます。</value>
   </data>
   <data name="Log" xml:space="preserve">
     <value>ログ</value>
@@ -359,6 +374,9 @@
   </data>
   <data name="Show Help" xml:space="preserve">
     <value>ヘルプを表示</value>
+  </data>
+  <data name="Shows Drive Info. It requires administration priviledge." xml:space="preserve">
+    <value>ドライブ情報を表示します。管理者権限が必要です。</value>
   </data>
   <data name="Skip = {0}" xml:space="preserve">
     <value>スキップ　＝　{0}</value>
