@@ -228,6 +228,9 @@
   <data name="Enter new buffer size" xml:space="preserve">
     <value>新しいバッファサイズを入力</value>
   </data>
+  <data name="Enter new retry count" xml:space="preserve">
+    <value>新しい再試行回数を入力</value>
+  </data>
   <data name="Fail = {0}" xml:space="preserve">
     <value>失敗　＝　{0}</value>
   </data>

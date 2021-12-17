@@ -129,12 +129,12 @@ namespace Ambiesoft {
 								dir, gcnew String(GetSHFileOpErrorString(err).c_str())));
 						}
 					}
-					else
-					{
-						results->Add(String::Format( // TODO: count file and check
-							I18N(L"The source directory '{0}' has not been recycled because it is not empty."),
-							dir));
-					}
+					//else
+					//{
+					//	results->Add(String::Format( // TODO: count file and check
+					//		I18N(L"The source directory '{0}' has not been recycled because it is not empty."),
+					//		dir));
+					//}
 				}
 				else
 				{
