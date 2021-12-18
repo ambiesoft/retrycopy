@@ -5,7 +5,7 @@ namespace Ambiesoft {
 	namespace retrycopy {
 
 		System::Void FormLog::FormLog_FormClosing(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e) {
-			if (FormMain::AppClosing)
+			if (!forceClose_)
 				return;
 			e->Cancel = true;
 			Visible = false;

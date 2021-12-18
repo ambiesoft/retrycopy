@@ -323,7 +323,7 @@ namespace Ambiesoft {
 				resources->ApplyResources(this->btnNavDestination, L"btnNavDestination");
 				this->btnNavDestination->Name = L"btnNavDestination";
 				this->btnNavDestination->UseVisualStyleBackColor = true;
-				this->btnNavDestination->Click += gcnew System::EventHandler(this, &FormMain::btnNavDestination_Click);
+				this->btnNavDestination->Click += gcnew System::EventHandler(this, &FormMain::tsmiDirectory_Click);
 				// 
 				// btnStart
 				// 
@@ -603,7 +603,7 @@ namespace Ambiesoft {
 			}
 			void UpdateTitle();
 
-			static bool appClosing_ = false;
+			// static bool appClosing_ = false;
 			initonly bool bTestShowReadErrorDialog_ = false;
 			initonly bool bStart_ = false;
 
@@ -618,10 +618,10 @@ namespace Ambiesoft {
 				AddSourceText(gcnew cli::array<String^>{file});
 			}
 		internal:
-			static property bool AppClosing
-			{
-				bool get() { return appClosing_; }
-			}
+			//static property bool AppClosing
+			//{
+			//	bool get() { return appClosing_; }
+			//}
 
 			bool AskOverwrite(int tn, String^ fileTobeOverwritten);
 			Object^ EndInvokeWithTN(int tn, IAsyncResult^);
@@ -633,7 +633,6 @@ namespace Ambiesoft {
 		private:
 			System::Void btnNavSource_Click(System::Object^ sender, System::EventArgs^ e);
 			System::Void btnAddSource_Click(System::Object^ sender, System::EventArgs^ e);
-			System::Void btnNavDestination_Click(System::Object^ sender, System::EventArgs^ e);
 			System::Void btnCopy_Click(System::Object^ sender, System::EventArgs^ e);
 			System::Void cmbOverwrite_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e);
 			System::Void cmbOperation_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e);
@@ -645,7 +644,7 @@ namespace Ambiesoft {
 
 			System::Void showLogToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e);
 			System::Void btnClose_Click(System::Object^ sender, System::EventArgs^ e) {
-				appClosing_ = true;
+				// appClosing_ = true;
 				Close();
 			}
 			System::Void btnAbout_Click(System::Object^ sender, System::EventArgs^ e);

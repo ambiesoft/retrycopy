@@ -336,6 +336,9 @@
     <ResourceCompile Include="app.rc" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="FormAbout.ja-JP.resx">
+      <DependentUpon>FormAbout.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormAbout.resx">
       <DependentUpon>FormAbout.h</DependentUpon>
     </EmbeddedResource>

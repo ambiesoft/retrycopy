@@ -39,6 +39,7 @@ namespace Ambiesoft {
 		private: System::Windows::Forms::Label^ lblAppAndVersion;
 		private: System::Windows::Forms::Button^ btnOK;
 		private: System::Windows::Forms::LinkLabel^ linkHomepage;
+		private: System::Windows::Forms::LinkLabel^ linkDonation;
 		protected:
 
 		private:
@@ -54,48 +55,46 @@ namespace Ambiesoft {
 			/// </summary>
 			void InitializeComponent(void)
 			{
+				System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(FormAbout::typeid));
 				this->lblAppAndVersion = (gcnew System::Windows::Forms::Label());
 				this->btnOK = (gcnew System::Windows::Forms::Button());
 				this->linkHomepage = (gcnew System::Windows::Forms::LinkLabel());
+				this->linkDonation = (gcnew System::Windows::Forms::LinkLabel());
 				this->SuspendLayout();
 				// 
 				// lblAppAndVersion
 				// 
-				this->lblAppAndVersion->AutoSize = true;
-				this->lblAppAndVersion->Location = System::Drawing::Point(12, 22);
+				resources->ApplyResources(this->lblAppAndVersion, L"lblAppAndVersion");
 				this->lblAppAndVersion->Name = L"lblAppAndVersion";
-				this->lblAppAndVersion->Size = System::Drawing::Size(96, 12);
-				this->lblAppAndVersion->TabIndex = 0;
-				this->lblAppAndVersion->Text = L"lblAppAndVersion";
 				// 
 				// btnOK
 				// 
+				resources->ApplyResources(this->btnOK, L"btnOK");
 				this->btnOK->DialogResult = System::Windows::Forms::DialogResult::OK;
-				this->btnOK->Location = System::Drawing::Point(305, 104);
 				this->btnOK->Name = L"btnOK";
-				this->btnOK->Size = System::Drawing::Size(75, 23);
-				this->btnOK->TabIndex = 1;
-				this->btnOK->Text = L"OK";
 				this->btnOK->UseVisualStyleBackColor = true;
 				this->btnOK->Click += gcnew System::EventHandler(this, &FormAbout::btnOK_Click);
 				// 
 				// linkHomepage
 				// 
-				this->linkHomepage->AutoSize = true;
-				this->linkHomepage->Location = System::Drawing::Point(12, 47);
+				resources->ApplyResources(this->linkHomepage, L"linkHomepage");
 				this->linkHomepage->Name = L"linkHomepage";
-				this->linkHomepage->Size = System::Drawing::Size(57, 12);
-				this->linkHomepage->TabIndex = 2;
 				this->linkHomepage->TabStop = true;
-				this->linkHomepage->Text = L"Ambiesoft";
 				this->linkHomepage->LinkClicked += gcnew System::Windows::Forms::LinkLabelLinkClickedEventHandler(this, &FormAbout::linkHomepage_LinkClicked);
+				// 
+				// linkDonation
+				// 
+				resources->ApplyResources(this->linkDonation, L"linkDonation");
+				this->linkDonation->Name = L"linkDonation";
+				this->linkDonation->TabStop = true;
+				this->linkDonation->LinkClicked += gcnew System::Windows::Forms::LinkLabelLinkClickedEventHandler(this, &FormAbout::linkDonation_LinkClicked);
 				// 
 				// FormAbout
 				// 
 				this->AcceptButton = this->btnOK;
-				this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
+				resources->ApplyResources(this, L"$this");
 				this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-				this->ClientSize = System::Drawing::Size(392, 139);
+				this->Controls->Add(this->linkDonation);
 				this->Controls->Add(this->linkHomepage);
 				this->Controls->Add(this->btnOK);
 				this->Controls->Add(this->lblAppAndVersion);
@@ -104,7 +103,6 @@ namespace Ambiesoft {
 				this->Name = L"FormAbout";
 				this->ShowIcon = false;
 				this->ShowInTaskbar = false;
-				this->Text = L"FormAbout";
 				this->FormClosing += gcnew System::Windows::Forms::FormClosingEventHandler(this, &FormAbout::FormAbout_FormClosing);
 				this->ResumeLayout(false);
 				this->PerformLayout();
@@ -112,11 +110,21 @@ namespace Ambiesoft {
 			}
 #pragma endregion
 		private:
+			bool forceClose_;
+		public:
+			void ForceClose()
+			{
+				forceClose_ = true;
+				Close();
+			}
+		private:
 			System::Void btnOK_Click(System::Object^ sender, System::EventArgs^ e) {
 				Close();
 			}
 			System::Void FormAbout_FormClosing(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e);
 			System::Void linkHomepage_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
-		};
+			System::Void linkDonation_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e);
+		
+};
 	}
 }

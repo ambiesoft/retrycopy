@@ -348,7 +348,7 @@ namespace Ambiesoft {
 					return;
 				AddSourceText(dirs);
 			}
-			else if (ctxNavigate->Tag == btnNavDestination)
+			else if (sender == btnNavDestination)
 			{
 				String^ destination;
 				if (!browseFolder(this, I18N(L"Select destination file"), destination))
@@ -361,14 +361,14 @@ namespace Ambiesoft {
 				DASSERT(false);
 		}
 
-		System::Void FormMain::btnNavDestination_Click(System::Object^ sender, System::EventArgs^ e)
-		{
-			System::Drawing::Point pos(
-				btnNavDestination->Location.X + btnNavDestination->Size.Width,
-				btnNavDestination->Location.Y);
-			ctxNavigate->Tag = btnNavDestination;
-			ctxNavigate->Show(this, pos.X, pos.Y);
-		}
+		//System::Void FormMain::btnNavDestination_Click(System::Object^ sender, System::EventArgs^ e)
+		//{
+		//	System::Drawing::Point pos(
+		//		btnNavDestination->Location.X + btnNavDestination->Size.Width,
+		//		btnNavDestination->Location.Y);
+		//	ctxNavigate->Tag = btnNavDestination;
+		//	ctxNavigate->Show(this, pos.X, pos.Y);
+		//}
 
 		System::Void FormMain::cmbOverwrite_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e)
 		{
@@ -460,6 +460,10 @@ namespace Ambiesoft {
 					return;
 				}
 			}
+
+			logForm_->ForceClose();
+			if(aboutForm_)
+				aboutForm_->ForceClose();
 
 			HashIni^ ini = Profile::ReadAll(IniPath);
 

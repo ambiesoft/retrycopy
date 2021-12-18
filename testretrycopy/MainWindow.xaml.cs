@@ -467,6 +467,17 @@ namespace testretrycopy
             checkMockFile();
         }
         void checkMockFile()
+        {
+            try
+            {
+                DocheckMockFile();
+            }
+            catch (Exception ex)
+            {
+                AppendLog(ex.Message);
+            }
+        }
+        void DocheckMockFile()
         { 
             // 10Mb file = 10 * 1024 * 1024;
             // 0-100k=OK (100*1024)
