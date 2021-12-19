@@ -18,6 +18,8 @@ gitrev:
     - .
     - ../lsMisc
     - ../distSolution
+    - ../profile
+    - ../infra
   outheader: retrycopy/gitrev.h
   outtxt: retrycopy/gitrev
   char: wchar

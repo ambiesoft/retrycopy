@@ -272,9 +272,9 @@ namespace testretrycopy
                 return false;
             }
         }
-        bool IsFileMoved(PathInfo[] paths, string destRoot)
+        bool IsFileMoved(PathInfo[] paths, string destRoot, int fileCount)
         {
-            if (paths.Length != Directory.GetFiles(destRoot, "*", SearchOption.AllDirectories).Length)
+            if (fileCount != Directory.GetFiles(destRoot, "*", SearchOption.AllDirectories).Length)
                 return false;
             foreach (var path in paths)
             {
@@ -289,6 +289,10 @@ namespace testretrycopy
                     return false;
             }
             return true;
+        }
+        bool IsFileMoved(PathInfo[] paths, string destRoot)
+        {
+            return IsFileMoved(paths, destRoot, paths.Length);
         }
         void dirCommon(bool copy)
         {
@@ -565,6 +569,34 @@ namespace testretrycopy
                 Path.GetFullPath(path3.ThePath),
                 Path.GetFullPath(path4.ThePath),
                 Path.GetFullPath(outdir)));
+        }
+
+        private void btnMoveToAlreadyExistingDirectory_Click(object sender, RoutedEventArgs e)
+        {
+            bool bCopy = false;
+
+            CppUtils.DeleteFile(".\\target");
+            CppUtils.DeleteFile(".\\source");
+
+            var pathAe1 = new PathInfo(".\\target\\file1", PathType.File, GetRandomByte(10));
+            var pathAe2 = new PathInfo(".\\target\\file2", PathType.File, GetRandomByte(10));
+
+            var pathToMove1 = new PathInfo(".\\source\\moving1", PathType.File, GetRandomByte(12));
+            var pathToMove2 = new PathInfo(".\\source\\moving2", PathType.File, GetRandomByte(132));
+            var pathToMove3 = new PathInfo(".\\source\\moving3", PathType.File, GetRandomByte(122));
+
+            StartRetryCopy(String.Format("{0} {1} {2} -d .\\target -ov Ask -op " +
+                (bCopy ? "copy" : (chkRecycle.IsChecked.GetValueOrDefault() ? "moverecycle" : "move")),
+                pathToMove1.ThePath, pathToMove2.ThePath, pathToMove3.ThePath));
+
+
+            AppendLog(IsFileMoved(
+                new PathInfo[] { pathToMove1, pathToMove2, pathToMove3 },
+                ".\\target",
+                5) ? "OK" : "NG");
+
+            AppendLog(File.Exists(pathAe1.ThePath) ? "OK" : "NG");
+            AppendLog(File.Exists(pathAe2.ThePath) ? "OK" : "NG");
         }
     }
 }
