@@ -680,6 +680,11 @@ namespace Ambiesoft {
 			current->AddRange(files);
 			SetSourceText(current->ToArray());
 		}
+
+		System::Void FormMain::tsmiHelp_Click(System::Object^ sender, System::EventArgs^ e)
+		{
+			OpenUrl(L"https://github.com/ambiesoft/retrycopy/blob/main/README.md");
+		}
 	}
 
 }

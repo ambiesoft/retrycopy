@@ -140,9 +140,6 @@
   <data name="linkDonation.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="&gt;&gt;lblAppAndVersion.Name" xml:space="preserve">
-    <value>lblAppAndVersion</value>
-  </data>
   <data name="lblAppAndVersion.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -151,6 +148,9 @@
   </data>
   <data name="&gt;&gt;linkDonation.Name" xml:space="preserve">
     <value>linkDonation</value>
+  </data>
+  <data name="linkDonation.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 76</value>
   </data>
   <data name="&gt;&gt;linkDonation.ZOrder" xml:space="preserve">
     <value>0</value>
@@ -209,8 +209,8 @@
   <data name="&gt;&gt;lblAppAndVersion.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="linkDonation.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 76</value>
+  <data name="&gt;&gt;lblAppAndVersion.Name" xml:space="preserve">
+    <value>lblAppAndVersion</value>
   </data>
   <data name="linkDonation.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -241,8 +241,5 @@
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
-  </metadata>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>ja-JP</value>
   </metadata>
 </root>

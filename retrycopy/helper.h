@@ -8,5 +8,6 @@ namespace Ambiesoft {
 
 		cli::array<String^>^ S2A(String^ args);
 		String^ V2S(const std::vector<std::wstring>& vs);
+		void OpenUrl(String^ url);
 	}
 }

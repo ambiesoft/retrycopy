@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "FormMain.h"
+#include "helper.h"
 #include "FormAbout.h"
+
 
 using namespace System::Diagnostics;
 namespace Ambiesoft {
@@ -12,17 +14,7 @@ namespace Ambiesoft {
 			e->Cancel = true;
 			Visible = false;
 		}
-		void OpenUrl(String^ url)
-		{
-			try
-			{
-				Process::Start(url);
-			}
-			catch (Exception^ ex)
-			{
-				CppUtils::Alert(ex);
-			}
-		}
+
 
 		System::Void FormAbout::linkHomepage_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e)
 		{

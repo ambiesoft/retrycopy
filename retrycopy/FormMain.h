@@ -93,6 +93,7 @@ namespace Ambiesoft {
 		private: System::Windows::Forms::Label^ label13;
 		private: System::Windows::Forms::ComboBox^ cmbOperation;
 		private: System::Windows::Forms::Button^ btnAddSource;
+		private: System::Windows::Forms::ToolStripSeparator^ toolStripMenuItem1;
 		private: System::Windows::Forms::ComboBox^ cmbOverwrite;
 
 
@@ -179,8 +180,9 @@ namespace Ambiesoft {
 				this->btnAbout = (gcnew System::Windows::Forms::Button());
 				this->ctxAbout = (gcnew System::Windows::Forms::ContextMenuStrip(this->components));
 				this->tsmiShowLog = (gcnew System::Windows::Forms::ToolStripMenuItem());
-				this->tsmiAboutThisApplication = (gcnew System::Windows::Forms::ToolStripMenuItem());
+				this->toolStripMenuItem1 = (gcnew System::Windows::Forms::ToolStripSeparator());
 				this->tsmiHelp = (gcnew System::Windows::Forms::ToolStripMenuItem());
+				this->tsmiAboutThisApplication = (gcnew System::Windows::Forms::ToolStripMenuItem());
 				this->btnClose = (gcnew System::Windows::Forms::Button());
 				this->ctxNavigate = (gcnew System::Windows::Forms::ContextMenuStrip(this->components));
 				this->tsmiFile = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -208,6 +210,7 @@ namespace Ambiesoft {
 				// 
 				// spTransitory.Panel1
 				// 
+				resources->ApplyResources(this->spTransitory->Panel1, L"spTransitory.Panel1");
 				this->spTransitory->Panel1->Controls->Add(this->label10);
 				this->spTransitory->Panel1->Controls->Add(this->label6);
 				this->spTransitory->Panel1->Controls->Add(this->label8);
@@ -217,6 +220,7 @@ namespace Ambiesoft {
 				// 
 				// spTransitory.Panel2
 				// 
+				resources->ApplyResources(this->spTransitory->Panel2, L"spTransitory.Panel2");
 				this->spTransitory->Panel2->Controls->Add(this->label11);
 				this->spTransitory->Panel2->Controls->Add(this->label7);
 				this->spTransitory->Panel2->Controls->Add(this->label9);
@@ -414,30 +418,36 @@ namespace Ambiesoft {
 				// 
 				// ctxAbout
 				// 
-				this->ctxAbout->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {
-					this->tsmiShowLog, this->tsmiAboutThisApplication,
-						this->tsmiHelp
+				resources->ApplyResources(this->ctxAbout, L"ctxAbout");
+				this->ctxAbout->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {
+					this->tsmiShowLog, this->toolStripMenuItem1,
+						this->tsmiHelp, this->tsmiAboutThisApplication
 				});
 				this->ctxAbout->Name = L"ctxAbout";
-				resources->ApplyResources(this->ctxAbout, L"ctxAbout");
 				this->ctxAbout->Opening += gcnew System::ComponentModel::CancelEventHandler(this, &FormMain::ctxAbout_Opening);
 				// 
 				// tsmiShowLog
 				// 
-				this->tsmiShowLog->Name = L"tsmiShowLog";
 				resources->ApplyResources(this->tsmiShowLog, L"tsmiShowLog");
+				this->tsmiShowLog->Name = L"tsmiShowLog";
 				this->tsmiShowLog->Click += gcnew System::EventHandler(this, &FormMain::showLogToolStripMenuItem_Click);
 				// 
-				// tsmiAboutThisApplication
+				// toolStripMenuItem1
 				// 
-				this->tsmiAboutThisApplication->Name = L"tsmiAboutThisApplication";
-				resources->ApplyResources(this->tsmiAboutThisApplication, L"tsmiAboutThisApplication");
-				this->tsmiAboutThisApplication->Click += gcnew System::EventHandler(this, &FormMain::tsmiAboutThisApplication_Click);
+				resources->ApplyResources(this->toolStripMenuItem1, L"toolStripMenuItem1");
+				this->toolStripMenuItem1->Name = L"toolStripMenuItem1";
 				// 
 				// tsmiHelp
 				// 
-				this->tsmiHelp->Name = L"tsmiHelp";
 				resources->ApplyResources(this->tsmiHelp, L"tsmiHelp");
+				this->tsmiHelp->Name = L"tsmiHelp";
+				this->tsmiHelp->Click += gcnew System::EventHandler(this, &FormMain::tsmiHelp_Click);
+				// 
+				// tsmiAboutThisApplication
+				// 
+				resources->ApplyResources(this->tsmiAboutThisApplication, L"tsmiAboutThisApplication");
+				this->tsmiAboutThisApplication->Name = L"tsmiAboutThisApplication";
+				this->tsmiAboutThisApplication->Click += gcnew System::EventHandler(this, &FormMain::tsmiAboutThisApplication_Click);
 				// 
 				// btnClose
 				// 
@@ -448,20 +458,20 @@ namespace Ambiesoft {
 				// 
 				// ctxNavigate
 				// 
+				resources->ApplyResources(this->ctxNavigate, L"ctxNavigate");
 				this->ctxNavigate->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) { this->tsmiFile, this->tsmiDirectory });
 				this->ctxNavigate->Name = L"ctxNavigate";
-				resources->ApplyResources(this->ctxNavigate, L"ctxNavigate");
 				// 
 				// tsmiFile
 				// 
-				this->tsmiFile->Name = L"tsmiFile";
 				resources->ApplyResources(this->tsmiFile, L"tsmiFile");
+				this->tsmiFile->Name = L"tsmiFile";
 				this->tsmiFile->Click += gcnew System::EventHandler(this, &FormMain::tsmiFile_Click);
 				// 
 				// tsmiDirectory
 				// 
-				this->tsmiDirectory->Name = L"tsmiDirectory";
 				resources->ApplyResources(this->tsmiDirectory, L"tsmiDirectory");
+				this->tsmiDirectory->Name = L"tsmiDirectory";
 				this->tsmiDirectory->Click += gcnew System::EventHandler(this, &FormMain::tsmiDirectory_Click);
 				// 
 				// udBuffer
@@ -487,9 +497,9 @@ namespace Ambiesoft {
 				// 
 				// cmbOperation
 				// 
+				resources->ApplyResources(this->cmbOperation, L"cmbOperation");
 				this->cmbOperation->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
 				this->cmbOperation->FormattingEnabled = true;
-				resources->ApplyResources(this->cmbOperation, L"cmbOperation");
 				this->cmbOperation->Name = L"cmbOperation";
 				this->cmbOperation->SelectedIndexChanged += gcnew System::EventHandler(this, &FormMain::cmbOperation_SelectedIndexChanged);
 				// 
@@ -660,8 +670,9 @@ namespace Ambiesoft {
 
 
 			System::Void txtSource_TextChanged(System::Object^ sender, System::EventArgs^ e);
-
-		}; // FormMain
+			System::Void tsmiHelp_Click(System::Object^ sender, System::EventArgs^ e);
+		
+}; // FormMain
 
 		enum class USERACTION {
 			UA_NONE,

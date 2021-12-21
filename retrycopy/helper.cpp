@@ -71,5 +71,17 @@ namespace Ambiesoft {
 			}
 			return ret.ToArray();
 		}
+
+		void OpenUrl(String^ url)
+		{
+			try
+			{
+				System::Diagnostics::Process::Start(url);
+			}
+			catch (Exception^ ex)
+			{
+				CppUtils::Alert(ex);
+			}
+		}
 	} // namespace
 }
