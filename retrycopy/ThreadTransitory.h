@@ -26,7 +26,7 @@ namespace Ambiesoft {
 			static OVERWRITE_TYPE userOverwrite_;
 			static OPERATION userOperation_;
 
-			static int userBuffer_ = 40960;
+			static int userBuffer_ = DEFAULTREADBUFFERSIZE;
 			static int userRetry_ = 10;
 
 			static String^ lastErrorDisp_ = String::Empty;
