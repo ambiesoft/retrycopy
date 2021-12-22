@@ -598,5 +598,34 @@ namespace testretrycopy
             AppendLog(File.Exists(pathAe1.ThePath) ? "OK" : "NG");
             AppendLog(File.Exists(pathAe2.ThePath) ? "OK" : "NG");
         }
+
+        private void btnDirectoryOverwrite_Click(object sender, RoutedEventArgs e)
+        {
+            bool bCopy = false;
+
+            CppUtils.DeleteFile(".\\target");
+            CppUtils.DeleteFile(".\\source");
+
+            var pathAe1 = new PathInfo(".\\target\\file1", PathType.File, GetRandomByte(10));
+            var pathAe2 = new PathInfo(".\\target\\file2", PathType.File, GetRandomByte(10));
+            byte[] bOrigFile3 = GetRandomByte(100);
+            var pathAe3 = new PathInfo(".\\target\\file3", PathType.File, bOrigFile3);
+
+            var pathToMove1 = new PathInfo(".\\source\\target\\moving1", PathType.File, GetRandomByte(12));
+            byte[] bFile1 = GetRandomByte(100);
+            var pathToMoveFile1 = new PathInfo(".\\source\\target\\file1", PathType.File, bFile1);
+            byte[] bFile2 = GetRandomByte(1000);
+            var pathToMoveFile2 = new PathInfo(".\\source\\target\\file2", PathType.File, bFile2);
+
+            StartRetryCopy(String.Format(".\\source\\target -d . -ov Ask -op " +
+                (bCopy ? "copy" : (chkRecycle.IsChecked.GetValueOrDefault() ? "moverecycle" : "move"))));
+
+            AppendLog(bOrigFile3.SequenceEqual(File.ReadAllBytes(".\\target\\file3")) ?
+                "OK" : "NG");
+            AppendLog(bFile1.SequenceEqual(File.ReadAllBytes(".\\target\\file1")) ?
+                "OK" : "NG");
+            AppendLog(bFile2.SequenceEqual(File.ReadAllBytes(".\\target\\file2")) ?
+                "OK" : "NG");
+        }
     }
 }

@@ -40,5 +40,6 @@
         <Button x:Name="btnMockRead_2byte" Content="MockRead 2byte" HorizontalAlignment="Left" Margin="168,205,0,0" VerticalAlignment="Top" Height="43" Width="101" Click="btnMockRead_2byte_Click"/>
         <Button x:Name="btnMockRead_1024byte" Content="MockRead 1024byte" HorizontalAlignment="Left" Margin="296,205,0,0" VerticalAlignment="Top" Height="43" Width="100" Click="btnMockRead_1024byte_Click"/>
         <Button x:Name="btnMoveToAlreadyExistingDirectory" Content="Move to already existing directory" HorizontalAlignment="Left" Margin="406,207,0,0" VerticalAlignment="Top" Height="41" Width="108" Click="btnMoveToAlreadyExistingDirectory_Click"/>
+        <Button x:Name="btnDirectoryOverwrite" Content="Overrite existing directory" HorizontalAlignment="Left" Margin="536,207,0,0" VerticalAlignment="Top" Height="41" Width="90" Click="btnDirectoryOverwrite_Click"/>
     </Grid>
 </Window>
