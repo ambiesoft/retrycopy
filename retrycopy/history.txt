@@ -1,3 +1,6 @@
+2021/12/22 v1.0.13
+Fixed: Adding a log after the log window has been closed raised an exception
+
 2021/12/21 v1.0.12
 I18N
 
