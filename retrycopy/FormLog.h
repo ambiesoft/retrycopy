@@ -78,14 +78,6 @@ namespace Ambiesoft {
 				this->PerformLayout();
 
 			}
-		private:
-			bool forceClose_;
-		public:
-			void ForceClose()
-			{
-				forceClose_ = true;
-				Close();
-			}
 #pragma endregion
 		private:
 			System::Void FormLog_FormClosing(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e);

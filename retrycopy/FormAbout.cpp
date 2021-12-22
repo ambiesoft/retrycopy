@@ -9,8 +9,6 @@ namespace Ambiesoft {
 	namespace retrycopy {
 		System::Void FormAbout::FormAbout_FormClosing(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e)
 		{
-			if (!forceClose_)
-				return;
 			e->Cancel = true;
 			Visible = false;
 		}

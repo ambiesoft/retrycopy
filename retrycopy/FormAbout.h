@@ -110,14 +110,6 @@ namespace Ambiesoft {
 			}
 #pragma endregion
 		private:
-			bool forceClose_;
-		public:
-			void ForceClose()
-			{
-				forceClose_ = true;
-				Close();
-			}
-		private:
 			System::Void btnOK_Click(System::Object^ sender, System::EventArgs^ e) {
 				Close();
 			}

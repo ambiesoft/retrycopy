@@ -417,6 +417,8 @@ namespace Ambiesoft {
 
 			progressMain->Value = ThreadTransitory::TotalPercent;
 
+			DASSERT(logForm_);
+			DASSERT(!logForm_->IsDisposed);
 			logForm_->txtLog->AppendText(sbLogBuffer_.ToString());
 			sbLogBuffer_.Clear();
 
@@ -461,9 +463,9 @@ namespace Ambiesoft {
 				}
 			}
 
-			logForm_->ForceClose();
-			if(aboutForm_)
-				aboutForm_->ForceClose();
+			//logForm_->ForceClose();
+			//if(aboutForm_)
+			//	aboutForm_->ForceClose();
 
 			HashIni^ ini = Profile::ReadAll(IniPath);
 
@@ -483,6 +485,8 @@ namespace Ambiesoft {
 
 			CWaitCursor wc;
 			ThreadState = ThreadStateType::NONE;
+
+			Environment::Exit(0);
 		}
 		System::Void FormMain::btnSuspend_Click(System::Object^ sender, System::EventArgs^ e)
 		{
