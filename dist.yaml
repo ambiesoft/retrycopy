@@ -26,7 +26,7 @@ gitrev:
 
 archivingdir: Release\v143\retrycopy
 ShouldBeFiles:
-- Acknowledgements.txt
+- Acknowledgements.html
 - Ambiesoft.AmbLib.dll
 - Ambiesoft.AmbLib.pdb
 - Ambiesoft.AmbLibcpp.dll

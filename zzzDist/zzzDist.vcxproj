@@ -104,7 +104,7 @@
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)retrycopy\history.txt" "$(TargetDir)"
 copy "$(SolutionDir)README.md" "$(TargetDir)"
-copy "$(SolutionDir)Acknowledgements.txt" "$(TargetDir)"
+copy "$(SolutionDir)Acknowledgements.html" "$(TargetDir)"
 copy "$(SolutionDir)LICENSE" "$(TargetDir)"
 
 del "$(TargetDir)zzzDist.*"
@@ -131,7 +131,7 @@ C:\LegacyPrograms\FFC\FFC.exe /t12 "$(SolutionDir)GetDriveInfo\bin\$(Configurati
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)retrycopy\history.txt" "$(TargetDir)"
 copy "$(SolutionDir)README.md" "$(TargetDir)"
-copy "$(SolutionDir)Acknowledgements.txt" "$(TargetDir)"
+copy "$(SolutionDir)Acknowledgements.html" "$(TargetDir)"
 copy "$(SolutionDir)LICENSE" "$(TargetDir)"
 
 del "$(TargetDir)zzzDist.*"
@@ -154,7 +154,7 @@ C:\LegacyPrograms\FFC\FFC.exe /t12 "$(SolutionDir)GetDriveInfo\bin\$(Configurati
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)retrycopy\history.txt" "$(TargetDir)"
 copy "$(SolutionDir)README.md" "$(TargetDir)"
-copy "$(SolutionDir)Acknowledgements.txt" "$(TargetDir)"
+copy "$(SolutionDir)Acknowledgements.html" "$(TargetDir)"
 copy "$(SolutionDir)LICENSE" "$(TargetDir)"
 
 del "$(TargetDir)zzzDist.*"
@@ -181,7 +181,7 @@ C:\LegacyPrograms\FFC\FFC.exe /t12 "$(SolutionDir)GetDriveInfo\bin\$(Configurati
     <PostBuildEvent>
       <Command>copy "$(SolutionDir)retrycopy\history.txt" "$(TargetDir)"
 copy "$(SolutionDir)README.md" "$(TargetDir)"
-copy "$(SolutionDir)Acknowledgements.txt" "$(TargetDir)"
+copy "$(SolutionDir)Acknowledgements.html" "$(TargetDir)"
 copy "$(SolutionDir)LICENSE" "$(TargetDir)"
 
 del "$(TargetDir)zzzDist.*"
