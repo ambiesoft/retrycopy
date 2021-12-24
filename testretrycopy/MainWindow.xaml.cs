@@ -627,5 +627,21 @@ namespace testretrycopy
             AppendLog(bFile2.SequenceEqual(File.ReadAllBytes(".\\target\\file2")) ?
                 "OK" : "NG");
         }
+
+        private void btnBiggerFileThanFreeSpace_Click(object sender, RoutedEventArgs e)
+        {
+            bool bCopy = false;
+
+            CppUtils.DeleteFile("X:\\target");
+            CppUtils.DeleteFile(".\\source");
+
+            byte[] bFile1 = GetRandomByte(100);
+            var pathToMoveFile1 = new PathInfo(".\\source\\file1", PathType.File, bFile1);
+            byte[] bFile2 = GetRandomByte(100 * 1024 * 1024);
+            var pathToMoveFile2 = new PathInfo(".\\source\\file2", PathType.File, bFile2);
+
+            StartRetryCopy(String.Format(".\\source -d X:\\target -ov Ask -op " +
+                (bCopy ? "copy" : (chkRecycle.IsChecked.GetValueOrDefault() ? "moverecycle" : "move"))));
+        }
     }
 }

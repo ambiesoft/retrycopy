@@ -566,7 +566,7 @@ namespace Ambiesoft {
 			//HANDLE hDestination_;
 			void StartOfThreadMaster(Object^ obj);
 			String^ CheckFiles(ThreadDataMaster^ thDataMaster, bool% bCancel);
-			bool StartOfThreadMaster2(ThreadDataMaster^);
+			bool StartOfThreadMaster2(ThreadDataMaster^, String^% initialError);
 			void StartOfThreadFile(ThreadDataFile^ thData);
 			void ThreadStarted(int tn);
 			bool OnThreadYesNo(int tn, String^ question);

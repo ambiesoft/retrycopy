@@ -522,6 +522,12 @@ namespace Ambiesoft {
 				DASSERT(false);
 			}
 		};
+
+		namespace {
+			String^ asStartAndEndline(String^ line) {
+				return String::Format(L"========== {0} ==========", line);
+			}
+		}
 		void FormMain::ThreadState::set(ThreadStateType ts)
 		{
 			if (threadState_ == ts)
@@ -539,7 +545,7 @@ namespace Ambiesoft {
 					theThread_->Join();
 					delete theThread_;
 					theThread_ = nullptr;
-					AppendLog(I18N(L"Task Ended"), true);
+					AppendLog(asStartAndEndline(I18N(L"Task Ended")), true);
 				}
 				txtSource->ReadOnly = false;
 				btnNavSource->Enabled = true;
@@ -565,7 +571,7 @@ namespace Ambiesoft {
 					cmbOperation->Enabled = false;
 					btnStart->Enabled = false;
 					btnSuspend->Enabled = true;
-					AppendLog(I18N(L"Task Started"), true);
+					AppendLog(asStartAndEndline(I18N(L"Task Started")), true);
 				}
 				else if (threadState_ == ThreadStateType::PAUSED)
 				{

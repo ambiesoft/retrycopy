@@ -48,9 +48,20 @@ namespace Ambiesoft {
 				BeginInvoke(gcnew VIDelegate(this, &FormMain::ThreadStarted),
 					thDataMaster->ThreadNumber));
 
-			if (!StartOfThreadMaster2(thDataMaster))
-				return;
+			String^ initialError;
+			bool bSOTM2 = StartOfThreadMaster2(thDataMaster, initialError);
+				
+			if (!String::IsNullOrEmpty(initialError))
+			{
+				EndInvokeWithTN(
+					thDataMaster->ThreadNumber,
+					BeginInvoke(gcnew VISDelegate(this, &FormMain::OnThreadAlert),
+						thDataMaster->ThreadNumber,
+						initialError));
+			}
 
+			if (!bSOTM2)
+				return;
 			BeginInvoke(gcnew VTmDelegate(this, &FormMain::ThreadFinished), thDataMaster);
 		}
 
@@ -252,9 +263,8 @@ namespace Ambiesoft {
 				return s;
 			return s + L"\\";
 		}
-		bool FormMain::StartOfThreadMaster2(ThreadDataMaster^ thDataMaster)
+		bool FormMain::StartOfThreadMaster2(ThreadDataMaster^ thDataMaster, String^% initialError)
 		{
-			String^ initialError;
 			if (!CDebug::IsMockReadFile)
 			{
 				bool bCancel = false;
@@ -264,11 +274,6 @@ namespace Ambiesoft {
 			}
 			if (!String::IsNullOrEmpty(initialError))
 			{
-				EndInvokeWithTN(
-					thDataMaster->ThreadNumber,
-					BeginInvoke(gcnew VISDelegate(this, &FormMain::OnThreadAlert),
-						thDataMaster->ThreadNumber,
-						initialError));
 				return true;
 			}
 
@@ -314,8 +319,6 @@ namespace Ambiesoft {
 
 			try
 			{
-				thDataMaster->SetTaskStarted();
-
 				String^ message;
 
 				// calc total input size
@@ -342,6 +345,37 @@ namespace Ambiesoft {
 						}
 					}
 				}
+
+				// check free space
+				if (!CDebug::IsMockReadFile)
+				{
+					ULARGE_INTEGER freeAvailable;
+					if (!GetDiskFreeSpaceEx(TO_LPCWSTR(thDataMaster->Dst),
+						&freeAvailable, nullptr, nullptr))
+					{
+						initialError = gcnew String(GetLastErrorString(GetLastError()).c_str());
+						return false;
+					}
+
+					if ((ULONGLONG)totalInputSize > freeAvailable.QuadPart)
+					{
+						if (!(bool)EndInvokeWithTN(
+							thDataMaster->ThreadNumber,
+							BeginInvoke(
+								gcnew BISDelegate(this, &FormMain::OnThreadYesNo),
+								thDataMaster->ThreadNumber,
+								I18N(L"There may not be enough available disk space. Are you sure to continue?")
+							) // BeginInvoke
+						) // EndInvoke
+							) // if
+						{
+							return true;
+						}
+					}
+				}
+
+				thDataMaster->SetTaskStarted();
+
 				thDataMaster->SetTotalSize(totalInputSize, totalFileCount);
 				ThreadTransitory::TotalCount = totalFileCount;
 

@@ -41,5 +41,6 @@
         <Button x:Name="btnMockRead_1024byte" Content="MockRead 1024byte" HorizontalAlignment="Left" Margin="296,205,0,0" VerticalAlignment="Top" Height="43" Width="100" Click="btnMockRead_1024byte_Click"/>
         <Button x:Name="btnMoveToAlreadyExistingDirectory" Content="Move to already existing directory" HorizontalAlignment="Left" Margin="406,207,0,0" VerticalAlignment="Top" Height="41" Width="108" Click="btnMoveToAlreadyExistingDirectory_Click"/>
         <Button x:Name="btnDirectoryOverwrite" Content="Overrite existing directory" HorizontalAlignment="Left" Margin="536,207,0,0" VerticalAlignment="Top" Height="41" Width="90" Click="btnDirectoryOverwrite_Click"/>
+        <Button x:Name="btnBiggerFileThanFreeSpace" Content="Bigger Than Free" HorizontalAlignment="Left" Margin="644,207,0,0" VerticalAlignment="Top" Height="41" Width="62" Click="btnBiggerFileThanFreeSpace_Click"/>
     </Grid>
 </Window>

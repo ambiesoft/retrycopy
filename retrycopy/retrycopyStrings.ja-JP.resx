@@ -465,6 +465,9 @@
   <data name="The total number of clusters of the dirve '{0}' is {1}." xml:space="preserve">
     <value>ドライブ '{0}' の全クラスタ数は {1} です。</value>
   </data>
+  <data name="There may not be enough available disk space. Are you sure to continue?" xml:space="preserve">
+    <value>ディスクスペースが足りない可能性があります。続けますか？</value>
+  </data>
   <data name="Total file size = {0}" xml:space="preserve">
     <value>すべてのファイルサイズ={0}</value>
   </data>
