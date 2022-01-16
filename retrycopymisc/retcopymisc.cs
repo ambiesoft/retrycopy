@@ -26,26 +26,27 @@ namespace Ambiesoft
             TaskbarManager.Instance.SetProgressValue(v, 100);
         }
 
-        static string[] GetMultipleCommon(string title, bool isFolder)
+        static string[] GetMultipleCommon(string title, bool isFolder, string initialDir)
         {
             using (CommonOpenFileDialog dialog = new CommonOpenFileDialog())
             {
                 dialog.IsFolderPicker = isFolder;
                 dialog.Multiselect = true;
                 dialog.Title = title;
+                dialog.InitialDirectory = initialDir;
                 if (dialog.ShowDialog() != CommonFileDialogResult.Ok)
                     return null;
 
                 return dialog.FileNames.ToArray();
             }
         }
-        public static string[] GetMultipleFilesFromUser(string title)
+        public static string[] GetMultipleFilesFromUser(string title, string initialDir)
         {
-            return GetMultipleCommon(title, false);
+            return GetMultipleCommon(title, false, initialDir);
         }
-        public static string[] GetMultipleFoldersFromUser(string title)
+        public static string[] GetMultipleFoldersFromUser(string title, string initialDir)
         {
-            return GetMultipleCommon(title, true);
+            return GetMultipleCommon(title, true, initialDir);
         }
     }
 }

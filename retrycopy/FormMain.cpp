@@ -66,6 +66,11 @@ namespace Ambiesoft {
 			if (0 <= intval && intval < cmbOperation->Items->Count)
 				cmbOperation->SelectedIndex = intval;
 
+			Profile::GetString(SECTION_OPTION, KEY_SRCDIALOGDIR,
+				nullptr, srcDialogDir_, ini);
+			Profile::GetString(SECTION_OPTION, KEY_DSTDIALOGDIR,
+				nullptr, dstDialogDir_, ini);
+
 			// Second, read from command line
 			{
 				CCommandLineParser parser(
@@ -286,47 +291,57 @@ namespace Ambiesoft {
 			if (bNow)
 				timerUpdate_Tick(nullptr, nullptr);
 		}
-		System::Void FormMain::btnNavSource_Click(System::Object^ sender, System::EventArgs^ e)
+		void FormMain::OnButtonNavSourceCommon(System::Windows::Forms::Button^ button)
 		{
 			System::Drawing::Point pos(
-				btnNavSource->Location.X + btnNavSource->Size.Width,
-				btnNavSource->Location.Y);
-			ctxNavigate->Tag = btnNavSource;
+				button->Location.X,
+				button->Location.Y + button->Size.Height);
+			ctxNavigate->Tag = button;
 			ctxNavigate->Show(this, pos.X, pos.Y);
+		}
+		System::Void FormMain::btnNavSource_Click(System::Object^ sender, System::EventArgs^ e)
+		{
+			OnButtonNavSourceCommon(btnNavSource);
 		}
 		System::Void FormMain::btnAddSource_Click(System::Object^ sender, System::EventArgs^ e)
 		{
-			System::Drawing::Point pos(
-				btnNavSource->Location.X + btnNavSource->Size.Width,
-				btnNavSource->Location.Y);
-			ctxNavigate->Tag = btnAddSource;
-			ctxNavigate->Show(this, pos.X, pos.Y);
+			OnButtonNavSourceCommon(btnAddSource);
 		}
 
 		System::Void FormMain::tsmiFile_Click(System::Object^ sender, System::EventArgs^ e)
 		{
-			if (ctxNavigate->Tag == btnNavSource)
+			DASSERT(ctxNavigate->Tag != btnNavDestination);
+
+			if(false)
+			{ }
+			//else if (ctxNavigate->Tag == btnNavDestination)
+			//{
+			//	String^ destination = AmbLib::GetSaveFileDialog(I18N(L"Select destination file"));
+			//	if (String::IsNullOrEmpty(destination))
+			//		return;
+			//	txtDestination->Text = destination;
+			//}
+			else if (ctxNavigate->Tag == btnNavSource)
 			{
 				cli::array<String^>^ files =
-					RetrycopyMisc::GetMultipleFilesFromUser(I18N(L"Select source files"));
+					RetrycopyMisc::GetMultipleFilesFromUser(
+						I18N(L"Select source files"),
+						srcDialogDir_);
 				if (!files)
 					return;
 				SetSourceText(files);
+				srcDialogDir_ = Path::GetDirectoryName(files[0]);
 			}
 			else if (ctxNavigate->Tag == btnAddSource)
 			{
 				cli::array<String^>^ files =
-					RetrycopyMisc::GetMultipleFilesFromUser(I18N(L"Select source files (Add)"));
+					RetrycopyMisc::GetMultipleFilesFromUser(
+						I18N(L"Select source files (Add)"),
+						srcDialogDir_);
 				if (!files)
 					return;
 				AddSourceText(files);
-			}
-			else if (ctxNavigate->Tag == btnNavDestination)
-			{
-				String^ destination = AmbLib::GetSaveFileDialog(I18N(L"Select destination file"));
-				if (String::IsNullOrEmpty(destination))
-					return;
-				txtDestination->Text = destination;
+				srcDialogDir_ = Path::GetDirectoryName(files[0]);
 			}
 			else
 				DASSERT(false);
@@ -334,28 +349,37 @@ namespace Ambiesoft {
 
 		System::Void FormMain::tsmiDirectory_Click(System::Object^ sender, System::EventArgs^ e)
 		{
-			if (ctxNavigate->Tag == btnNavSource)
-			{
-				cli::array<String^>^ dirs = RetrycopyMisc::GetMultipleFoldersFromUser(I18N(L"Select source directory"));
-				if (!dirs)
-					return;
-				SetSourceText(dirs);
-			}
-			if (ctxNavigate->Tag == btnAddSource)
-			{
-				cli::array<String^>^ dirs = RetrycopyMisc::GetMultipleFoldersFromUser(I18N(L"Select source directory"));
-				if (!dirs)
-					return;
-				AddSourceText(dirs);
-			}
+			if(false)
+			{ }
 			else if (sender == btnNavDestination)
 			{
-				String^ destination;
+				String^ destination = dstDialogDir_;
 				if (!browseFolder(this, I18N(L"Select destination file"), destination))
 					return;
 				if (String::IsNullOrEmpty(destination))
 					return;
 				txtDestination->Text = destination;
+				dstDialogDir_ = destination;
+			}
+			else if (ctxNavigate->Tag == btnNavSource)
+			{
+				cli::array<String^>^ dirs = RetrycopyMisc::GetMultipleFoldersFromUser(
+					I18N(L"Select source directory"),
+					srcDialogDir_);
+				if (!dirs)
+					return;
+				SetSourceText(dirs);
+				srcDialogDir_ = dirs[0];
+			}
+			else if (ctxNavigate->Tag == btnAddSource)
+			{
+				cli::array<String^>^ dirs = RetrycopyMisc::GetMultipleFoldersFromUser(
+					I18N(L"Select source directory"),
+					srcDialogDir_);
+				if (!dirs)
+					return;
+				AddSourceText(dirs);
+				srcDialogDir_ = dirs[0];
 			}
 			else
 				DASSERT(false);
@@ -478,6 +502,10 @@ namespace Ambiesoft {
 			Profile::WriteInt(SECTION_OPTION, KEY_OVERWRITE, cmbOverwrite->SelectedIndex, ini);
 			Profile::WriteInt(SECTION_OPTION, KEY_OPERATION, cmbOperation->SelectedIndex, ini);
 
+			Profile::WriteString(SECTION_OPTION, KEY_SRCDIALOGDIR,
+				srcDialogDir_, ini);
+			Profile::WriteString(SECTION_OPTION, KEY_DSTDIALOGDIR,
+				dstDialogDir_, ini);
 			if (!Profile::WriteAll(ini, IniPath))
 			{
 				CppUtils::Alert(this, I18N(L"Failed to save ini."));

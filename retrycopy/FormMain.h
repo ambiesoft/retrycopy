@@ -30,6 +30,8 @@ namespace Ambiesoft {
 			static initonly String^ KEY_BUFFER_SIZE = "BufferSize";
 			static initonly String^ KEY_OVERWRITE = "Overwrite";
 			static initonly String^ KEY_OPERATION = "Operation";
+			static initonly String^ KEY_SRCDIALOGDIR = "SrcDialogDir";
+			static initonly String^ KEY_DSTDIALOGDIR = "DstDialogDir";
 			static property String^ IniPath
 			{
 				String^ get();
@@ -45,6 +47,8 @@ namespace Ambiesoft {
 			{
 				String^ get() { return lblSourceOrig_; }
 			}
+			String^ srcDialogDir_;
+			String^ dstDialogDir_;
 		private: System::Windows::Forms::Label^ label1;
 		private: System::Windows::Forms::Label^ lblBuffer;
 		private: System::Windows::Forms::Label^ label2;
@@ -627,6 +631,7 @@ namespace Ambiesoft {
 			void AddSourceText(String^ file) {
 				AddSourceText(gcnew cli::array<String^>{file});
 			}
+			void OnButtonNavSourceCommon(System::Windows::Forms::Button^ button);
 		internal:
 			//static property bool AppClosing
 			//{
