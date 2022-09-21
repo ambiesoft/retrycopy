@@ -221,7 +221,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="history.txt">
+    <Text Include="dists\history.txt">
       <Filter>04 dists</Filter>
     </Text>
   </ItemGroup>
@@ -232,5 +232,13 @@
     <EmbeddedResource Include="retrycopyStrings.ja-JP.resx">
       <Filter>03 Resource Files</Filter>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dists\README.jp.md">
+      <Filter>04 dists</Filter>
+    </None>
+    <None Include="dists\README.md">
+      <Filter>04 dists</Filter>
+    </None>
   </ItemGroup>
 </Project>

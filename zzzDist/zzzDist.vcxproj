@@ -102,8 +102,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(SolutionDir)retrycopy\history.txt" "$(TargetDir)"
-copy "$(SolutionDir)README.md" "$(TargetDir)"
+      <Command>copy "$(SolutionDir)retrycopy\dists\history.txt" "$(TargetDir)"
+copy "$(SolutionDir)retrycopy\dists\README.md" "$(TargetDir)"
+copy "$(SolutionDir)retrycopy\dists\README.jp.md" "$(TargetDir)"
 copy "$(SolutionDir)Acknowledgements.html" "$(TargetDir)"
 copy "$(SolutionDir)LICENSE" "$(TargetDir)"
 
@@ -129,8 +130,9 @@ C:\LegacyPrograms\FFC\FFC.exe /t12 "$(SolutionDir)GetDriveInfo\bin\$(Configurati
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(SolutionDir)retrycopy\history.txt" "$(TargetDir)"
-copy "$(SolutionDir)README.md" "$(TargetDir)"
+      <Command>copy "$(SolutionDir)retrycopy\dists\history.txt" "$(TargetDir)"
+copy "$(SolutionDir)retrycopy\dists\README.md" "$(TargetDir)"
+copy "$(SolutionDir)retrycopy\dists\README.jp.md" "$(TargetDir)"
 copy "$(SolutionDir)Acknowledgements.html" "$(TargetDir)"
 copy "$(SolutionDir)LICENSE" "$(TargetDir)"
 
@@ -152,8 +154,9 @@ C:\LegacyPrograms\FFC\FFC.exe /t12 "$(SolutionDir)GetDriveInfo\bin\$(Configurati
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(SolutionDir)retrycopy\history.txt" "$(TargetDir)"
-copy "$(SolutionDir)README.md" "$(TargetDir)"
+      <Command>copy "$(SolutionDir)retrycopy\dists\history.txt" "$(TargetDir)"
+copy "$(SolutionDir)retrycopy\dists\README.md" "$(TargetDir)"
+copy "$(SolutionDir)retrycopy\dists\README.jp.md" "$(TargetDir)"
 copy "$(SolutionDir)Acknowledgements.html" "$(TargetDir)"
 copy "$(SolutionDir)LICENSE" "$(TargetDir)"
 
@@ -179,8 +182,9 @@ C:\LegacyPrograms\FFC\FFC.exe /t12 "$(SolutionDir)GetDriveInfo\bin\$(Configurati
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(SolutionDir)retrycopy\history.txt" "$(TargetDir)"
-copy "$(SolutionDir)README.md" "$(TargetDir)"
+      <Command>copy "$(SolutionDir)retrycopy\dists\history.txt" "$(TargetDir)"
+copy "$(SolutionDir)retrycopy\dists\README.md" "$(TargetDir)"
+copy "$(SolutionDir)retrycopy\dists\README.jp.md" "$(TargetDir)"
 copy "$(SolutionDir)Acknowledgements.html" "$(TargetDir)"
 copy "$(SolutionDir)LICENSE" "$(TargetDir)"
 

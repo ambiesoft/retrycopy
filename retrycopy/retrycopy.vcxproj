@@ -367,7 +367,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="history.txt" />
+    <Text Include="dists\history.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dists\README.jp.md" />
+    <None Include="dists\README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
