@@ -2,7 +2,6 @@
 Copy files from a broken HDD
 
 # Explanation
-このアプリケーションは正常でなくなったHDDからできるだけファイルを回復することを目的とします。しかし以下のようなHDDは扱いません
 This application aims to recover files from a broken HDD. However, the following HDDs are not handled.
 * Unrecognized HDD
 * HDD with unrecognized disk format or data which file path is not known
@@ -40,20 +39,20 @@ Delete the unzipped files.
 The read error dialog will appear. The options are as follows.
 * Change the size of the buffer. The size of the buffer when reading, but when this error occurs, the file was read up to the point just before the unreadable position regardless of this size.
 * Change the number of retries. If this number of attempts is exceeded, the dialog is displayed.
-* 読み込みをあきらめてゼロを書き込む。設定されているバッファのサイズの読み込みを飛ばしてそのサイズ分のゼロを書き込み次へ進みます。このときのバッファのサイズはセクターのサイズを最大とする２の累乗がいいと思っています（確信はありません）。
-* 上記の作業を自動で行う。手動で行うとエラーが連続しすぎて大変な時は自動化もできます。
-* 再試行。もう一度読み込み処理を試みます。
+* Give up reading and write zeros. Skips reading the size of the buffer and writes zeros of that size and proceeds to the next step. I believe (but am not certain) that the size of the buffer at this time should be a power of 2, with the size of the sector being the largest.
+* Perform the above process automatically. If doing it manually is too difficult due to a series of errors, it can be automated.
+* Retry. Attempt the read process again.
 
-# コピー終了時
-どのようにコピーが行われたかはログで確認できます。ダイアログ左下の・・・ボタンから「ログを表示」をクリックしてください。
+# At the end of copying
+You can see how the copy was made in the log. Click on "Show Log" from the ... button at the bottom left of the dialog.
 
-# ライセンス
-このソフトはフリーウェアです。LICENSEファイルをご覧ください。
+# LICENSE
+This software is freeware, see LICENSE file.
 
-# コンタクト
-- 製作者: Ambiesoft trueff
-- メール: <ambiesoft.trueff@gmail.com>
-- ウェブサイト: <https://ambiesoft.github.io/webjumper/?target=retrycopy>
-- 掲示板: <https://ambiesoft.com/minibbs/minibbs.php>
-- 寄付: <https://ambiesoft.github.io/webjumper/?target=donate>
-- 開発: <https://github.com/ambiesoft/retrycopy>
+# Contact
+- Author: Ambiesoft trueff
+- email: <ambiesoft.trueff@gmail.com>
+- Website: <https://ambiesoft.github.io/webjumper/?target=retrycopy>
+- BBS: <https://ambiesoft.com/minibbs/minibbs.php>
+- Donate: <https://ambiesoft.github.io/webjumper/?target=donate>
+- Development: <https://github.com/ambiesoft/retrycopy>
