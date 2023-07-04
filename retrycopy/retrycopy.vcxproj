@@ -164,16 +164,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Reference Include="Ambiesoft.AmbLib">
-      <HintPath>C:\Linkout\DNAssembly.NET4\Ambiesoft.AmbLib.dll</HintPath>
+      <HintPath>C:\Linkout\DNAssembly.NET4.5.2\Ambiesoft.AmbLib.dll</HintPath>
     </Reference>
     <Reference Include="Ambiesoft.AmbLibcpp">
-      <HintPath>C:\Linkout\DNAssembly.NET4\Ambiesoft.AmbLibcpp.dll</HintPath>
+      <HintPath>C:\Linkout\DNAssembly.NET4.5.2\Ambiesoft.AmbLibcpp.dll</HintPath>
     </Reference>
     <Reference Include="Ambiesoft.GetNumericTextDialog">
-      <HintPath>C:\Linkout\DNAssembly.NET4\Ambiesoft.GetNumericTextDialog.dll</HintPath>
+      <HintPath>C:\Linkout\DNAssembly.NET4.5.2\Ambiesoft.GetNumericTextDialog.dll</HintPath>
     </Reference>
     <Reference Include="Ambiesoft.Profile">
-      <HintPath>C:\Linkout\DNAssembly.NET4\Ambiesoft.Profile.dll</HintPath>
+      <HintPath>C:\Linkout\DNAssembly.NET4.5.2\Ambiesoft.Profile.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
