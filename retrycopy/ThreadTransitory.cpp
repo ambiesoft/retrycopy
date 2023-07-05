@@ -14,7 +14,7 @@ namespace Ambiesoft {
 		void ThreadTransitory::SetLastErrorDisp(LONGLONG pos, LONGLONG allSize, DWORD le, int retried)
 		{
 			lastErrorDisp_ = (
-				String::Format(I18N(L"Failed to ReadFile at {1} ({2}) {0} times"),
+				String::Format(I18N(L"ReadFile failed at {1} ({2}) ... {0}"),
 					retried,
 					pos,
 					gcnew String(GetLastErrorString(le).c_str())));

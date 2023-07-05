@@ -255,9 +255,6 @@
   <data name="Failed to read {0} bytes from {1} on the file '{2}' {3} times." xml:space="preserve">
     <value>読み込みに {3} 回失敗しました。位置＝{1}　サイズ＝{0}　ファイル＝{2}</value>
   </data>
-  <data name="Failed to ReadFile at {1} ({2}) {0} times" xml:space="preserve">
-    <value>位置 {1} でReadFileが {0} 回失敗しました （{2}）</value>
-  </data>
   <data name="Failed to save ini." xml:space="preserve">
     <value>iniの保存に失敗しました。</value>
   </data>
@@ -338,6 +335,9 @@
   </data>
   <data name="Preparing target directories..." xml:space="preserve">
     <value>コピー先ディレクトリを準備しています。</value>
+  </data>
+  <data name="ReadFile failed at {1} ({2}) ... {0}" xml:space="preserve">
+    <value>位置 {1} でReadFileが {0} 回失敗しました （{2}）</value>
   </data>
   <data name="Reading at {0} with size {1} {2} times..." xml:space="preserve">
     <value>位置 {0} からサイズ {1} で {2} 回目の読み込み中・・・</value>

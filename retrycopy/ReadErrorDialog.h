@@ -54,6 +54,8 @@ namespace Ambiesoft {
 		private: System::Windows::Forms::TextBox^ txtInfo;
 		private: System::Windows::Forms::Button^ btnShowDriveInfo;
 		private: System::Windows::Forms::Button^ btnChangeRetryCount;
+		private: System::Windows::Forms::Button^ btnGiveUpAndAllWZOmode;
+
 
 		private:
 			/// <summary>
@@ -78,6 +80,7 @@ namespace Ambiesoft {
 				this->btnGiveUpAndWZOmode = (gcnew System::Windows::Forms::Button());
 				this->btnShowDriveInfo = (gcnew System::Windows::Forms::Button());
 				this->btnChangeRetryCount = (gcnew System::Windows::Forms::Button());
+				this->btnGiveUpAndAllWZOmode = (gcnew System::Windows::Forms::Button());
 				(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->spMain))->BeginInit();
 				this->spMain->Panel1->SuspendLayout();
 				this->spMain->Panel2->SuspendLayout();
@@ -91,12 +94,10 @@ namespace Ambiesoft {
 				// 
 				// spMain.Panel1
 				// 
-				resources->ApplyResources(this->spMain->Panel1, L"spMain.Panel1");
 				this->spMain->Panel1->Controls->Add(this->txtMessage);
 				// 
 				// spMain.Panel2
 				// 
-				resources->ApplyResources(this->spMain->Panel2, L"spMain.Panel2");
 				this->spMain->Panel2->Controls->Add(this->txtInfo);
 				// 
 				// txtMessage
@@ -165,10 +166,20 @@ namespace Ambiesoft {
 				this->btnChangeRetryCount->Enter += gcnew System::EventHandler(this, &ReadErrorDialog::btnShowDriveInfo_Enter);
 				this->btnChangeRetryCount->MouseMove += gcnew System::Windows::Forms::MouseEventHandler(this, &ReadErrorDialog::btnShowDriveInfo_MouseMove);
 				// 
+				// btnGiveUpAndAllWZOmode
+				// 
+				resources->ApplyResources(this->btnGiveUpAndAllWZOmode, L"btnGiveUpAndAllWZOmode");
+				this->btnGiveUpAndAllWZOmode->Name = L"btnGiveUpAndAllWZOmode";
+				this->btnGiveUpAndAllWZOmode->UseVisualStyleBackColor = true;
+				this->btnGiveUpAndAllWZOmode->Click += gcnew System::EventHandler(this, &ReadErrorDialog::btnGiveUpAndAllWZOmode_Click);
+				this->btnGiveUpAndAllWZOmode->Enter += gcnew System::EventHandler(this, &ReadErrorDialog::btnShowDriveInfo_Enter);
+				this->btnGiveUpAndAllWZOmode->MouseMove += gcnew System::Windows::Forms::MouseEventHandler(this, &ReadErrorDialog::btnShowDriveInfo_MouseMove);
+				// 
 				// ReadErrorDialog
 				// 
 				resources->ApplyResources(this, L"$this");
 				this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+				this->Controls->Add(this->btnGiveUpAndAllWZOmode);
 				this->Controls->Add(this->btnShowDriveInfo);
 				this->Controls->Add(this->spMain);
 				this->Controls->Add(this->btnGiveUpAndWZOmode);
@@ -198,6 +209,8 @@ namespace Ambiesoft {
 			READERROR_RESPONSE responce_ = READERROR_RESPONSE::RR_NONE;
 			int bufferSize_ = 0;
 			int retryCount_ = 0;
+
+			void onClickWZOmodeCommon(const bool bAll);
 		public:
 			property int BufferSize
 			{
@@ -230,6 +243,7 @@ namespace Ambiesoft {
 			System::Void btnChangeRetryCount_Click(System::Object^ sender, System::EventArgs^ e);
 			System::Void btnGiveupAndWriteZero_Click(System::Object^ sender, System::EventArgs^ e);
 			System::Void btnGiveUpAndWZOmode_Click(System::Object^ sender, System::EventArgs^ e);
+			System::Void btnGiveUpAndAllWZOmode_Click(System::Object^ sender, System::EventArgs^ e);
 
 			System::Void btnShowDriveInfo_Click(System::Object^ sender, System::EventArgs^ e);
 			System::Void ReadErrorDialog_FormClosing(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e);
@@ -244,7 +258,6 @@ namespace Ambiesoft {
 				((Control^)sender)->Focus();
 			}
 			System::Void ReadErrorDialog_Load(System::Object^ sender, System::EventArgs^ e);
-
 		};
 	}
 }

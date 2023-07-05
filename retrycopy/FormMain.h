@@ -685,6 +685,7 @@ namespace Ambiesoft {
 			UA_CANCEL,
 			UA_IGNORE,
 			UA_WZOMODE,
+			UA_WZOMODEALL,
 		};
 		ref class UserResponceOfFail
 		{
@@ -710,6 +711,10 @@ namespace Ambiesoft {
 			property bool IsWZOMode
 			{
 				bool get() { return action_ == USERACTION::UA_WZOMODE; }
+			}
+			property bool IsWZOModeAll
+			{
+				bool get() { return action_ == USERACTION::UA_WZOMODEALL; }
 			}
 			property int BufferSize
 			{

@@ -475,7 +475,10 @@ namespace Ambiesoft {
 				rfd = gcnew UserResponceOfFail(USERACTION::UA_IGNORE, dlg.BufferSize);
 				break;
 			case READERROR_RESPONSE::RR_WZOMODE:
-				rfd = gcnew UserResponceOfFail(USERACTION::UA_WZOMODE, dlg.BufferSize);
+				// through
+			case READERROR_RESPONSE::RR_WZOMODEALL:
+				rfd = gcnew UserResponceOfFail(
+					res== READERROR_RESPONSE::RR_WZOMODE ? USERACTION::UA_WZOMODE: USERACTION::UA_WZOMODEALL, dlg.BufferSize);
 				udBuffer->Value = dlg.BufferSize;
 				ThreadTransitory::UserBuffer = dlg.BufferSize;
 				udRetry->Value = dlg.RetryCount;

@@ -458,6 +458,7 @@ namespace Ambiesoft {
 			}
 			bool initSrc = true;
 			bool bWZOMode = false;
+			bool bWZOModeAll = false;
 			int retried = 0;
 			int bufferSize = 0;
 			std::unique_ptr<BYTE[]> bb;
@@ -629,6 +630,14 @@ namespace Ambiesoft {
 						if (rfd->IsWZOMode)
 						{
 							bWZOMode = true;
+							bWZOModeAll = false;
+							retried = 0;
+							continue;
+						}
+						if (rfd->IsWZOModeAll)
+						{
+							bWZOMode = true;
+							bWZOModeAll = true;
 							retried = 0;
 							continue;
 						}
@@ -677,7 +686,8 @@ namespace Ambiesoft {
 				else
 				{
 					// ReadFile OK
-					bWZOMode = false;
+					if(!bWZOModeAll)
+						bWZOMode = false;
 					ThreadTransitory::ClearLastErrorDisp();
 				}
 

@@ -46,6 +46,10 @@ namespace Ambiesoft {
 			{
 				text = I18N(L"Gives up on reading from the file and write zeroes automatically that fails until it succeeds to read.");
 			}
+			else if (sender == btnGiveUpAndAllWZOmode)
+			{
+				text = I18N(L"Gives up on reading from the file and write zeroes automatically all the time that fails until it succeeds to read.");
+			}
 			else if (sender == btnRetry)
 			{
 				text = String::Empty;
@@ -104,25 +108,30 @@ namespace Ambiesoft {
 			this->DialogResult = System::Windows::Forms::DialogResult::OK;
 			Close();
 		}
-		System::Void ReadErrorDialog::btnGiveUpAndWZOmode_Click(System::Object^ sender, System::EventArgs^ e)
+		void ReadErrorDialog::onClickWZOmodeCommon(const bool bAll)
 		{
-			//if (initialBufferSize_ != 1)
-			//{
-			//	CppUtils::Info(this, I18N(L"Only available when 1-byte read fails. Please set the buffer size to 1 and Retry."));
-			//	return;
-			//}
 			String^ message = String::Format(
-				I18N(L"Are you sure to give up on reading {0} bytes and write {0} zeroes automatically that fails {1} times?"),
+				I18N(L"Are you sure to give up on reading {0} bytes and write {0} zeroes automatically {2}{3}that fails {1} times?"),
 				BufferSize,
-				RetryCount + 1);
+				RetryCount + 1,
+				bAll ? I18N(L"all the time") : L"",
+				bAll ? L" " : L"");
 			if (System::Windows::Forms::DialogResult::Yes !=
 				CppUtils::YesOrNo(this, message, MessageBoxDefaultButton::Button2))
 			{
 				return;
 			}
-			responce_ = READERROR_RESPONSE::RR_WZOMODE;
+			responce_ = bAll ? READERROR_RESPONSE::RR_WZOMODEALL : READERROR_RESPONSE::RR_WZOMODE;
 			this->DialogResult = System::Windows::Forms::DialogResult::OK;
 			Close();
+		}
+		System::Void ReadErrorDialog::btnGiveUpAndWZOmode_Click(System::Object^ sender, System::EventArgs^ e)
+		{
+			onClickWZOmodeCommon(false);
+		}
+		System::Void ReadErrorDialog::btnGiveUpAndAllWZOmode_Click(System::Object^ sender, System::EventArgs^ e)
+		{
+			onClickWZOmodeCommon(true);
 		}
 		System::Void ReadErrorDialog::btnShowDriveInfo_Click(System::Object^ sender, System::EventArgs^ e)
 		{
