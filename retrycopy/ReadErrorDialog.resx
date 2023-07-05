@@ -117,331 +117,331 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="spMain.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Bottom, Left, Right</value>
+  <data name="btnGiveUpAndAllWZOmode.Text" xml:space="preserve">
+    <value>Give up to read and write &amp;zero until it succeed (&amp;ALL)</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="spMain.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 12</value>
+  <data name="txtMessage.Size" type="System.Drawing.Size, System.Drawing">
+    <value>693, 133</value>
   </data>
-  <data name="spMain.Orientation" type="System.Windows.Forms.Orientation, System.Windows.Forms">
-    <value>Horizontal</value>
-  </data>
-  <data name="txtMessage.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
-  </data>
-  <data name="txtMessage.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 0</value>
+  <data name="btnGiveupAndWriteZero.Text" xml:space="preserve">
+    <value>&amp;Give up to read and write zero</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="txtMessage.Multiline" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="txtMessage.ScrollBars" type="System.Windows.Forms.ScrollBars, System.Windows.Forms">
-    <value>Both</value>
-  </data>
-  <data name="txtMessage.Size" type="System.Drawing.Size, System.Drawing">
-    <value>693, 144</value>
-  </data>
-  <data name="txtMessage.TabIndex" type="System.Int32, mscorlib">
-    <value>100</value>
+  <data name="spMain.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
   </data>
   <data name="&gt;&gt;txtMessage.Name" xml:space="preserve">
     <value>txtMessage</value>
   </data>
+  <data name="&gt;&gt;btnGiveupAndWriteZero.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;txtInfo.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="spMain.Size" type="System.Drawing.Size, System.Drawing">
+    <value>693, 269</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="spMain.SplitterDistance" type="System.Int32, mscorlib">
+    <value>133</value>
+  </data>
+  <data name="&gt;&gt;btnGiveUpAndAllWZOmode.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="btnShowDriveInfo.Text" xml:space="preserve">
+    <value>&amp;Show Drive Info</value>
+  </data>
+  <data name="&gt;&gt;btnShowDriveInfo.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="btnRetry.Location" type="System.Drawing.Point, System.Drawing">
+    <value>613, 286</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="txtMessage.ScrollBars" type="System.Windows.Forms.ScrollBars, System.Windows.Forms">
+    <value>Both</value>
+  </data>
+  <data name="spMain.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="btnChangeBufferSize.TabIndex" type="System.Int32, mscorlib">
+    <value>300</value>
+  </data>
+  <data name="txtInfo.Size" type="System.Drawing.Size, System.Drawing">
+    <value>693, 132</value>
+  </data>
+  <data name="btnChangeRetryCount.Location" type="System.Drawing.Point, System.Drawing">
+    <value>112, 285</value>
+  </data>
+  <data name="txtInfo.Multiline" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterParent</value>
+  </data>
+  <data name="txtInfo.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="&gt;&gt;btnChangeBufferSize.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="btnChangeBufferSize.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="&gt;&gt;btnChangeBufferSize.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;btnShowDriveInfo.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;btnRetry.Name" xml:space="preserve">
+    <value>btnRetry</value>
+  </data>
+  <data name="btnGiveUpAndWZOmode.TabIndex" type="System.Int32, mscorlib">
+    <value>500</value>
+  </data>
+  <data name="&gt;&gt;btnGiveUpAndWZOmode.Name" xml:space="preserve">
+    <value>btnGiveUpAndWZOmode</value>
+  </data>
+  <data name="txtMessage.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="spMain.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 11</value>
+  </data>
+  <data name="&gt;&gt;btnGiveUpAndAllWZOmode.Name" xml:space="preserve">
+    <value>btnGiveUpAndAllWZOmode</value>
+  </data>
+  <data name="btnRetry.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
   <data name="&gt;&gt;txtMessage.Type" xml:space="preserve">
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="txtInfo.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="btnGiveupAndWriteZero.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="txtMessage.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="btnShowDriveInfo.Size" type="System.Drawing.Size, System.Drawing">
+    <value>94, 62</value>
+  </data>
+  <data name="&gt;&gt;btnChangeRetryCount.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;spMain.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="btnShowDriveInfo.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="btnRetry.Size" type="System.Drawing.Size, System.Drawing">
+    <value>94, 62</value>
+  </data>
+  <data name="txtMessage.TabIndex" type="System.Int32, mscorlib">
+    <value>100</value>
+  </data>
+  <data name="&gt;&gt;txtInfo.Name" xml:space="preserve">
+    <value>txtInfo</value>
+  </data>
+  <data name="&gt;&gt;spMain.Panel1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="btnGiveupAndWriteZero.Size" type="System.Drawing.Size, System.Drawing">
+    <value>94, 62</value>
+  </data>
+  <data name="&gt;&gt;btnRetry.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;txtInfo.Parent" xml:space="preserve">
+    <value>spMain.Panel2</value>
+  </data>
+  <data name="&gt;&gt;spMain.Panel2.Parent" xml:space="preserve">
+    <value>spMain</value>
+  </data>
+  <data name="btnGiveUpAndAllWZOmode.Size" type="System.Drawing.Size, System.Drawing">
+    <value>94, 62</value>
+  </data>
+  <data name="&gt;&gt;btnRetry.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;spMain.Panel2.Name" xml:space="preserve">
+    <value>spMain.Panel2</value>
+  </data>
+  <data name="btnGiveUpAndWZOmode.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="&gt;&gt;btnGiveupAndWriteZero.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="btnGiveUpAndAllWZOmode.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
   <data name="&gt;&gt;txtMessage.Parent" xml:space="preserve">
+    <value>spMain.Panel1</value>
+  </data>
+  <data name="&gt;&gt;btnChangeRetryCount.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;btnGiveUpAndAllWZOmode.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="btnRetry.Text" xml:space="preserve">
+    <value>&amp;Retry</value>
+  </data>
+  <data name="btnChangeBufferSize.Text" xml:space="preserve">
+    <value>&amp;Change Buffer size</value>
+  </data>
+  <data name="btnChangeRetryCount.Size" type="System.Drawing.Size, System.Drawing">
+    <value>94, 62</value>
+  </data>
+  <data name="&gt;&gt;btnChangeBufferSize.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="btnGiveupAndWriteZero.TabIndex" type="System.Int32, mscorlib">
+    <value>400</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 12</value>
+  </data>
+  <data name="btnGiveUpAndWZOmode.Text" xml:space="preserve">
+    <value>Give up to read and write &amp;zero until it succeed</value>
+  </data>
+  <data name="&gt;&gt;spMain.Panel1.Parent" xml:space="preserve">
+    <value>spMain</value>
+  </data>
+  <data name="txtInfo.TabIndex" type="System.Int32, mscorlib">
+    <value>200</value>
+  </data>
+  <data name="btnChangeBufferSize.Size" type="System.Drawing.Size, System.Drawing">
+    <value>94, 62</value>
+  </data>
+  <data name="btnChangeBufferSize.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 285</value>
+  </data>
+  <data name="&gt;&gt;btnChangeBufferSize.Name" xml:space="preserve">
+    <value>btnChangeBufferSize</value>
+  </data>
+  <data name="btnShowDriveInfo.Location" type="System.Drawing.Point, System.Drawing">
+    <value>512, 285</value>
+  </data>
+  <data name="&gt;&gt;spMain.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;btnShowDriveInfo.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;spMain.Type" xml:space="preserve">
+    <value>System.Windows.Forms.SplitContainer, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;txtInfo.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="spMain.Orientation" type="System.Windows.Forms.Orientation, System.Windows.Forms">
+    <value>Horizontal</value>
+  </data>
+  <data name="btnShowDriveInfo.TabIndex" type="System.Int32, mscorlib">
+    <value>600</value>
+  </data>
+  <data name="btnGiveUpAndAllWZOmode.TabIndex" type="System.Int32, mscorlib">
+    <value>550</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>ReadErrorDialog</value>
+  </data>
+  <data name="&gt;&gt;btnShowDriveInfo.Name" xml:space="preserve">
+    <value>btnShowDriveInfo</value>
+  </data>
+  <data name="btnChangeRetryCount.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="&gt;&gt;btnGiveUpAndAllWZOmode.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;spMain.Name" xml:space="preserve">
+    <value>spMain</value>
+  </data>
+  <data name="btnGiveUpAndAllWZOmode.Location" type="System.Drawing.Point, System.Drawing">
+    <value>412, 286</value>
+  </data>
+  <data name="&gt;&gt;btnGiveUpAndWZOmode.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>717, 360</value>
+  </data>
+  <data name="btnRetry.TabIndex" type="System.Int32, mscorlib">
+    <value>700</value>
+  </data>
+  <data name="btnGiveUpAndWZOmode.Size" type="System.Drawing.Size, System.Drawing">
+    <value>94, 62</value>
+  </data>
+  <data name="btnGiveUpAndWZOmode.Location" type="System.Drawing.Point, System.Drawing">
+    <value>312, 286</value>
+  </data>
+  <data name="&gt;&gt;btnGiveUpAndWZOmode.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnRetry.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="btnGiveupAndWriteZero.Location" type="System.Drawing.Point, System.Drawing">
+    <value>212, 286</value>
+  </data>
+  <data name="&gt;&gt;spMain.Panel1.Name" xml:space="preserve">
     <value>spMain.Panel1</value>
   </data>
   <data name="&gt;&gt;txtMessage.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="&gt;&gt;spMain.Panel1.Name" xml:space="preserve">
-    <value>spMain.Panel1</value>
+  <data name="&gt;&gt;btnGiveUpAndWZOmode.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
-  <data name="&gt;&gt;spMain.Panel1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.SplitterPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;spMain.Panel1.Parent" xml:space="preserve">
-    <value>spMain</value>
-  </data>
-  <data name="&gt;&gt;spMain.Panel1.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="txtInfo.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
-  </data>
-  <data name="txtInfo.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 0</value>
-  </data>
-  <data name="txtInfo.Multiline" type="System.Boolean, mscorlib">
+  <data name="txtMessage.Multiline" type="System.Boolean, mscorlib">
     <value>True</value>
-  </data>
-  <data name="txtInfo.Size" type="System.Drawing.Size, System.Drawing">
-    <value>693, 143</value>
-  </data>
-  <data name="txtInfo.TabIndex" type="System.Int32, mscorlib">
-    <value>200</value>
-  </data>
-  <data name="&gt;&gt;txtInfo.Name" xml:space="preserve">
-    <value>txtInfo</value>
-  </data>
-  <data name="&gt;&gt;txtInfo.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;txtInfo.Parent" xml:space="preserve">
-    <value>spMain.Panel2</value>
-  </data>
-  <data name="&gt;&gt;txtInfo.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;spMain.Panel2.Name" xml:space="preserve">
-    <value>spMain.Panel2</value>
-  </data>
-  <data name="&gt;&gt;spMain.Panel2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.SplitterPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;spMain.Panel2.Parent" xml:space="preserve">
-    <value>spMain</value>
-  </data>
-  <data name="&gt;&gt;spMain.Panel2.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="spMain.Size" type="System.Drawing.Size, System.Drawing">
-    <value>693, 291</value>
-  </data>
-  <data name="spMain.SplitterDistance" type="System.Int32, mscorlib">
-    <value>144</value>
-  </data>
-  <data name="spMain.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
-  </data>
-  <data name="&gt;&gt;spMain.Name" xml:space="preserve">
-    <value>spMain</value>
-  </data>
-  <data name="&gt;&gt;spMain.Type" xml:space="preserve">
-    <value>System.Windows.Forms.SplitContainer, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;spMain.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;spMain.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="btnRetry.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Right</value>
-  </data>
-  <data name="btnRetry.Location" type="System.Drawing.Point, System.Drawing">
-    <value>613, 310</value>
-  </data>
-  <data name="btnRetry.Size" type="System.Drawing.Size, System.Drawing">
-    <value>94, 67</value>
-  </data>
-  <data name="btnRetry.TabIndex" type="System.Int32, mscorlib">
-    <value>700</value>
-  </data>
-  <data name="btnRetry.Text" xml:space="preserve">
-    <value>&amp;Retry</value>
-  </data>
-  <data name="&gt;&gt;btnRetry.Name" xml:space="preserve">
-    <value>btnRetry</value>
-  </data>
-  <data name="&gt;&gt;btnRetry.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;btnRetry.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;btnRetry.ZOrder" xml:space="preserve">
-    <value>7</value>
-  </data>
-  <data name="btnChangeBufferSize.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Left</value>
-  </data>
-  <data name="btnChangeBufferSize.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 309</value>
-  </data>
-  <data name="btnChangeBufferSize.Size" type="System.Drawing.Size, System.Drawing">
-    <value>94, 67</value>
-  </data>
-  <data name="btnChangeBufferSize.TabIndex" type="System.Int32, mscorlib">
-    <value>300</value>
-  </data>
-  <data name="btnChangeBufferSize.Text" xml:space="preserve">
-    <value>&amp;Change Buffer size</value>
-  </data>
-  <data name="&gt;&gt;btnChangeBufferSize.Name" xml:space="preserve">
-    <value>btnChangeBufferSize</value>
-  </data>
-  <data name="&gt;&gt;btnChangeBufferSize.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;btnChangeBufferSize.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;btnChangeBufferSize.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="btnGiveupAndWriteZero.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Left</value>
-  </data>
-  <data name="btnGiveupAndWriteZero.Location" type="System.Drawing.Point, System.Drawing">
-    <value>212, 310</value>
-  </data>
-  <data name="btnGiveupAndWriteZero.Size" type="System.Drawing.Size, System.Drawing">
-    <value>94, 67</value>
-  </data>
-  <data name="btnGiveupAndWriteZero.TabIndex" type="System.Int32, mscorlib">
-    <value>400</value>
-  </data>
-  <data name="btnGiveupAndWriteZero.Text" xml:space="preserve">
-    <value>&amp;Give up to read and write zero</value>
-  </data>
-  <data name="&gt;&gt;btnGiveupAndWriteZero.Name" xml:space="preserve">
-    <value>btnGiveupAndWriteZero</value>
-  </data>
-  <data name="&gt;&gt;btnGiveupAndWriteZero.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;btnGiveupAndWriteZero.Parent" xml:space="preserve">
-    <value>$this</value>
   </data>
   <data name="&gt;&gt;btnGiveupAndWriteZero.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="btnGiveUpAndWZOmode.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Left</value>
-  </data>
-  <data name="btnGiveUpAndWZOmode.Location" type="System.Drawing.Point, System.Drawing">
-    <value>312, 310</value>
-  </data>
-  <data name="btnGiveUpAndWZOmode.Size" type="System.Drawing.Size, System.Drawing">
-    <value>94, 67</value>
-  </data>
-  <data name="btnGiveUpAndWZOmode.TabIndex" type="System.Int32, mscorlib">
-    <value>500</value>
-  </data>
-  <data name="btnGiveUpAndWZOmode.Text" xml:space="preserve">
-    <value>Give up to read and write &amp;zero until it succeed</value>
-  </data>
-  <data name="&gt;&gt;btnGiveUpAndWZOmode.Name" xml:space="preserve">
-    <value>btnGiveUpAndWZOmode</value>
-  </data>
-  <data name="&gt;&gt;btnGiveUpAndWZOmode.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;btnGiveUpAndWZOmode.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;btnGiveUpAndWZOmode.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="btnShowDriveInfo.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Left</value>
-  </data>
-  <data name="btnShowDriveInfo.Location" type="System.Drawing.Point, System.Drawing">
-    <value>512, 309</value>
-  </data>
-  <data name="btnShowDriveInfo.Size" type="System.Drawing.Size, System.Drawing">
-    <value>94, 67</value>
-  </data>
-  <data name="btnShowDriveInfo.TabIndex" type="System.Int32, mscorlib">
-    <value>600</value>
-  </data>
-  <data name="btnShowDriveInfo.Text" xml:space="preserve">
-    <value>&amp;Show Drive Info</value>
-  </data>
-  <data name="&gt;&gt;btnShowDriveInfo.Name" xml:space="preserve">
-    <value>btnShowDriveInfo</value>
-  </data>
-  <data name="&gt;&gt;btnShowDriveInfo.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;btnShowDriveInfo.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;btnShowDriveInfo.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="btnChangeRetryCount.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Left</value>
-  </data>
-  <data name="btnChangeRetryCount.Location" type="System.Drawing.Point, System.Drawing">
-    <value>112, 309</value>
-  </data>
-  <data name="btnChangeRetryCount.Size" type="System.Drawing.Size, System.Drawing">
-    <value>94, 67</value>
-  </data>
-  <data name="btnChangeRetryCount.TabIndex" type="System.Int32, mscorlib">
-    <value>350</value>
-  </data>
-  <data name="btnChangeRetryCount.Text" xml:space="preserve">
-    <value>C&amp;hange Retry Count</value>
-  </data>
-  <data name="&gt;&gt;btnChangeRetryCount.Name" xml:space="preserve">
-    <value>btnChangeRetryCount</value>
-  </data>
-  <data name="&gt;&gt;btnChangeRetryCount.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;btnChangeRetryCount.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;btnChangeRetryCount.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="btnGiveUpAndAllWZOmode.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Left</value>
-  </data>
-  <data name="btnGiveUpAndAllWZOmode.Location" type="System.Drawing.Point, System.Drawing">
-    <value>412, 310</value>
-  </data>
-  <data name="btnGiveUpAndAllWZOmode.Size" type="System.Drawing.Size, System.Drawing">
-    <value>94, 67</value>
-  </data>
-  <data name="btnGiveUpAndAllWZOmode.TabIndex" type="System.Int32, mscorlib">
-    <value>550</value>
-  </data>
-  <data name="btnGiveUpAndAllWZOmode.Text" xml:space="preserve">
-    <value>Give up to read and write &amp;zero until it succeed (ALL)</value>
-  </data>
-  <data name="&gt;&gt;btnGiveUpAndAllWZOmode.Name" xml:space="preserve">
-    <value>btnGiveUpAndAllWZOmode</value>
-  </data>
-  <data name="&gt;&gt;btnGiveUpAndAllWZOmode.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;btnGiveUpAndAllWZOmode.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;btnGiveUpAndAllWZOmode.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>6, 13</value>
-  </data>
-  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>717, 390</value>
-  </data>
-  <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
-    <value>632, 429</value>
-  </data>
-  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
-    <value>CenterParent</value>
+  <data name="&gt;&gt;btnGiveupAndWriteZero.Name" xml:space="preserve">
+    <value>btnGiveupAndWriteZero</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>ReadErrorDialog</value>
   </data>
-  <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>ReadErrorDialog</value>
+  <data name="&gt;&gt;btnChangeRetryCount.Name" xml:space="preserve">
+    <value>btnChangeRetryCount</value>
   </data>
-  <data name="&gt;&gt;$this.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="btnChangeRetryCount.Text" xml:space="preserve">
+    <value>C&amp;hange Retry Count</value>
   </data>
+  <data name="btnChangeRetryCount.TabIndex" type="System.Int32, mscorlib">
+    <value>350</value>
+  </data>
+  <data name="&gt;&gt;spMain.Panel2.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;spMain.Panel1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.SplitterPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;spMain.Panel2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.SplitterPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
+    <value>632, 399</value>
+  </data>
+  <data name="&gt;&gt;btnChangeRetryCount.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
 </root>

@@ -7,13 +7,13 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-#include "Windows.h"
+#include "afxres.h"
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (United States) resources
+// âpåÍ (ïƒçë) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -61,8 +61,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,16,0
- PRODUCTVERSION 1,0,16,0
+ FILEVERSION 1,0,17,0
+ PRODUCTVERSION 1,0,17,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -79,12 +79,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Ambiesoft"
             VALUE "FileDescription", "retrycopy"
-            VALUE "FileVersion", "1.0.16.0"
+            VALUE "FileVersion", "1.0.17.0"
             VALUE "InternalName", "retrycop.exe"
             VALUE "LegalCopyright", "Copyright (C) 2022"
             VALUE "OriginalFilename", "retrycop.exe"
             VALUE "ProductName", "retrycopy"
-            VALUE "ProductVersion", "1.0.16.0"
+            VALUE "ProductVersion", "1.0.17.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -93,7 +93,7 @@ BEGIN
     END
 END
 
-#endif    // English (United States) resources
+#endif    // âpåÍ (ïƒçë) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

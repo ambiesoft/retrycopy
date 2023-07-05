@@ -168,6 +168,9 @@
   <data name="Are you sure to give up on reading any more bytes, and read one byte at a time, writing zero for each one that fails {0} times?" xml:space="preserve">
     <value>読み込みを諦めて１バイトずつ読み込み {0} 回失敗した場合はゼロを書き込みますか？</value>
   </data>
+  <data name="Are you sure to give up on reading {0} bytes and write {0} zeroes automatically all the time that fails {1} times?" xml:space="preserve">
+    <value>{0} バイトの読み込みを {1} 回読み込みに失敗した場合、諦めてゼロを書き込みます。読み込みが成功するまでこの処理を続け常にこの処理をします。続行しますか？</value>
+  </data>
   <data name="Are you sure to give up on reading {0} bytes and write {0} zeroes automatically that fails {1} times?" xml:space="preserve">
     <value>{0} バイトの読み込みを {1} 回読み込みに失敗した場合、諦めてゼロを書き込みます。読み込みが成功するまでこの処理を続けます。続行しますか？</value>
   </data>
@@ -272,6 +275,9 @@
   </data>
   <data name="File copy started:&quot;{0}&quot; -&gt; &quot;{1}&quot;" xml:space="preserve">
     <value>ファイルコピー開始："{0}" → "{1}"</value>
+  </data>
+  <data name="Gives up on reading from the file and write zeroes automatically all the time that fails until it succeeds to read." xml:space="preserve">
+    <value>ファイルからの読み込みを諦めて、成功するまでゼロを書き込みます。（すべて）</value>
   </data>
   <data name="Gives up on reading from the file and write zeroes automatically that fails until it succeeds to read." xml:space="preserve">
     <value>ファイルからの読み込みを諦めて、成功するまでゼロを書き込みます。</value>

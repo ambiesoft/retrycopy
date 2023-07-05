@@ -135,4 +135,7 @@
   <data name="btnChangeRetryCount.Text" xml:space="preserve">
     <value>再試行回数を変更(&amp;H)</value>
   </data>
+  <data name="btnGiveUpAndAllWZOmode.Text" xml:space="preserve">
+    <value>読み込みを諦めてゼロを書き込む（自動ですべて）(&amp;A)</value>
+  </data>
 </root>

@@ -94,10 +94,12 @@ namespace Ambiesoft {
 				// 
 				// spMain.Panel1
 				// 
+				resources->ApplyResources(this->spMain->Panel1, L"spMain.Panel1");
 				this->spMain->Panel1->Controls->Add(this->txtMessage);
 				// 
 				// spMain.Panel2
 				// 
+				resources->ApplyResources(this->spMain->Panel2, L"spMain.Panel2");
 				this->spMain->Panel2->Controls->Add(this->txtInfo);
 				// 
 				// txtMessage

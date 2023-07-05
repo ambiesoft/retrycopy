@@ -110,12 +110,16 @@ namespace Ambiesoft {
 		}
 		void ReadErrorDialog::onClickWZOmodeCommon(const bool bAll)
 		{
-			String^ message = String::Format(
-				I18N(L"Are you sure to give up on reading {0} bytes and write {0} zeroes automatically {2}{3}that fails {1} times?"),
-				BufferSize,
-				RetryCount + 1,
-				bAll ? I18N(L"all the time") : L"",
-				bAll ? L" " : L"");
+			String^ message = bAll ?
+				String::Format(
+					I18N(L"Are you sure to give up on reading {0} bytes and write {0} zeroes automatically all the time that fails {1} times?"),
+					BufferSize,
+					RetryCount + 1)
+				:
+				String::Format(
+					I18N(L"Are you sure to give up on reading {0} bytes and write {0} zeroes automatically that fails {1} times?"),
+					BufferSize,
+					RetryCount + 1);
 			if (System::Windows::Forms::DialogResult::Yes !=
 				CppUtils::YesOrNo(this, message, MessageBoxDefaultButton::Button2))
 			{
