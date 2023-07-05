@@ -40,6 +40,7 @@ ShouldBeFiles:
 - Microsoft.WindowsAPICodePack.Shell.xml
 - Microsoft.WindowsAPICodePack.xml
 - README.md
+- README.jp.md
 - retrycopy.exe
 - retrycopy.pdb
 - retrycopymisc.dll
